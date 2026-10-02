@@ -1,5 +1,3 @@
-#### Solución Práctica 8 (r_script_nba_rs_2526.R) ####
-
 #### Instalación paquetes R ####
 
 # Definir paquetes necesarios
