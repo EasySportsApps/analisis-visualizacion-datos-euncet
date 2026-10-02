@@ -7,7 +7,7 @@
 r_packages <- c("reticulate", "tidyverse", "labelled")
 
 # Instalar conjuntamente paquetes necesarios si no instalados
-install.packages(setdiff(r_packages, rownames(installed.packages())))
+install.packages(setdiff(r_packages, rownames(installed.packages())), repos = "https://cloud.r-project.org")
 
 #### Importación paquetes y datos R ####
 
