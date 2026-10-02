@@ -1,0 +1,38 @@
+---
+# ENCABEZADO YAML
+# Aquí se personaliza el formato de salida del archivo .Rmd
+title: "Lección 3 - Práctica 2: R visualization packages" # Título del documento
+author: "Nombre y apellidos" # Autor del documento
+date: "dd/mm/aaaa" # Fecha del documento
+output: # Formato de salida del documento  
+  html_document: # Salida del documento en formato HTML    
+    toc: true # Incluir una tabla de contenido (índice) 
+    toc_depth: 1 # Incluir solo encabezados de primer nivel en la tabla de contenido   
+    toc_float: true # Mantener la tabla de contenido visible mientras se hace scroll    
+    theme: # Tema visual de bootswatch      
+      bootswatch: journal # Más temas disponibles en: https://bootswatch.com/
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+# Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
