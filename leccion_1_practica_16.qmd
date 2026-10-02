@@ -1,0 +1,179 @@
+---
+# ENCABEZADO YAML
+# Aquí se personaliza el formato de salida del archivo .qmd
+title: "Lección 1 - Práctica 16: Quarto" # Título de la presentación. Diapositiva 1/18
+format: # Formato de salida de la presentación
+  revealjs: # Salida de la presentación en formato HTML (reveal.js)
+    toc: true # Incluir una tabla de contenido (índice). Diapositiva 2/18
+    toc-title: "Índice" # Título de la tabla de contenido
+    slide-number: true # Mostrar el número de diapositiva en la presentación
+    smaller: true # Reducir el tamaño del contenido de las diapositivas
+    transition: concave # Transición entre diapositivas (https://revealjs.com/transitions/)
+    theme: white # Tema visual de reveal.js (https://revealjs.com/themes/)
+    execute: # Opciones de ejecución de los fragmentos de código
+      echo: true # Mostrar código en la presentación
+      message: false # No mostrar mensajes de código en la presentación
+      warning: false # No mostrar advertencias de código en la presentación
+---
+
+# Introducción <!-- Diapositiva 3/18 -->
+
+## Objetivo <!-- Diapositiva 4/18 -->
+
+En esta **presentación HTML** creada con [Quarto](https://quarto.org/) y con el *framework* [reveal.js](https://revealjs.com/) se muestra cómo combinar fragmentos de código (*code chunks*) de R y Python.
+
+## ¿Qué es Quarto? <!-- Diapositiva 5/18 -->
+
+Quarto es una evolución de R Markdown con una mayor variedad de [formatos de salida](https://quarto.org/docs/output-formats/all-formats.html) y nuevas funcionalidades, como los [*callout blocks*](https://quarto.org/docs/authoring/callouts.html).
+
+## Referencias <!-- Diapositiva 6/18 -->
+
+Para aprender más sobre Quarto se recomienda consultar las siguientes referencias:
+
+- Posit. (s. f.). *Publish and share with Quarto :: Cheatsheet*. <https://rstudio.github.io/cheatsheets/html/quarto.html>
+- Quarto. (s. f.). *Guide*. <https://quarto.org/docs/guide/>
+
+# Paquetes <!-- Diapositiva 7/18 -->
+
+## Paquetes de R <!-- Diapositiva 8/18 -->
+
+Los paquetes de R necesarios para la práctica son `reticulate` y `ggplot2`.
+
+El código para cargar estos paquetes se ha ocultado con la opción `echo: false`.
+
+```{r}
+#| echo: false
+# Cargar el paquete reticulate
+library("reticulate")
+
+# Cargar el paquete ggplot2
+library("ggplot2")
+```
+
+## Paquetes de Python <!-- Diapositiva 9/18 -->
+
+Los paquetes de Python necesarios para la práctica son `pandas` y `matplotlib`.
+
+El código para importar estos paquetes se ha ocultado con la opción `echo: false`.
+
+```{python}
+#| echo: false
+# Importar el paquete pandas como pd
+import pandas as pd
+
+# Importar el módulo pyplot del paquete matplotlib
+import matplotlib.pyplot as plt
+```
+
+# Dataframes <!-- Diapositiva 10/18 -->
+
+## ¿Qué es un dataframe? <!-- Diapositiva 11/18 -->
+
+Un *dataframe* es un conjunto de datos estructurado con forma de tabla, donde cada columna representa una variable con un mismo tipo de dato y cada fila representa una observación o registro.
+
+En R se puede crear un *dataframe* sin cargar ningún paquete, mientras que en Python es necesario importar antes el paquete `pandas`.
+
+## Creación de un dataframe en R <!-- Diapositiva 12/18 -->
+
+```{r}
+# Crear el objeto name y asignarle un vector de caracteres (character)
+name <- c("Ana", "Bruno", "Carla", "David", "Elena")
+
+# Crear el objeto height_m y asignarle un vector de números decimales (numeric)
+height_m <- c(1.60, 1.72, 1.68, 1.80, 1.65)
+
+# Crear el dataframe df_r con las columnas/variables nombre y altura_m
+df_r <- data.frame(nombre = name, altura_m = height_m)
+
+# Mostrar el dataframe df_r
+df_r
+```
+
+## Creación de un dataframe en Python <!-- Diapositiva 13/18 -->
+
+```{python}
+# Crear la variable name y asignarle una lista de cadenas de caracteres (str)
+name = ["Ana", "Bruno", "Carla", "David", "Elena"]
+
+# Crear la variable weight_kg y asignarle una lista de números decimales (float)
+weight_kg = [58.1, 65.5, 80.8, 90.3, 55.7]
+
+# Crear el dataframe df_py con las columnas/variables nombre y peso_kg
+df_py = pd.DataFrame({"nombre": name, "peso_kg": weight_kg})
+
+# Mostrar el dataframe df_py
+df_py
+```
+
+# Gráficos <!-- Diapositiva 14/18 -->
+
+A continuación, se mostrarán cuatro diagramas de caja (*boxplots*):
+
+1. *Boxplot* creado con el paquete `ggplot2` de R y con datos de R.
+2. *Boxplot* creado con el paquete `ggplot2` de R y con datos de Python.
+3. *Boxplot* creado con el paquete `matplotlib` de Python y con datos de Python.
+4. *Boxplot* creado con el paquete `matplotlib` de Python y con datos de R.
+
+## Creación de un boxplot con R y con datos de R <!-- Diapositiva 15/18 -->
+
+```{r}
+# Crear el boxplot con los datos df_r y la variable altura_m
+boxplot_1 <- ggplot(data = df_r, mapping = aes(x = "", y = altura_m)) +
+  geom_boxplot() + 
+  labs(title = "Boxplot 1", x = NULL, y = "Altura (m)")
+
+# Mostrar el boxplot
+boxplot_1
+```
+
+## Creación de un boxplot con R y con datos de Python <!-- Diapositiva 16/18 -->
+
+<!-- Aquí se muestra cómo crear un bloque de aviso importante (callout block) -->
+::: {.callout-important}
+## Importante
+Para acceder desde R a datos de Python hay que añadir el prefijo `py$` delante del nombre del *dataframe* creado previamente en Python.
+:::
+
+<!-- Aquí se muestra cómo resaltar una línea de código específica con la opción code-line-numbers -->
+```{r}
+#| code-line-numbers: "|2"
+# Crear el boxplot con los datos df_py y la variable peso_kg
+boxplot_2 <- ggplot(data = py$df_py, mapping = aes(x = "", y = peso_kg)) +
+  geom_boxplot() + 
+  labs(title = "Boxplot 2", x = NULL, y = "Peso (kg)")
+
+# Mostrar el boxplot
+boxplot_2
+```
+
+## Creación de un boxplot con Python y con datos de Python <!-- Diapositiva 17/18 -->
+
+```{python}
+# Crear el boxplot con los datos df_py y la variable peso_kg
+boxplot_3 = plt.boxplot(x = df_py["peso_kg"])
+plt.title(label = "Boxplot 3");
+plt.xticks(ticks = []);
+plt.ylabel(ylabel = "Peso (kg)");
+
+# Mostrar el boxplot
+plt.show()
+```
+
+## Creación de un boxplot con Python y con datos de R <!-- Diapositiva 18/18 -->
+
+::: {.callout-important}
+## Importante
+Para acceder desde Python a datos de R hay que añadir el prefijo `r.` delante del nombre del *dataframe* creado previamente en R.
+:::
+
+```{python}
+#| code-line-numbers: "|2"
+# Crear el boxplot con los datos df_r y la variable altura_m
+boxplot_4 = plt.boxplot(x = r.df_r["altura_m"]);
+plt.title(label = "Boxplot 4");
+plt.xticks(ticks = []);
+plt.ylabel(ylabel = "Altura (m)");
+
+# Mostrar el boxplot
+plt.show()
+```
