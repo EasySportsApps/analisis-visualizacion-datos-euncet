@@ -1,5 +1,3 @@
-#### Solución Práctica 8 (py_script_nba_rs_2526.py) ####
-
 #### Importación paquetes y datos Python ####
 
 # Importar paquete pandas como pd
