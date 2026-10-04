@@ -18,7 +18,7 @@ output: # Formato salida documento
 
 # Opciones de los fragmentos de código
 
-- En el primer fragmento de código de R, define las opciones globales de los fragmentos de código (*code chunks*) con la función `opts_chunk$set()` del paquete `knitr` para que estas opciones se apliquen a todos los fragmentos del archivo `.Rmd` sin tener que repetirlas en el encabezado de cada fragmento.
+- En el primer fragmento de código de R, define las opciones globales de los fragmentos de código con la función `opts_chunk$set()` del paquete `knitr` para que estas opciones se apliquen a todos los fragmentos del archivo `.Rmd` sin tener que repetirlas en el encabezado de cada fragmento.
 
 - El paquete `knitr` se instala junto con el paquete `rmarkdown`, por lo que no es necesario instalarlo ni cargarlo si se utiliza el prefijo `knitr::` al llamar a la función `opts_chunk$set()`.
 
