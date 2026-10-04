@@ -237,7 +237,7 @@ df_r_nba_rs_2526_transformed <- df_r_nba_rs_2526 |>
     two_point_percentage              = "2 Point Field Goal Percentage (2P%)",
     three_point_made                  = "3 Point Field Goals Made (3PM)",
     three_point_attempted             = "3 Point Field Goals Attempted (3PA)",
-    three_point_percentage            = "3 Point Field Goals Percentage (3P%)",
+    three_point_percentage            = "3 Point Field Goal Percentage (3P%)",
     field_goals_made                  = "Field Goals Made (FGM)",
     field_goals_attempted             = "Field Goals Attempted (FGA)",
     field_goals_percentage            = "Field Goal Percentage (FG%)",
