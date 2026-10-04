@@ -1,0 +1,639 @@
+---
+# ENCABEZADO YAML
+title: "Lección 3 - Práctica 2: R visualization packages" # Título documento
+author: "Raúl Hileno González" # Autor documento
+date: "05/10/2026" # Fecha documento
+output: # Formato salida documento  
+  html_document: # Salida documento formato HTML    
+    toc: true # Incluir tabla contenido (índice) 
+    toc_float: false # Mostrar tabla contenido inicio documento
+    code_folding: show # Código desplegado por defecto en salida documento con botón Hide para ocultarlo
+    theme: # Tema visual bootswatch      
+      bootswatch: journal # Más temas disponibles en: https://bootswatch.com/
+---
+
+# Objetivo de la práctica
+
+- Crear un mismo diagrama de caja (*boxplot*) con distintos paquetes de R para visualizar la relación entre la posición de juego y la altura en metros de los jugadores de la NBA en la temporada regular 2025-26.
+
+# Opciones de los fragmentos de código
+
+- En el primer fragmento de código de R, define las opciones globales de los fragmentos de código (*code chunks*) con la función `opts_chunk$set()` del paquete `knitr` para que estas opciones se apliquen a todos los fragmentos del archivo `.Rmd` sin tener que repetirlas en el encabezado de cada fragmento.
+
+- El paquete `knitr` se instala junto con el paquete `rmarkdown`, por lo que no es necesario instalarlo ni cargarlo si se utiliza el prefijo `knitr::` al llamar a la función `opts_chunk$set()`.
+
+- Las opciones de los fragmentos de código utilizadas en esta práctica, por orden de aparición en el documento, son las siguientes:
+
+  - `include=TRUE`: se ejecuta el código de R y se muestran en el documento HTML resultante el código ejecutado y sus resultados, ya sean valores, tablas o gráficos.
+  
+  - `message=FALSE`: se ejecuta el código de R sin mostrar en el documento HTML resultante los mensajes generados durante su ejecución.
+
+  - `warning=FALSE`: se ejecuta el código de R sin mostrar en el documento HTML resultante las advertencias generadas durante su ejecución.
+
+  - `results='hide'`: se ejecuta el código de R y se muestran en el documento HTML resultante el código ejecutado y los gráficos, pero no sus resultados en formato de texto (valores y tablas).
+  
+  - `class.source='fold-hide'`: se muestra en el documento HTML resultante el código ejecutado, colapsado y con un botón `Show` para desplegarlo.
+  
+  - `fig.width=10`: se define en 10 pulgadas el ancho de los gráficos mostrados en el documento HTML resultante.
+
+  - `fig.height=15`: se define en 15 pulgadas el alto de los gráficos mostrados en el documento HTML resultante.
+
+```{r setup, include=TRUE}
+# Definir opciones globales fragmentos de código
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+```
+
+# Importación y transformación de datos
+
+- En el segundo fragmento de código de R, copia y pega el código del archivo [`r_script_nba_rs_2526.R`](https://github.com/EasySportsApps/analisis-visualizacion-datos-euncet/blob/main/r_script_nba_rs_2526.R), teniendo en cuenta que no es necesario copiar la sección `#### Instalación paquetes Python ####`.
+
+```{r data_import_and_transformation, include=TRUE, results='hide', class.source='fold-hide'}
+#### Instalación paquetes R ####
+
+# Definir paquetes necesarios
+  # reticulate: paquete para interoperabilidad entre R y Python
+  # readr: paquete para importar datos
+  # dplyr: paquete para transformar datos
+  # labelled: paquete para etiquetar variables
+  # ggplot2: paquete para visualizar datos
+r_packages <- c("reticulate", "readr", "dplyr", "labelled", "ggplot2")
+
+# Instalar conjuntamente paquetes necesarios si no instalados
+install.packages(setdiff(r_packages, rownames(installed.packages())), repos = "https://cloud.r-project.org")
+
+#### Importación paquetes y datos R ####
+
+# Cargar conjuntamente paquetes necesarios
+lapply(r_packages, library, character.only = TRUE)
+
+# Importar conjunto datos formato CSV + asignar dataframe df_r_nba_rs_2526
+df_r_nba_rs_2526 <- read_csv("https://raw.githubusercontent.com/EasySportsApps/nba_api_25_26_data/refs/heads/main/nba_players_regular_season_25_26_wide_data.csv")
+
+#### Pipeline transformación datos R (dplyr) ####
+
+# Detectar player_name con valores faltantes (NA) en weight_kg (opcional)
+df_r_nba_rs_2526$player_name[is.na(df_r_nba_rs_2526$weight_kg)]
+
+# Asignar dataframe original a nuevo dataframe transformado
+df_r_nba_rs_2526_transformed <- df_r_nba_rs_2526 |> 
+  
+  # Completar valores faltantes (NA) de variable weight_kg obtenidos de Wikipedia
+  mutate(
+    weight_kg = case_when(
+      player_name == "Chris Youngblood" ~ 100.2, # https://en.wikipedia.org/wiki/Chris_Youngblood_(basketball)
+      player_name == "Jahmyl Telfort" ~ 99.8, # https://en.wikipedia.org/wiki/Jahmyl_Telfort
+      player_name == "Jaylen Wells" ~ 93.0, # https://en.wikipedia.org/wiki/Jaylen_Wells
+      player_name == "LJ Cryer" ~ 90.7, # https://en.wikipedia.org/wiki/LJ_Cryer
+      player_name == "Lawson Lovering" ~ 106.6, # https://en.wikipedia.org/wiki/Lawson_Lovering
+      player_name == "Tolu Smith" ~ 111.1, # https://en.wikipedia.org/wiki/Tolu_Smith
+      TRUE ~ weight_kg)
+  ) |>
+  
+  # Crear nuevas variables a partir de variables originales
+  mutate( 
+    
+    # Crear variable conference a partir de variable team
+    conference = case_when( 
+      team %in% c("ATL", "BKN", "BOS", "CHA", "CHI", "CLE", "DET", "IND",
+                  "MIA", "MIL", "NYK", "ORL", "PHI", "TOR", "WAS") ~ "Eastern",
+      team %in% c("DAL", "DEN", "GSW", "HOU", "LAC", "LAL", "MEM", "MIN",
+                  "NOP", "OKC", "PHX", "POR", "SAC", "SAS", "UTA") ~ "Western"),
+    
+    # Crear variable bmi_kgm2 a partir de variables weight_kg y height_m
+    bmi_kgm2 = weight_kg / height_m^2,
+    
+    # Crear variable bmi_category a partir de variable bmi_kgm2
+    bmi_category = case_when(
+      bmi_kgm2 < 18.5 ~ "U",
+      bmi_kgm2 < 25 ~ "N",
+      bmi_kgm2 < 30 ~ "O",
+      bmi_kgm2 < 35 ~ "OI",
+      bmi_kgm2 < 40 ~ "OII",
+      bmi_kgm2 >= 40 ~ "OIII"
+    ),
+    
+    # Crear variable usa_player a partir de variable country
+    usa_player = country == "USA",
+    
+    # Crear variable age_decimal_years a partir de fecha inicio temporada y variable birthdate
+    age_decimal_years = (as.Date("2025-10-21") - birthdate) / 365.25,
+    
+    # Crear variable birth_year a partir de variable birthdate
+    birth_year = format(birthdate, "%Y"),
+    
+    # Crear variable games_played a partir de variables wins y losses
+    games_played = wins + losses,
+    
+    # Crear variable minutes_per_game a partir de variables minutes_played y games_played
+    minutes_per_game = ifelse(games_played == 0, 0, minutes_played / games_played),
+    
+    # Crear variable points a partir de variables one_point_made, two_point_made y three_point_made
+    points = one_point_made + (two_point_made * 2) + (three_point_made * 3),
+    
+    # Crear variable points_per_game a partir de variables points y games_played
+    points_per_game = ifelse(games_played == 0, 0, points / games_played),
+    
+    # Crear variable one_point_percentage a partir de variables one_point_made y one_point_attempted
+    one_point_percentage = ifelse(one_point_attempted == 0, 0, one_point_made / one_point_attempted * 100),
+    
+    # Crear variable two_point_percentage a partir de variables two_point_made y two_point_attempted
+    two_point_percentage = ifelse(two_point_attempted == 0, 0, two_point_made / two_point_attempted * 100),
+    
+    # Crear variable three_point_percentage a partir de variables three_point_made y three_point_attempted
+    three_point_percentage = ifelse(three_point_attempted == 0, 0, three_point_made / three_point_attempted * 100),
+    
+    # Crear variable field_goals_made a partir de variables two_point_made y three_point_made
+    field_goals_made = two_point_made + three_point_made,
+    
+    # Crear variable field_goals_attempted a partir de variables two_point_attempted y three_point_attempted
+    field_goals_attempted = two_point_attempted + three_point_attempted,
+    
+    # Crear variable field_goals_percentage a partir de variables field_goals_made y field_goals_attempted
+    field_goals_percentage = ifelse(field_goals_attempted == 0, 0, field_goals_made / field_goals_attempted * 100),
+    
+    # Crear variable effective_field_goals_percentage a partir de variables field_goals_made, three_point_made y field_goals_attempted
+    effective_field_goals_percentage = ifelse(field_goals_attempted == 0, 0, 
+                                              (field_goals_made + 0.5 * three_point_made) / field_goals_attempted * 100),
+    
+    # Crear variable true_shooting_percentage a partir de variables points, field_goals_attempted y one_point_attempted
+    true_shooting_percentage = ifelse((field_goals_attempted + 0.44 * one_point_attempted) == 0, 0,
+                                      points / (2 * (field_goals_attempted + 0.44 * one_point_attempted)) * 100),
+    
+    # Crear variable rebounds a partir de variables offensive_rebounds y defensive_rebounds
+    rebounds = offensive_rebounds + defensive_rebounds,
+    
+    # Crear variable rebounds_per_game a partir de variables rebounds y games_played
+    rebounds_per_game = ifelse(games_played == 0, 0, rebounds / games_played),
+    
+    # Crear variable assists_per_game a partir de variables assists y games_played
+    assists_per_game = ifelse(games_played == 0, 0, assists / games_played),
+    
+    # Crear variable turnovers_per_game a partir de variables turnovers y games_played
+    turnovers_per_game = ifelse(games_played == 0, 0, turnovers / games_played),
+    
+    # Crear variable steals_per_game a partir de variables steals y games_played
+    steals_per_game = ifelse(games_played == 0, 0, steals / games_played),
+    
+    # Crear variable blocks_per_game a partir de variables blocks y games_played
+    blocks_per_game = ifelse(games_played == 0, 0, blocks / games_played),
+    
+    # Crear variable personal_fouls_per_game a partir de variables personal_fouls y games_played
+    personal_fouls_per_game = ifelse(games_played == 0, 0, personal_fouls / games_played),
+    
+    # Crear variable fantasy_points a partir de variables points, rebounds, assists, steals, blocks y turnovers
+    fantasy_points = points + (rebounds * 1.2) + (assists * 1.5) + (steals * 3) + (blocks * 3) - turnovers
+    
+  ) |> 
+  
+  # Ordenar variables + eliminar variables no incluidas (season, season_type, player_id, age_completed_years, birthdate)
+  select(
+    player_name, team, conference, position, 
+    height_m, weight_kg, bmi_kgm2, bmi_category, 
+    country, usa_player, 
+    age_decimal_years, birth_year, experience, 
+    games_played, wins, losses, 
+    minutes_played, minutes_per_game,
+    points, points_per_game,
+    one_point_made, one_point_attempted, one_point_percentage,
+    two_point_made, two_point_attempted, two_point_percentage,
+    three_point_made, three_point_attempted, three_point_percentage,
+    field_goals_made, field_goals_attempted, field_goals_percentage,
+    effective_field_goals_percentage, true_shooting_percentage,
+    offensive_rebounds, defensive_rebounds, rebounds, rebounds_per_game,
+    assists, assists_per_game, 
+    turnovers, turnovers_per_game,
+    steals, steals_per_game, 
+    blocks, blocks_per_game,
+    personal_fouls, personal_fouls_per_game, 
+    fantasy_points
+  ) |>
+  
+  # Convertir variables cualitativas nominales a tipo categórico no ordenado
+  mutate(across(c(player_name, team, conference, position, country), as.factor)) |>
+  
+  # Convertir variables cualitativas ordinales a tipo categórico ordenado
+  mutate(
+    bmi_category = factor(bmi_category,
+                          levels = c("U", "N", "O", "OI", "OII", "OIII"),
+                          ordered = TRUE)
+  ) |>
+  
+  # Convertir variables cuantitativas discretas a tipo entero (números enteros)
+  mutate(across(c(birth_year, experience, games_played, wins, losses, points,
+                  one_point_made, one_point_attempted, two_point_made, two_point_attempted,
+                  three_point_made, three_point_attempted, field_goals_made, field_goals_attempted,
+                  offensive_rebounds, defensive_rebounds, rebounds, assists, turnovers, steals, blocks,
+                  personal_fouls),
+                as.integer)) |>
+  
+  # Convertir variables cuantitativas continuas a tipo numérico (números decimales)
+  mutate(across(c(height_m, weight_kg, bmi_kgm2, age_decimal_years, 
+                  minutes_played, minutes_per_game, points_per_game,
+                  one_point_percentage, two_point_percentage, three_point_percentage,
+                  field_goals_percentage, effective_field_goals_percentage, true_shooting_percentage,
+                  rebounds_per_game, assists_per_game, turnovers_per_game, steals_per_game,
+                  blocks_per_game, personal_fouls_per_game, fantasy_points),
+                as.numeric)) |>
+  
+  # Etiquetar categorías variable position
+  mutate(
+    position = recode(position,
+                      "C" = "Center",
+                      "C-F" = "Center-Forward",
+                      "F" = "Forward",
+                      "F-C" = "Forward-Center",
+                      "F-G" = "Forward-Guard",
+                      "G" = "Guard",
+                      "G-F" = "Guard-Forward")
+  ) |>
+  
+  # Etiquetar categorías variable bmi_category
+  mutate(
+    bmi_category = recode(bmi_category,
+                          "U" = "Underweight",
+                          "N" = "Normal",
+                          "O" = "Overweight",
+                          "OI" = "Obese I",
+                          "OII" = "Obese II",
+                          "OIII" = "Obese III")
+  ) |>
+  
+  # Etiquetar variables
+  # NBA Stats Glossary: https://www.nba.com/stats/help/glossary
+  set_variable_labels(
+    player_name                       = "Player Name",
+    team                              = "Team",
+    conference                        = "Conference",
+    position                          = "Position",
+    height_m                          = "Height (m)",
+    weight_kg                         = "Weight (kg)",
+    bmi_kgm2                          = "BMI (kg/m²)",
+    bmi_category                      = "BMI Category",
+    country                           = "Country",
+    usa_player                        = "USA Player",
+    age_decimal_years                 = "Age (years)",
+    birth_year                        = "Birth Year",
+    experience                        = "Years of Experience",
+    games_played                      = "Games Played (GP)",
+    wins                              = "Wins (W)",
+    losses                            = "Losses (L)",
+    minutes_played                    = "Minutes Played (MIN)",
+    minutes_per_game                  = "Minutes Per Game (MPG)",
+    points                            = "Points (PTS)",
+    points_per_game                   = "Points Per Game (PPG)",
+    one_point_made                    = "Free Throws Made (FTM)",
+    one_point_attempted               = "Free Throws Attempted (FTA)",
+    one_point_percentage              = "Free Throw Percentage (FT%)",
+    two_point_made                    = "2 Point Field Goals Made (2PM)",
+    two_point_attempted               = "2 Point Field Goals Attempted (2PA)",
+    two_point_percentage              = "2 Point Field Goal Percentage (2P%)",
+    three_point_made                  = "3 Point Field Goals Made (3PM)",
+    three_point_attempted             = "3 Point Field Goals Attempted (3PA)",
+    three_point_percentage            = "3 Point Field Goal Percentage (3P%)",
+    field_goals_made                  = "Field Goals Made (FGM)",
+    field_goals_attempted             = "Field Goals Attempted (FGA)",
+    field_goals_percentage            = "Field Goal Percentage (FG%)",
+    effective_field_goals_percentage  = "Effective Field Goal Percentage (eFG%)",
+    true_shooting_percentage          = "True Shooting Percentage (TS%)",
+    offensive_rebounds                = "Offensive Rebounds (OREB)",
+    defensive_rebounds                = "Defensive Rebounds (DREB)",
+    rebounds                          = "Rebounds (REB)",
+    rebounds_per_game                 = "Rebounds Per Game (RPG)",
+    assists                           = "Assists (AST)",
+    assists_per_game                  = "Assists Per Game (APG)",
+    turnovers                         = "Turnovers (TOV)",
+    turnovers_per_game                = "Turnovers Per Game (TOPG)",
+    steals                            = "Steals (STL)",
+    steals_per_game                   = "Steals Per Game (SPG)",
+    blocks                            = "Blocks (BLK)",
+    blocks_per_game                   = "Blocks Per Game (BPG)",
+    personal_fouls                    = "Personal Fouls (PF)",
+    personal_fouls_per_game           = "Personal Fouls Per Game (PFPG)",
+    fantasy_points                    = "Fantasy Points (FP)"
+  )
+```
+
+# Exploración de la estructura de los datos
+
+- En el tercer fragmento de código de R, explora la estructura del *dataframe* `df_r_nba_rs_2526_transformed` con la función `glimpse()` del paquete `dplyr`.
+
+- En la salida de este fragmento de código se muestran el número de observaciones (filas) y variables (columnas), los nombres de las variables, sus tipos de datos y algunos de sus valores.
+
+```{r explore_data_structure, include=TRUE}
+# Explorar estructura dataframe df_r_nba_rs_2526_transformed
+glimpse(df_r_nba_rs_2526_transformed)
+```
+
+# Selección y filtrado de datos
+
+- En el cuarto fragmento de código de R, selecciona las variables `player_name`, `position` y `height_m`, filtra las observaciones para conservar solo a los jugadores clasificados en una única posición de juego (`Center`, `Forward`, `Guard`), elimina las categorías no utilizadas de la variable `position` (`Center-Forward`, `Forward-Center`, `Forward-Guard`, `Guard-Forward`) y almacena el resultado en el *dataframe* `df_r_nba_rs_2526_reduced`.
+
+```{r select_and_filter_data, include=TRUE}
+# Asignar dataframe transformado a nuevo dataframe reducido
+df_r_nba_rs_2526_reduced <- df_r_nba_rs_2526_transformed |>
+  
+  # Seleccionar variables (eliminar resto)
+  select(player_name, position, height_m) |>
+  
+  # Filtrar observaciones por variable position
+  filter(position %in% c("Center", "Forward", "Guard")) |>
+  
+  # Eliminar categorías no utilizadas variable position
+  mutate(position = droplevels(position))
+
+# Explorar estructura dataframe df_r_nba_rs_2526_reduced
+glimpse(df_r_nba_rs_2526_reduced)
+```
+
+# Instalación y carga de paquetes
+
+- En el quinto fragmento de código de R, instala y carga conjuntamente los paquetes necesarios para realizar la práctica, excepto `graphics`, que forma parte de la instalación básica de R, y `ggplot2`, que ya se instaló y cargó en el segundo fragmento.
+
+- Entre estos paquetes se incluye `gifski`, porque el paquete `gganimate`, que se utiliza para animar el diagrama de caja, lo necesita para generar la animación en formato GIF.
+
+- Entre estos paquetes se incluye también `gridGraphics`, porque el paquete `cowplot`, que se utiliza al final de la práctica para combinar varios gráficos en una misma figura, lo necesita para poder incluir el gráfico creado con el paquete `graphics`.
+
+```{r install_and_load_packages, include=TRUE, results='hide'}
+# Definir paquetes necesarios
+  # lattice: paquete para gráficos estáticos con sintaxis fórmulas
+  # gganimate: paquete para animaciones ggplot2
+  # gifski: paquete para animaciones formato GIF
+  # plotly: paquete para gráficos interactivos
+  # ggpubr: paquete para gráficos publicables con función única
+  # tidyplots: paquete para gráficos publicables con funciones encadenadas
+  # ggstatsplot: paquete para gráficos con resultados pruebas estadísticas
+  # cowplot: paquete para combinar y alinear gráficos
+  # gridGraphics: paquete para incluir gráficos graphics en cowplot
+r_packages <- c("lattice", "gganimate", "gifski", "plotly", "ggpubr", 
+                "tidyplots", "ggstatsplot", "cowplot", "gridGraphics")
+
+# Instalar conjuntamente paquetes necesarios si no instalados
+install.packages(setdiff(r_packages, rownames(installed.packages())), repos = "https://cloud.r-project.org")
+
+# Cargar conjuntamente paquetes necesarios
+lapply(r_packages, library, character.only = TRUE)
+```
+
+# Creación del boxplot con el paquete graphics
+
+- En el sexto fragmento de código de R, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con la función `boxplot()` del paquete `graphics` y guárdalo en la función `boxplot_graphics()`, ya que esto es necesario para poder incluirlo en la figura combinada que genera el paquete `cowplot` al final de la práctica.
+
+- En el gráfico resultante se muestran, para cada posición de juego, los siguientes elementos del diagrama de caja:
+
+  - La **mediana** (*median*), representada por la línea que divide la caja, es el valor que deja por debajo el 50% de las alturas ordenadas y por encima el otro 50%.
+
+  - Los **cuartiles** (*quartiles*), representados por los extremos de la caja, son el primer cuartil (Q1), que deja por debajo el 25% de las alturas ordenadas, y el tercer cuartil (Q3), que deja por debajo el 75%.
+
+  - El **rango intercuartílico** (*interquartile range*, IQR), que equivale a la longitud de la caja, es la diferencia entre Q3 y Q1 y mide la dispersión del 50% central de las alturas.
+
+  - Los **bigotes** (*whiskers*), representados por las líneas que salen de la caja, llegan hasta las alturas mínima y máxima observadas dentro del intervalo [Q1 - 1.5 × IQR, Q3 + 1.5 × IQR], por lo que no tienen por qué coincidir con los límites del intervalo.
+
+  - Los **valores atípicos** (*outliers*), representados por los puntos situados más allá de los bigotes, son las alturas observadas que quedan fuera del intervalo [Q1 - 1.5 × IQR, Q3 + 1.5 × IQR].
+
+```{r boxplot_graphics, include=TRUE}
+# Crear boxplot con paquete graphics y guardarlo en función boxplot_graphics()
+boxplot_graphics <- function() {
+  
+  # Reducir margen superior para alinear título con etiqueta cowplot (opcional)
+  par(mar = replace(x = par("mar"), list = 3, values = 1.5)) # cambiar margen superior boxplot en 3.ª posición a 1.5 líneas
+
+  boxplot(
+    formula = height_m ~ position, # fórmula: variable cuantitativa height_m (eje Y) ~ variable categórica position (eje X)
+    data = df_r_nba_rs_2526_reduced, # nombre dataframe
+    horizontal = FALSE, # orientación vertical gráfico
+    main = "Boxplot with the graphics package", # título gráfico
+    xlab = "Position", # título eje X
+    ylab = "Height (m)", # título eje Y
+    col = "#107dc1" # color cajas
+  )
+}
+
+# Mostrar boxplot creado con paquete graphics
+boxplot_graphics()
+```
+
+# Creación del boxplot con el paquete lattice
+
+- En el séptimo fragmento de código de R, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con la función `bwplot()` del paquete `lattice` y guárdalo en el objeto `boxplot_lattice`.
+
+- En el gráfico resultante se muestran los mismos elementos del diagrama de caja que en el creado con el paquete `graphics`, con la diferencia de que `bwplot()` representa por defecto la mediana con un punto, por lo que se ha incluido `pch = "|"` en `par.settings` para representarla con una línea, que es lo habitual, ya que el punto suele reservarse para representar la media en este tipo de gráfico.
+
+```{r boxplot_lattice, include=TRUE}
+# Crear boxplot con paquete lattice y guardarlo en objeto boxplot_lattice
+boxplot_lattice <- bwplot(
+  x = height_m ~ position, # fórmula: variable cuantitativa height_m (eje Y) ~ variable categórica position (eje X)
+  data = df_r_nba_rs_2526_reduced, # nombre dataframe
+  horizontal = FALSE, # orientación vertical gráfico
+  main = "Boxplot with the lattice package", # título gráfico
+  xlab = "Position", # título eje X
+  ylab = "Height (m)", # título eje Y
+  fill = "#107dc1", # color cajas
+  par.settings = list( # color mediana, bordes cajas, bigotes y valores atípicos
+    box.dot = list(col = "#000000", pch = "|"), # color mediana y símbolo línea
+    box.rectangle = list(col = "#000000"), # color bordes cajas
+    box.umbrella = list(col = "#000000"), # color bigotes
+    plot.symbol = list(col = "#000000") # color valores atípicos
+  )
+)
+
+# Mostrar boxplot creado con paquete lattice
+boxplot_lattice
+```
+
+# Creación del boxplot con el paquete ggplot2
+
+- En el octavo fragmento de código de R, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con las funciones `ggplot()` y `geom_boxplot()` del paquete `ggplot2` y guárdalo en el objeto `boxplot_ggplot2`.
+
+- En el gráfico resultante se muestran los mismos elementos del diagrama de caja que en los creados con los paquetes `graphics` y `lattice`, con la diferencia de que `ggplot2` implementa la **gramática de gráficos en capas** (*layered grammar of graphics*):
+
+  - La función `ggplot()` inicializa el gráfico, especifica el *dataframe* con el argumento `data` y establece el mapeo de variables a estéticas (*aesthetics*) con el argumento `mapping`.
+
+  - La función `aes()` asigna la variable categórica `position` al eje X con el argumento `x` y la variable cuantitativa `height_m` al eje Y con el argumento `y`.
+
+  - La función `geom_boxplot()` añade la capa que dibuja un diagrama de caja para cada categoría de `position`, establece el color de relleno de las cajas con el argumento `fill` y define el color de la mediana, los bordes de las cajas, los bigotes y los valores atípicos con el argumento `color`.
+
+  - La función `labs()` añade las etiquetas al gráfico, establece el título con el argumento `title` y define los títulos de los ejes X e Y con los argumentos `x` e `y`.
+
+  - La función `theme_classic()` añade el componente que define el tema del gráfico, con fondo blanco, sin cuadrícula y con líneas solo en los ejes X e Y, y no requiere argumentos.
+
+  - El operador `+` combina la función `ggplot()` con las capas y componentes siguientes, y debe colocarse al final de la línea para que R sepa que la instrucción continúa en la línea siguiente.
+
+```{r boxplot_ggplot2, include=TRUE}
+# Crear boxplot con paquete ggplot2 y guardarlo en objeto boxplot_ggplot2
+boxplot_ggplot2 <- ggplot( # inicializar gráfico
+  data = df_r_nba_rs_2526_reduced, # nombre dataframe
+  mapping = aes(x = position, y = height_m)) + # variable categórica position (eje X) y variable cuantitativa height_m (eje Y)
+  geom_boxplot( # añadir capa diagrama caja
+    fill = "#107dc1", # color cajas
+    color = "#000000") + # color mediana, bordes cajas, bigotes y valores atípicos
+  labs( # añadir etiquetas gráfico
+    title = "Boxplot with the ggplot2 package", # título gráfico
+    x = "Position", # título eje X
+    y = "Height (m)") + # título eje Y
+  theme_classic() # añadir tema clásico
+
+# Mostrar boxplot creado con paquete ggplot2
+boxplot_ggplot2
+```
+
+# Conversión del boxplot de ggplot2 a animado con el paquete gganimate
+
+- En el noveno fragmento de código de R, convierte el objeto `boxplot_ggplot2` en un diagrama de caja animado con las funciones `transition_states()` y `shadow_mark()` del paquete `gganimate`, guárdalo en el objeto `boxplot_ggplot2_gganimate` y muéstralo con la función `animate()`.
+
+- En el gráfico resultante se muestran los mismos elementos del diagrama de caja que en el creado con el paquete `ggplot2`, con la diferencia de que `gganimate` lo convierte en una animación en la que las cajas aparecen una a una según la posición de juego.
+
+```{r boxplot_ggplot2_gganimate, include=TRUE}
+# Convertir boxplot de ggplot2 a animado y guardarlo en objeto boxplot_ggplot2_gganimate
+boxplot_ggplot2_gganimate <- boxplot_ggplot2 + # asignar boxplot de ggplot2 a nuevo boxplot animado
+  labs( # añadir etiquetas gráfico
+    title = "Boxplot with the ggplot2 and gganimate packages", # título gráfico modificado
+    subtitle = "Position: {closest_state}") + # subtítulo gráfico con posición estado actual
+  transition_states( # añadir animación por estados
+    states = position, # variable categórica position como estados
+    transition_length = 2, # duración relativa transiciones
+    state_length = 1) + # duración relativa estados
+  shadow_mark() # mantener cajas estados anteriores
+
+# Mostrar boxplot animado
+animate(
+  plot = boxplot_ggplot2_gganimate, # boxplot animado a mostrar
+  fps = 10, # fotogramas por segundo
+  nframes = 30) # número fotogramas (30 / 10 fps = animación de 3 segundos)
+```
+
+# Conversión del boxplot de ggplot2 a interactivo con el paquete plotly
+
+- En el décimo fragmento de código de R, convierte el objeto `boxplot_ggplot2` en un diagrama de caja interactivo con la función `ggplotly()` del paquete `plotly` y guárdalo en el objeto `boxplot_ggplot2_plotly`.
+
+- En el gráfico resultante se muestran los mismos elementos del diagrama de caja que en el creado con el paquete `ggplot2`, con la diferencia de que `plotly` lo convierte en un gráfico interactivo que muestra los valores de los elementos del diagrama de caja al pasar el cursor del ratón sobre él.
+
+```{r boxplot_ggplot2_plotly, include=TRUE}
+# Convertir boxplot de ggplot2 a interactivo y guardarlo en objeto boxplot_ggplot2_plotly
+boxplot_ggplot2_plotly <- ggplotly(
+  p = boxplot_ggplot2 + # gráfico estático ggplot2 a convertir en interactivo
+    labs(title = "Boxplot with the ggplot2 and plotly packages")) # título gráfico modificado
+
+# Mostrar boxplot interactivo
+boxplot_ggplot2_plotly
+```
+
+# Creación del boxplot con el paquete plotly
+
+- En el undécimo fragmento de código de R, crea el diagrama de caja interactivo de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con las funciones `plot_ly()` y `layout()` del paquete `plotly` y guárdalo en el objeto `boxplot_plotly`.
+
+- En el gráfico resultante se muestran los mismos elementos que en el diagrama de caja convertido a interactivo con la función `ggplotly()`, con la diferencia de que `plot_ly()` permite personalizar la información que aparece al pasar el cursor del ratón, como el nombre del jugador (`player_name`) en cada valor atípico.
+
+```{r boxplot_plotly, include=TRUE}
+# Crear boxplot con paquete plotly y guardarlo en objeto boxplot_plotly
+boxplot_plotly <- plot_ly( # inicializar gráfico
+  data = df_r_nba_rs_2526_reduced, # nombre dataframe
+  x = ~position, # variable categórica position (eje X)
+  y = ~height_m, # variable cuantitativa height_m (eje Y)
+  type = "box", # tipo gráfico diagrama caja
+  boxpoints = "outliers", # mostrar solo valores atípicos como puntos
+  hoveron = "boxes+points", # etiqueta caja al pasar cursor por caja + etiqueta punto al pasar cursor por valor atípico
+  text = ~player_name, # variable player_name como texto etiqueta valor atípico
+  fillcolor = "#107dc1", # color cajas
+  line = list(color = "#000000"), # color mediana, bordes cajas y bigotes
+  marker = list(color = "#000000")) |> # color valores atípicos
+  layout( # añadir títulos gráfico y ejes
+    title = "Boxplot with the plotly package", # título gráfico
+    xaxis = list(title = "Position"), # título eje X
+    yaxis = list(title = "Height (m)")) # título eje Y
+
+# Mostrar boxplot creado con paquete plotly
+boxplot_plotly
+```
+
+# Creación del boxplot con el paquete ggpubr
+
+- En el duodécimo fragmento de código de R, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con la función `ggboxplot()` del paquete `ggpubr` y guárdalo en el objeto `boxplot_ggpubr`.
+
+- En el gráfico resultante se muestran los mismos elementos que en el diagrama de caja creado con el paquete `ggplot2`, con la diferencia de que `ggpubr`, como extensión de `ggplot2`, permite crearlo con una sola función, `ggboxplot()`, sin necesidad de combinar varias funciones con el operador `+`.
+
+```{r boxplot_ggpubr, include=TRUE}
+# Crear boxplot con paquete ggpubr y guardarlo en objeto boxplot_ggpubr
+boxplot_ggpubr <- ggboxplot(
+  data = df_r_nba_rs_2526_reduced, # nombre dataframe
+  x = "position", # variable categórica position (eje X)
+  y = "height_m", # variable cuantitativa height_m (eje Y)
+  fill = "#107dc1", # color cajas
+  color = "#000000", # color mediana, bordes cajas, bigotes y valores atípicos
+  title = "Boxplot with the ggpubr package", # título gráfico
+  xlab = "Position", # título eje X
+  ylab = "Height (m)", # título eje Y
+  ggtheme = theme_classic()) # tema clásico
+
+# Mostrar boxplot creado con paquete ggpubr
+boxplot_ggpubr
+```
+
+# Creación del boxplot con el paquete tidyplots
+
+- En el decimotercero fragmento de código de R, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con las funciones `tidyplot()` y `add_boxplot()` del paquete `tidyplots` y guárdalo en el objeto `boxplot_tidyplots`.
+
+- En el gráfico resultante se muestran los mismos elementos que en el diagrama de caja creado con el paquete `ggplot2`, con la diferencia de que `tidyplots`, como extensión de `ggplot2`, permite crearlo con funciones de nombres intuitivos que empiezan por `add_` (añadir elementos) y `adjust_` (ajustar componentes), unidas con el operador de tubería (*pipe*) `|>`.
+
+```{r boxplot_tidyplots, include=TRUE}
+# Crear boxplot con paquete tidyplots y guardarlo en objeto boxplot_tidyplots
+boxplot_tidyplots <- df_r_nba_rs_2526_reduced |> # nombre dataframe
+  tidyplot( # inicializar gráfico
+    x = position, # variable categórica position (eje X)
+    y = height_m) |> # variable cuantitativa height_m (eje Y)
+  add_boxplot( # añadir capa diagrama caja
+    fill = "#107dc1", # color cajas
+    color = "#000000", # color mediana, bordes cajas, bigotes y valores atípicos
+    alpha = 1, # transparencia cajas (1 = sin transparencia)
+    outlier.size = 1.5) |> # tamaño valores atípicos
+  adjust_title("Boxplot with the tidyplots package") |> # título gráfico
+  adjust_x_axis_title("Position") |> # título eje X
+  adjust_y_axis_title("Height (m)") |> # título eje Y
+  adjust_size(width = NA, height = NA) |> # tamaño gráfico ajustado a espacio disponible
+  adjust_font(fontsize = 12) # tamaño fuente texto gráfico
+
+# Mostrar boxplot creado con paquete tidyplots
+boxplot_tidyplots
+```
+
+# Creación del boxplot con el paquete ggstatsplot
+
+- En el decimocuarto fragmento de código de R, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con la función `ggbetweenstats()` del paquete `ggstatsplot` y guárdalo en el objeto `boxplot_ggstatsplot`.
+
+- En el gráfico resultante se muestran los elementos del diagrama de caja junto con otros elementos que `ggbetweenstats()` añade por defecto (diagrama de violín, diagrama de dispersión con *jitter*, media y resultados de pruebas estadísticas), ya que `ggstatsplot`, como extensión de `ggplot2`, combina visualización de datos y análisis estadístico.
+
+- Los resultados de las pruebas estadísticas (ANOVA de Welch y comparaciones por pares de Games-Howell con ajuste de Holm) indican diferencias estadísticamente significativas en la altura media tanto entre las tres posiciones de juego a la vez, *F*(2, 186.77) = 547.19, *p* < .001, como entre cada par de posiciones, *p*~Holm~ < .001, con los `Center` (*M* = 2.11 m) por encima de los `Forward` (*M* = 2.03 m) y estos por encima de los `Guard` (*M* = 1.92 m).
+
+```{r boxplot_ggstatsplot, include=TRUE}
+# Crear boxplot con paquete ggstatsplot y guardarlo en objeto boxplot_ggstatsplot
+boxplot_ggstatsplot <- ggbetweenstats(
+  data = df_r_nba_rs_2526_reduced, # nombre dataframe
+  x = position, # variable categórica position (eje X)
+  y = height_m, # variable cuantitativa height_m (eje Y)
+  type = "parametric", # pruebas paramétricas: ANOVA Welch + comparaciones pares Games-Howell
+  title = "Boxplot with the ggstatsplot package", # título gráfico
+  xlab = "Position", # título eje X
+  ylab = "Height (m)") # título eje Y
+
+# Mostrar boxplot creado con paquete ggstatsplot
+boxplot_ggstatsplot
+```
+
+# Combinación de boxplots estáticos con el paquete cowplot
+
+- En el decimoquinto fragmento de código de R, combina la función `boxplot_graphics()` y los objetos `boxplot_lattice`, `boxplot_ggplot2`, `boxplot_ggpubr`, `boxplot_tidyplots` y `boxplot_ggstatsplot` en una única figura con la función `plot_grid()` del paquete `cowplot` y guárdala en el objeto `static_boxplots_cowplot`.
+
+- Solo se combinan los diagramas de caja estáticos, ya que `cowplot` no puede incluir en una figura estática los gráficos interactivos creados con `plotly` ni el gráfico animado creado con `gganimate`.
+
+```{r static_boxplots_cowplot, include=TRUE, fig.width=10, fig.height=15}
+# Combinar boxplots estáticos con paquete cowplot y guardarlos en objeto static_boxplots_cowplot
+static_boxplots_cowplot <- plot_grid(
+  boxplot_graphics, boxplot_lattice, # fila 1: graphics y lattice
+  boxplot_ggplot2, boxplot_ggpubr, # fila 2: ggplot2 y ggpubr
+  boxplot_tidyplots, boxplot_ggstatsplot, # fila 3: tidyplots y ggstatsplot
+  ncol = 2, # número columnas
+  nrow = 3, # número filas
+  labels = "AUTO") # añadir etiquetas gráficos (A, B, C, D, E, F)
+
+# Mostrar boxplots combinados
+static_boxplots_cowplot
+```
