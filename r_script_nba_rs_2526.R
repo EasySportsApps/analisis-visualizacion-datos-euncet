@@ -5,8 +5,7 @@
   # readr: paquete para importar datos
   # dplyr: paquete para transformar datos
   # labelled: paquete para etiquetar variables
-  # ggplot2: paquete para visualizar datos
-r_packages <- c("reticulate", "readr", "dplyr", "labelled", "ggplot2")
+r_packages <- c("reticulate", "readr", "dplyr", "labelled")
 
 # Instalar conjuntamente paquetes necesarios si no instalados
 install.packages(setdiff(r_packages, rownames(installed.packages())), repos = "https://cloud.r-project.org")
