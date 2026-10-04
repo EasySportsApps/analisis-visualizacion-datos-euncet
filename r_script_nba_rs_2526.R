@@ -2,9 +2,11 @@
 
 # Definir paquetes necesarios
   # reticulate: paquete para interoperabilidad entre R y Python
-  # tidyverse: colección paquetes que incluye readr (importar datos), dplyr/tidyr (transformar datos) y ggplot2 (visualizar datos)
+  # readr: paquete para importar datos
+  # dplyr: paquete para transformar datos
   # labelled: paquete para etiquetar variables
-r_packages <- c("reticulate", "tidyverse", "labelled")
+  # ggplot2: paquete para visualizar datos
+r_packages <- c("reticulate", "readr", "dplyr", "labelled", "ggplot2")
 
 # Instalar conjuntamente paquetes necesarios si no instalados
 install.packages(setdiff(r_packages, rownames(installed.packages())), repos = "https://cloud.r-project.org")
