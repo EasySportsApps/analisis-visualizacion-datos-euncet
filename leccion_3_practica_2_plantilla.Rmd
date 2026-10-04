@@ -70,7 +70,7 @@ output: # Formato salida documento
 
 # Instalación y carga de paquetes
 
-- En el quinto fragmento de código de R, denominado `install_and_load_packages`, instala y carga conjuntamente los paquetes necesarios para realizar la práctica, excepto `graphics`, que forma parte de la instalación básica de R, y `ggplot2`, que ya se instaló y cargó en el segundo fragmento.
+- En el quinto fragmento de código de R, denominado `install_and_load_packages`, instala y carga conjuntamente los paquetes necesarios para realizar la práctica, excepto `graphics`, que forma parte de la instalación básica de R.
 
 - Entre estos paquetes se incluye `gifski`, porque el paquete `gganimate`, que se utiliza para animar el diagrama de caja, lo necesita para generar la animación en formato GIF.
 

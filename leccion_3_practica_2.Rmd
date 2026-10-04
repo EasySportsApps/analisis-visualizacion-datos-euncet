@@ -54,8 +54,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE)
   # readr: paquete para importar datos
   # dplyr: paquete para transformar datos
   # labelled: paquete para etiquetar variables
-  # ggplot2: paquete para visualizar datos
-r_packages <- c("reticulate", "readr", "dplyr", "labelled", "ggplot2")
+r_packages <- c("reticulate", "readr", "dplyr", "labelled")
 
 # Instalar conjuntamente paquetes necesarios si no instalados
 install.packages(setdiff(r_packages, rownames(installed.packages())), repos = "https://cloud.r-project.org")
@@ -346,7 +345,7 @@ glimpse(df_r_nba_rs_2526_reduced)
 
 # Instalación y carga de paquetes
 
-- En el quinto fragmento de código de R, denominado `install_and_load_packages`, instala y carga conjuntamente los paquetes necesarios para realizar la práctica, excepto `graphics`, que forma parte de la instalación básica de R, y `ggplot2`, que ya se instaló y cargó en el segundo fragmento.
+- En el quinto fragmento de código de R, denominado `install_and_load_packages`, instala y carga conjuntamente los paquetes necesarios para realizar la práctica, excepto `graphics`, que forma parte de la instalación básica de R.
 
 - Entre estos paquetes se incluye `gifski`, porque el paquete `gganimate`, que se utiliza para animar el diagrama de caja, lo necesita para generar la animación en formato GIF.
 
@@ -355,6 +354,7 @@ glimpse(df_r_nba_rs_2526_reduced)
 ```{r install_and_load_packages, include=TRUE, results='hide'}
 # Definir paquetes necesarios
   # lattice: paquete para gráficos estáticos con sintaxis fórmulas
+  # ggplot2: paquete para gráficos estáticos con gramática en capas
   # gganimate: paquete para animaciones ggplot2
   # gifski: paquete para animaciones formato GIF
   # plotly: paquete para gráficos interactivos
@@ -363,7 +363,7 @@ glimpse(df_r_nba_rs_2526_reduced)
   # ggstatsplot: paquete para gráficos con resultados pruebas estadísticas
   # cowplot: paquete para combinar y alinear gráficos
   # gridGraphics: paquete para incluir gráficos graphics en cowplot
-r_packages <- c("lattice", "gganimate", "gifski", "plotly", "ggpubr", 
+r_packages <- c("lattice", "ggplot2", "gganimate", "gifski", "plotly", "ggpubr", 
                 "tidyplots", "ggstatsplot", "cowplot", "gridGraphics")
 
 # Instalar conjuntamente paquetes necesarios si no instalados
