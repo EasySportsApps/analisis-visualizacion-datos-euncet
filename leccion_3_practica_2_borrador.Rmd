@@ -18,7 +18,7 @@ output: # Formato salida documento
 
 # Opciones de los fragmentos de código
 
-- En el primer fragmento de código de R, define las opciones globales de los fragmentos de código con la función `opts_chunk$set()` del paquete `knitr` para que estas opciones se apliquen a todos los fragmentos del archivo `.Rmd` sin tener que repetirlas en el encabezado de cada fragmento.
+- En el primer fragmento de código de R, denominado `setup`, define las opciones globales de los fragmentos de código con la función `opts_chunk$set()` del paquete `knitr` para que estas opciones se apliquen a todos los fragmentos del archivo `.Rmd` sin tener que repetirlas en el encabezado de cada fragmento.
 
 - El paquete `knitr` se instala junto con el paquete `rmarkdown`, por lo que no es necesario instalarlo ni cargarlo si se utiliza el prefijo `knitr::` al llamar a la función `opts_chunk$set()`.
 
@@ -44,7 +44,7 @@ output: # Formato salida documento
 
 # Importación y transformación de datos
 
-- En el segundo fragmento de código de R, copia y pega el código del archivo [`r_script_nba_rs_2526.R`](https://github.com/EasySportsApps/analisis-visualizacion-datos-euncet/blob/main/r_script_nba_rs_2526.R), teniendo en cuenta que no es necesario copiar la sección `#### Instalación paquetes Python ####`.
+- En el segundo fragmento de código de R, denominado `data_import_and_transformation`, copia y pega el código del archivo [`r_script_nba_rs_2526.R`](https://github.com/EasySportsApps/analisis-visualizacion-datos-euncet/blob/main/r_script_nba_rs_2526.R), teniendo en cuenta que no es necesario copiar la sección `#### Instalación paquetes Python ####`.
 
 ```{r data_import_and_transformation, include=TRUE, results='hide', class.source='fold-hide'}
 
@@ -52,7 +52,7 @@ output: # Formato salida documento
 
 # Exploración de la estructura de los datos
 
-- En el tercer fragmento de código de R, explora la estructura del *dataframe* `df_r_nba_rs_2526_transformed` con la función `glimpse()` del paquete `dplyr`.
+- En el tercer fragmento de código de R, denominado `explore_data_structure`, explora la estructura del *dataframe* `df_r_nba_rs_2526_transformed` con la función `glimpse()` del paquete `dplyr`.
 
 - En la salida de este fragmento de código se muestran el número de observaciones (filas) y variables (columnas), los nombres de las variables, sus tipos de datos y algunos de sus valores.
 
@@ -62,7 +62,7 @@ output: # Formato salida documento
 
 # Selección y filtrado de datos
 
-- En el cuarto fragmento de código de R, selecciona las variables `player_name`, `position` y `height_m`, filtra las observaciones para conservar solo a los jugadores clasificados en una única posición de juego (`Center`, `Forward`, `Guard`), elimina las categorías no utilizadas de la variable `position` (`Center-Forward`, `Forward-Center`, `Forward-Guard`, `Guard-Forward`) y almacena el resultado en el *dataframe* `df_r_nba_rs_2526_reduced`.
+- En el cuarto fragmento de código de R, denominado `select_and_filter_data`, selecciona las variables `player_name`, `position` y `height_m`, filtra las observaciones para conservar solo a los jugadores clasificados en una única posición de juego (`Center`, `Forward`, `Guard`), elimina las categorías no utilizadas de la variable `position` (`Center-Forward`, `Forward-Center`, `Forward-Guard`, `Guard-Forward`) y almacena el resultado en el *dataframe* `df_r_nba_rs_2526_reduced`.
 
 ```{r select_and_filter_data, include=TRUE}
 
@@ -70,7 +70,7 @@ output: # Formato salida documento
 
 # Instalación y carga de paquetes
 
-- En el quinto fragmento de código de R, instala y carga conjuntamente los paquetes necesarios para realizar la práctica, excepto `graphics`, que forma parte de la instalación básica de R, y `ggplot2`, que ya se instaló y cargó en el segundo fragmento.
+- En el quinto fragmento de código de R, denominado `install_and_load_packages`, instala y carga conjuntamente los paquetes necesarios para realizar la práctica, excepto `graphics`, que forma parte de la instalación básica de R, y `ggplot2`, que ya se instaló y cargó en el segundo fragmento.
 
 - Entre estos paquetes se incluye `gifski`, porque el paquete `gganimate`, que se utiliza para animar el diagrama de caja, lo necesita para generar la animación en formato GIF.
 
@@ -82,7 +82,7 @@ output: # Formato salida documento
 
 # Creación del boxplot con el paquete graphics
 
-- En el sexto fragmento de código de R, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con la función `boxplot()` del paquete `graphics` y guárdalo en la función `boxplot_graphics()`, ya que esto es necesario para poder incluirlo en la figura combinada que genera el paquete `cowplot` al final de la práctica.
+- En el sexto fragmento de código de R, denominado `boxplot_graphics`, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con la función `boxplot()` del paquete `graphics` y guárdalo en la función `boxplot_graphics()`, ya que esto es necesario para poder incluirlo en la figura combinada que genera el paquete `cowplot` al final de la práctica.
 
 - En el gráfico resultante se muestran, para cada posición de juego, los siguientes elementos del diagrama de caja:
 
@@ -102,7 +102,7 @@ output: # Formato salida documento
 
 # Creación del boxplot con el paquete lattice
 
-- En el séptimo fragmento de código de R, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con la función `bwplot()` del paquete `lattice` y guárdalo en el objeto `boxplot_lattice`.
+- En el séptimo fragmento de código de R, denominado `boxplot_lattice`, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con la función `bwplot()` del paquete `lattice` y guárdalo en el objeto `boxplot_lattice`.
 
 - En el gráfico resultante se muestran los mismos elementos del diagrama de caja que en el creado con el paquete `graphics`, con la diferencia de que `bwplot()` representa por defecto la mediana con un punto, por lo que se ha incluido `pch = "|"` en `par.settings` para representarla con una línea, que es lo habitual, ya que el punto suele reservarse para representar la media en este tipo de gráfico.
 
@@ -112,7 +112,7 @@ output: # Formato salida documento
 
 # Creación del boxplot con el paquete ggplot2
 
-- En el octavo fragmento de código de R, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con las funciones `ggplot()` y `geom_boxplot()` del paquete `ggplot2` y guárdalo en el objeto `boxplot_ggplot2`.
+- En el octavo fragmento de código de R, denominado `boxplot_ggplot2`, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con las funciones `ggplot()` y `geom_boxplot()` del paquete `ggplot2` y guárdalo en el objeto `boxplot_ggplot2`.
 
 - En el gráfico resultante se muestran los mismos elementos del diagrama de caja que en los creados con los paquetes `graphics` y `lattice`, con la diferencia de que `ggplot2` implementa la **gramática de gráficos en capas** (*layered grammar of graphics*):
 
@@ -134,7 +134,7 @@ output: # Formato salida documento
 
 # Conversión del boxplot de ggplot2 a animado con el paquete gganimate
 
-- En el noveno fragmento de código de R, convierte el objeto `boxplot_ggplot2` en un diagrama de caja animado con las funciones `transition_states()` y `shadow_mark()` del paquete `gganimate`, guárdalo en el objeto `boxplot_ggplot2_gganimate` y muéstralo con la función `animate()`.
+- En el noveno fragmento de código de R, denominado `boxplot_ggplot2_gganimate`, convierte el objeto `boxplot_ggplot2` en un diagrama de caja animado con las funciones `transition_states()` y `shadow_mark()` del paquete `gganimate`, guárdalo en el objeto `boxplot_ggplot2_gganimate` y muéstralo con la función `animate()`.
 
 - En el gráfico resultante se muestran los mismos elementos del diagrama de caja que en el creado con el paquete `ggplot2`, con la diferencia de que `gganimate` lo convierte en una animación en la que las cajas aparecen una a una según la posición de juego.
 
@@ -144,7 +144,7 @@ output: # Formato salida documento
 
 # Conversión del boxplot de ggplot2 a interactivo con el paquete plotly
 
-- En el décimo fragmento de código de R, convierte el objeto `boxplot_ggplot2` en un diagrama de caja interactivo con la función `ggplotly()` del paquete `plotly` y guárdalo en el objeto `boxplot_ggplot2_plotly`.
+- En el décimo fragmento de código de R, denominado `boxplot_ggplot2_plotly`, convierte el objeto `boxplot_ggplot2` en un diagrama de caja interactivo con la función `ggplotly()` del paquete `plotly` y guárdalo en el objeto `boxplot_ggplot2_plotly`.
 
 - En el gráfico resultante se muestran los mismos elementos del diagrama de caja que en el creado con el paquete `ggplot2`, con la diferencia de que `plotly` lo convierte en un gráfico interactivo que muestra los valores de los elementos del diagrama de caja al pasar el cursor del ratón sobre él.
 
@@ -154,7 +154,7 @@ output: # Formato salida documento
 
 # Creación del boxplot con el paquete plotly
 
-- En el undécimo fragmento de código de R, crea el diagrama de caja interactivo de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con las funciones `plot_ly()` y `layout()` del paquete `plotly` y guárdalo en el objeto `boxplot_plotly`.
+- En el undécimo fragmento de código de R, denominado `boxplot_plotly`, crea el diagrama de caja interactivo de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con las funciones `plot_ly()` y `layout()` del paquete `plotly` y guárdalo en el objeto `boxplot_plotly`.
 
 - En el gráfico resultante se muestran los mismos elementos que en el diagrama de caja convertido a interactivo con la función `ggplotly()`, con la diferencia de que `plot_ly()` permite personalizar la información que aparece al pasar el cursor del ratón, como el nombre del jugador (`player_name`) en cada valor atípico.
 
@@ -164,7 +164,7 @@ output: # Formato salida documento
 
 # Creación del boxplot con el paquete ggpubr
 
-- En el duodécimo fragmento de código de R, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con la función `ggboxplot()` del paquete `ggpubr` y guárdalo en el objeto `boxplot_ggpubr`.
+- En el duodécimo fragmento de código de R, denominado `boxplot_ggpubr`, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con la función `ggboxplot()` del paquete `ggpubr` y guárdalo en el objeto `boxplot_ggpubr`.
 
 - En el gráfico resultante se muestran los mismos elementos que en el diagrama de caja creado con el paquete `ggplot2`, con la diferencia de que `ggpubr`, como extensión de `ggplot2`, permite crearlo con una sola función, `ggboxplot()`, sin necesidad de combinar varias funciones con el operador `+`.
 
@@ -174,7 +174,7 @@ output: # Formato salida documento
 
 # Creación del boxplot con el paquete tidyplots
 
-- En el decimotercero fragmento de código de R, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con las funciones `tidyplot()` y `add_boxplot()` del paquete `tidyplots` y guárdalo en el objeto `boxplot_tidyplots`.
+- En el decimotercero fragmento de código de R, denominado `boxplot_tidyplots`, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con las funciones `tidyplot()` y `add_boxplot()` del paquete `tidyplots` y guárdalo en el objeto `boxplot_tidyplots`.
 
 - En el gráfico resultante se muestran los mismos elementos que en el diagrama de caja creado con el paquete `ggplot2`, con la diferencia de que `tidyplots`, como extensión de `ggplot2`, permite crearlo con funciones de nombres intuitivos que empiezan por `add_` (añadir elementos) y `adjust_` (ajustar componentes), unidas con el operador de tubería (*pipe*) `|>`.
 
@@ -184,7 +184,7 @@ output: # Formato salida documento
 
 # Creación del boxplot con el paquete ggstatsplot
 
-- En el decimocuarto fragmento de código de R, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con la función `ggbetweenstats()` del paquete `ggstatsplot` y guárdalo en el objeto `boxplot_ggstatsplot`.
+- En el decimocuarto fragmento de código de R, denominado `boxplot_ggstatsplot`, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con la función `ggbetweenstats()` del paquete `ggstatsplot` y guárdalo en el objeto `boxplot_ggstatsplot`.
 
 - En el gráfico resultante se muestran los elementos del diagrama de caja junto con otros elementos que `ggbetweenstats()` añade por defecto (diagrama de violín, diagrama de dispersión con *jitter*, media y resultados de pruebas estadísticas), ya que `ggstatsplot`, como extensión de `ggplot2`, combina visualización de datos y análisis estadístico.
 
@@ -196,7 +196,7 @@ output: # Formato salida documento
 
 # Combinación de boxplots estáticos con el paquete cowplot
 
-- En el decimoquinto fragmento de código de R, combina la función `boxplot_graphics()` y los objetos `boxplot_lattice`, `boxplot_ggplot2`, `boxplot_ggpubr`, `boxplot_tidyplots` y `boxplot_ggstatsplot` en una única figura con la función `plot_grid()` del paquete `cowplot` y guárdala en el objeto `static_boxplots_cowplot`.
+- En el decimoquinto fragmento de código de R, denominado `static_boxplots_cowplot`, combina la función `boxplot_graphics()` y los objetos `boxplot_lattice`, `boxplot_ggplot2`, `boxplot_ggpubr`, `boxplot_tidyplots` y `boxplot_ggstatsplot` en una única figura con la función `plot_grid()` del paquete `cowplot` y guárdala en el objeto `static_boxplots_cowplot`.
 
 - Solo se combinan los diagramas de caja estáticos, ya que `cowplot` no puede incluir en una figura estática los gráficos interactivos creados con `plotly` ni el gráfico animado creado con `gganimate`.
 
