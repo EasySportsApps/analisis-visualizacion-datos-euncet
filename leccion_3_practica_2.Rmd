@@ -39,7 +39,7 @@ output: # Formato salida documento
   - `fig.height=15`: se define en 15 pulgadas el alto de los gráficos mostrados en el documento HTML resultante.
 
 ```{r setup, include=TRUE}
-# Definir opciones globales fragmentos de código
+# Definir opciones globales fragmentos código
 knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 ```
 
