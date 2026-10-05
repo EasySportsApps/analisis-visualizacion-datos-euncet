@@ -2,8 +2,8 @@
 # ENCABEZADO YAML
 # Aquí se personaliza el formato de salida del archivo .Rmd
 title: "Lección 1 - Práctica 15: R Markdown" # Título del documento
-author: "Nombre y apellidos" # Autor documento
-date: "dd/mm/aaaa" # Fecha documento
+author: "Nombre y apellidos" # Autor del documento
+date: "dd/mm/aaaa" # Fecha del documento
 output: # Formato de salida del documento  
   html_document: # Salida del documento en formato HTML    
     toc: true # Incluir una tabla de contenido (índice) 
