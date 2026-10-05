@@ -2,9 +2,9 @@
 # ENCABEZADO YAML
 # Aquí se personaliza el formato de salida del archivo .qmd
 title: "Lección 1 - Práctica 16: Quarto" # Título de la presentación. Diapositiva 1/18
-author: "Nombre y apellidos" # Autor del documento
-date: "aaaa-mm-dd" # Fecha del documento
-date-format: "DD/MM/YYYY" # Formato de visualización de la fecha del documento
+author: "Nombre y apellidos" # Autor de la presentación
+date: "aaaa-mm-dd" # Fecha de la presentación
+date-format: "DD/MM/YYYY" # Formato de visualización de la fecha de la presentación
 format: # Formato de salida de la presentación
   revealjs: # Salida de la presentación en formato HTML (reveal.js)
     toc: true # Incluir una tabla de contenido (índice). Diapositiva 2/18
