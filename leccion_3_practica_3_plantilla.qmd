@@ -1,0 +1,240 @@
+---
+# ENCABEZADO YAML
+title: "Lección 3 - Práctica 3: Python visualization packages" # Título documento
+author: "Nombre y apellidos" # Autor documento
+date: "aaaa-mm-dd" # Fecha documento
+date-format: "DD/MM/YYYY" # Formato visualización fecha documento
+lang: es # Idioma documento (textos automáticos en español)
+engine: knitr # Motor de ejecución de fragmentos de código
+format: # Formato salida documento
+  html: # Salida documento formato HTML
+    toc: true # Incluir tabla contenido (índice)
+    toc-location: right # Mostrar tabla contenido en barra lateral derecha, fija al desplazarse por el documento
+    toc-title: "Índice" # Título tabla contenido
+    code-fold: show # Código desplegado por defecto en salida documento con botón para ocultarlo
+    theme: flatly # Tema visual bootswatch. Más temas disponibles en: https://bootswatch.com/
+execute: # Opciones globales fragmentos código
+  message: false # Ocultar mensajes
+  warning: false # Ocultar advertencias
+---
+
+# Objetivo de la práctica
+
+- Crear un mismo diagrama de caja (*boxplot*) con distintos paquetes de Python para visualizar la relación entre la posición de juego y la altura en metros de los jugadores de la NBA en la temporada regular 2025-26.
+
+# Opciones de los fragmentos de código
+
+- En el encabezado YAML se han definido las opciones globales de los fragmentos de código con el campo `execute` para que estas opciones se apliquen a todos los fragmentos del archivo `.qmd` sin tener que repetirlas al inicio de cada fragmento.
+
+- Las opciones de un fragmento de código concreto se escriben en sus primeras líneas con el prefijo `#|` y tienen prioridad sobre las opciones globales.
+
+- Las opciones de los fragmentos de código utilizadas en esta práctica, por orden de aparición en el documento, son las siguientes:
+
+  - `message: false`: se ejecuta el código de Python sin mostrar en el documento HTML resultante los mensajes generados durante su ejecución.
+
+  - `warning: false`: se ejecuta el código de Python sin mostrar en el documento HTML resultante las advertencias generadas durante su ejecución.
+
+  - `include: true`: se ejecuta el código de Python y se muestran en el documento HTML resultante el código ejecutado y sus resultados, ya sean valores, tablas o gráficos.
+
+  - `results: hide`: se ejecuta el código de Python y se muestran en el documento HTML resultante el código ejecutado y los gráficos, pero no sus resultados en formato de texto (valores y tablas).
+
+  - `code-fold: true`: se muestra en el documento HTML resultante el código ejecutado, colapsado y con un botón `Code` para desplegarlo.
+
+  - `fig-width: 10`: se define en 10 pulgadas el ancho de los gráficos mostrados en el documento HTML resultante.
+
+  - `fig-height: 15`: se define en 15 pulgadas el alto de los gráficos mostrados en el documento HTML resultante.
+
+# Importación y transformación de datos
+
+- En el segundo fragmento de código de Python, denominado `data_import_and_transformation`, copia y pega el código del archivo [`r_script_nba_rs_2526.R`](https://github.com/EasySportsApps/analisis-visualizacion-datos-euncet/blob/main/r_script_nba_rs_2526.R), teniendo en cuenta que no es necesario copiar la sección `#### Instalación paquetes Python ####`.
+
+```{python}
+#| label: data_import_and_transformation
+#| include: true
+#| results: hide
+#| code-fold: true
+
+```
+
+# Exploración de la estructura de los datos
+
+- En el tercer fragmento de código de Python, denominado `explore_data_structure`, explora la estructura del *dataframe* `df_r_nba_rs_2526_transformed` con la función `glimpse()` del paquete `dplyr`.
+
+- En la salida de este fragmento de código se muestran el número de observaciones (filas) y variables (columnas), los nombres de las variables, sus tipos de datos y algunos de sus valores.
+
+```{python}
+#| label: explore_data_structure
+#| include: true
+
+```
+
+# Selección y filtrado de datos
+
+- En el cuarto fragmento de código de Python, denominado `select_and_filter_data`, selecciona las variables `player_name`, `position` y `height_m`, filtra las observaciones para conservar solo a los jugadores clasificados en una única posición de juego (`Center`, `Forward`, `Guard`), elimina las categorías no utilizadas de la variable `position` (`Center-Forward`, `Forward-Center`, `Forward-Guard`, `Guard-Forward`) y almacena el resultado en el *dataframe* `df_r_nba_rs_2526_reduced`.
+
+```{python}
+#| label: select_and_filter_data
+#| include: true
+
+```
+
+# Instalación y carga de paquetes
+
+- En el quinto fragmento de código de Python, denominado `install_and_load_packages`, instala y carga conjuntamente los paquetes necesarios para realizar la práctica, excepto `graphics`, que forma parte de la instalación básica de R.
+
+- Entre estos paquetes se incluye `gifski`, porque el paquete `gganimate`, que se utiliza para animar el diagrama de caja, lo necesita para generar la animación en formato GIF.
+
+- Entre estos paquetes se incluye también `gridGraphics`, porque el paquete `cowplot`, que se utiliza al final de la práctica para combinar varios gráficos en una misma figura, lo necesita para poder incluir el gráfico creado con el paquete `graphics`.
+
+```{python}
+#| label: install_and_load_packages
+#| include: true
+#| results: hide
+
+```
+
+# Creación del boxplot con el paquete graphics
+
+- En el sexto fragmento de código de Python, denominado `boxplot_graphics`, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con la función `boxplot()` del paquete `graphics` y guárdalo en la función `boxplot_graphics()`, ya que esto es necesario para poder incluirlo en la figura combinada que genera el paquete `cowplot` al final de la práctica.
+
+- En el gráfico resultante se muestran, para cada posición de juego, los siguientes elementos del diagrama de caja:
+
+  - La **mediana** (*median*), representada por la línea que divide la caja, es el valor que deja por debajo el 50% de las alturas ordenadas y por encima el otro 50%.
+
+  - Los **cuartiles** (*quartiles*), representados por los extremos de la caja, son el primer cuartil (Q1), que deja por debajo el 25% de las alturas ordenadas, y el tercer cuartil (Q3), que deja por debajo el 75%.
+
+  - El **rango intercuartílico** (*interquartile range*, IQR), que equivale a la longitud de la caja, es la diferencia entre Q3 y Q1 y mide la dispersión del 50% central de las alturas.
+
+  - Los **bigotes** (*whiskers*), representados por las líneas que salen de la caja, llegan hasta las alturas mínima y máxima observadas dentro del intervalo [Q1 - 1.5 × IQR, Q3 + 1.5 × IQR], por lo que no tienen por qué coincidir con los límites del intervalo.
+
+  - Los **valores atípicos** (*outliers*), representados por los puntos situados más allá de los bigotes, son las alturas observadas que quedan fuera del intervalo [Q1 - 1.5 × IQR, Q3 + 1.5 × IQR].
+
+```{python}
+#| label: boxplot_graphics
+#| include: true
+
+```
+
+# Creación del boxplot con el paquete lattice
+
+- En el séptimo fragmento de código de Python, denominado `boxplot_lattice`, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con la función `bwplot()` del paquete `lattice` y guárdalo en el objeto `boxplot_lattice`.
+
+- En el gráfico resultante se muestran los mismos elementos del diagrama de caja que en el creado con el paquete `graphics`, con la diferencia de que `bwplot()` representa por defecto la mediana con un punto, por lo que se ha incluido `pch = "|"` en `par.settings` para representarla con una línea, que es lo habitual, ya que el punto suele reservarse para representar la media en este tipo de gráfico.
+
+```{python}
+#| label: boxplot_lattice
+#| include: true
+
+```
+
+# Creación del boxplot con el paquete ggplot2
+
+- En el octavo fragmento de código de Python, denominado `boxplot_ggplot2`, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con las funciones `ggplot()` y `geom_boxplot()` del paquete `ggplot2` y guárdalo en el objeto `boxplot_ggplot2`.
+
+- En el gráfico resultante se muestran los mismos elementos del diagrama de caja que en los creados con los paquetes `graphics` y `lattice`, con la diferencia de que `ggplot2` implementa la **gramática de gráficos en capas** (*layered grammar of graphics*):
+
+  - La función `ggplot()` inicializa el gráfico, especifica el *dataframe* con el argumento `data` y establece el mapeo de variables a estéticas (*aesthetics*) con el argumento `mapping`.
+
+  - La función `aes()` asigna la variable categórica `position` al eje X con el argumento `x` y la variable cuantitativa `height_m` al eje Y con el argumento `y`.
+
+  - La función `geom_boxplot()` añade la capa que dibuja un diagrama de caja para cada categoría de `position`, establece el color de relleno de las cajas con el argumento `fill` y define el color de la mediana, los bordes de las cajas, los bigotes y los valores atípicos con el argumento `color`.
+
+  - La función `labs()` añade las etiquetas al gráfico, establece el título con el argumento `title` y define los títulos de los ejes X e Y con los argumentos `x` e `y`.
+
+  - La función `theme_classic()` añade el componente que define el tema del gráfico, con fondo blanco, sin cuadrícula y con líneas solo en los ejes X e Y, y no requiere argumentos.
+
+  - El operador `+` combina la función `ggplot()` con las capas y componentes siguientes, y debe colocarse al final de la línea para que R sepa que la instrucción continúa en la línea siguiente.
+
+```{python}
+#| label: boxplot_ggplot2
+#| include: true
+
+```
+
+# Conversión del boxplot de ggplot2 a animado con el paquete gganimate
+
+- En el noveno fragmento de código de Python, denominado `boxplot_ggplot2_gganimate`, convierte el objeto `boxplot_ggplot2` en un diagrama de caja animado con las funciones `transition_states()` y `shadow_mark()` del paquete `gganimate`, guárdalo en el objeto `boxplot_ggplot2_gganimate` y muéstralo con la función `animate()`.
+
+- En el gráfico resultante se muestran los mismos elementos del diagrama de caja que en el creado con el paquete `ggplot2`, con la diferencia de que `gganimate` lo convierte en una animación en la que las cajas aparecen una a una según la posición de juego.
+
+```{python}
+#| label: boxplot_ggplot2_gganimate
+#| include: true
+
+```
+
+# Conversión del boxplot de ggplot2 a interactivo con el paquete plotly
+
+- En el décimo fragmento de código de Python, denominado `boxplot_ggplot2_plotly`, convierte el objeto `boxplot_ggplot2` en un diagrama de caja interactivo con la función `ggplotly()` del paquete `plotly` y guárdalo en el objeto `boxplot_ggplot2_plotly`.
+
+- En el gráfico resultante se muestran los mismos elementos del diagrama de caja que en el creado con el paquete `ggplot2`, con la diferencia de que `plotly` lo convierte en un gráfico interactivo que muestra los valores de los elementos del diagrama de caja al pasar el cursor del ratón sobre él.
+
+```{python}
+#| label: boxplot_ggplot2_plotly
+#| include: true
+
+```
+
+# Creación del boxplot con el paquete plotly
+
+- En el undécimo fragmento de código de Python, denominado `boxplot_plotly`, crea el diagrama de caja interactivo de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con las funciones `plot_ly()` y `layout()` del paquete `plotly` y guárdalo en el objeto `boxplot_plotly`.
+
+- En el gráfico resultante se muestran los mismos elementos que en el diagrama de caja convertido a interactivo con la función `ggplotly()`, con la diferencia de que `plot_ly()` permite personalizar la información que aparece al pasar el cursor del ratón, como el nombre del jugador (`player_name`) en cada valor atípico.
+
+```{python}
+#| label: boxplot_plotly
+#| include: true
+
+```
+
+# Creación del boxplot con el paquete ggpubr
+
+- En el duodécimo fragmento de código de Python, denominado `boxplot_ggpubr`, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con la función `ggboxplot()` del paquete `ggpubr` y guárdalo en el objeto `boxplot_ggpubr`.
+
+- En el gráfico resultante se muestran los mismos elementos que en el diagrama de caja creado con el paquete `ggplot2`, con la diferencia de que `ggpubr`, como extensión de `ggplot2`, permite crearlo con una sola función, `ggboxplot()`, sin necesidad de combinar varias funciones con el operador `+`.
+
+```{python}
+#| label: boxplot_ggpubr
+#| include: true
+
+```
+
+# Creación del boxplot con el paquete tidyplots
+
+- En el decimotercero fragmento de código de Python, denominado `boxplot_tidyplots`, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con las funciones `tidyplot()` y `add_boxplot()` del paquete `tidyplots` y guárdalo en el objeto `boxplot_tidyplots`.
+
+- En el gráfico resultante se muestran los mismos elementos que en el diagrama de caja creado con el paquete `ggplot2`, con la diferencia de que `tidyplots`, como extensión de `ggplot2`, permite crearlo con funciones de nombres intuitivos que empiezan por `add_` (añadir elementos) y `adjust_` (ajustar componentes), unidas con el operador de tubería (*pipe*) `|>`.
+
+```{python}
+#| label: boxplot_tidyplots
+#| include: true
+
+```
+
+# Creación del boxplot con el paquete ggstatsplot
+
+- En el decimocuarto fragmento de código de Python, denominado `boxplot_ggstatsplot`, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_r_nba_rs_2526_reduced` con la función `ggbetweenstats()` del paquete `ggstatsplot` y guárdalo en el objeto `boxplot_ggstatsplot`.
+
+- En el gráfico resultante se muestran los elementos del diagrama de caja junto con otros elementos que `ggbetweenstats()` añade por defecto (diagrama de violín, diagrama de dispersión con *jitter*, media y resultados de pruebas estadísticas), ya que `ggstatsplot`, como extensión de `ggplot2`, combina visualización de datos y análisis estadístico.
+
+- Los resultados de las pruebas estadísticas (ANOVA de Welch y comparaciones por pares de Games-Howell con ajuste de Holm) indican diferencias estadísticamente significativas en la altura media tanto entre las tres posiciones de juego a la vez, *F*(2, 186.77) = 547.19, *p* < .001, como entre cada par de posiciones, *p*~Holm~ < .001, con los `Center` (*M* = 2.11 m) por encima de los `Forward` (*M* = 2.03 m) y estos por encima de los `Guard` (*M* = 1.92 m).
+
+```{python}
+#| label: boxplot_ggstatsplot
+#| include: true
+
+```
+
+# Combinación de boxplots estáticos con el paquete cowplot
+
+- En el decimoquinto fragmento de código de Python, denominado `static_boxplots_cowplot`, combina la función `boxplot_graphics()` y los objetos `boxplot_lattice`, `boxplot_ggplot2`, `boxplot_ggpubr`, `boxplot_tidyplots` y `boxplot_ggstatsplot` en una única figura con la función `plot_grid()` del paquete `cowplot` y guárdala en el objeto `static_boxplots_cowplot`.
+
+- Solo se combinan los diagramas de caja estáticos, ya que `cowplot` no puede incluir en una figura estática los gráficos interactivos creados con `plotly` ni el gráfico animado creado con `gganimate`.
+
+```{python}
+#| label: static_boxplots_cowplot
+#| include: true
+#| fig-width: 10
+#| fig-height: 15
+
+```
