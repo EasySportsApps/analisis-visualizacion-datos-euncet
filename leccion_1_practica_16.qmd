@@ -13,6 +13,7 @@ format: # Formato de salida de la presentación
     smaller: true # Reducir el tamaño del contenido de las diapositivas
     transition: concave # Transición entre diapositivas (https://revealjs.com/transitions/)
     theme: white # Tema visual de reveal.js (https://revealjs.com/themes/)
+    embed-resources: true # Incluir todos los recursos dentro del archivo HTML
     execute: # Opciones de ejecución de los fragmentos de código
       echo: true # Mostrar código en la presentación
       message: false # No mostrar mensajes de código en la presentación
