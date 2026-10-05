@@ -1,7 +1,8 @@
 ---
 # ENCABEZADO YAML
 title: "Lección 3 - Práctica 2: R visualization packages" # Título documento
-author: "Raúl Hileno González" # Autor documento
+author: "Nombre y apellidos" # Autor documento
+date: "dd/mm/aaaa" # Fecha documento
 output: # Formato salida documento  
   html_document: # Salida documento formato HTML    
     toc: true # Incluir tabla contenido (índice) 
