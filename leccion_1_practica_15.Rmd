@@ -11,6 +11,7 @@ output: # Formato de salida del documento
     toc_float: true # Mantener la tabla de contenido visible mientras se hace scroll    
     theme: # Tema visual de bootswatch      
       bootswatch: journal # Más temas disponibles en: https://bootswatch.com/
+    self_contained: true # Incluir todos los recursos dentro del archivo HTML 
 ---
 
 <!-- CUERPO DEL ARCHIVO -->
