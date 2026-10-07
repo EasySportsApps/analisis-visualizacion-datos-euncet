@@ -10,6 +10,7 @@ output: # Formato salida documento
     code_folding: show # Código desplegado por defecto en salida documento con botón Hide para ocultarlo
     theme: # Tema visual bootswatch      
       bootswatch: journal # Más temas disponibles en: https://bootswatch.com/
+    self_contained: true # Incluir todos recursos dentro archivo HTML 
 ---
 
 # Objetivo de la práctica
