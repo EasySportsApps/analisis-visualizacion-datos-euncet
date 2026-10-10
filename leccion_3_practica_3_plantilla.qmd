@@ -4,15 +4,16 @@ title: "Lección 3 - Práctica 3: Python visualization packages" # Título docum
 author: "Nombre y apellidos" # Autor documento
 date: "aaaa-mm-dd" # Fecha documento
 date-format: "DD/MM/YYYY" # Formato visualización fecha documento
-lang: es # Idioma documento (textos automáticos en español)
-engine: knitr # Motor de ejecución de fragmentos de código
+lang: es # Idioma documento DUDA
+engine: knitr # Motor ejecución fragmentos código
 format: # Formato salida documento
   html: # Salida documento formato HTML
-    toc: true # Incluir tabla contenido (índice)
-    toc-location: right # Mostrar tabla contenido en barra lateral derecha, fija al desplazarse por el documento
+    toc: true # Incluir tabla contenido
     toc-title: "Índice" # Título tabla contenido
-    code-fold: show # Código desplegado por defecto en salida documento con botón para ocultarlo
-    theme: flatly # Tema visual bootswatch. Más temas disponibles en: https://bootswatch.com/
+    toc-location: right # Mostrar tabla contenido en barra lateral derecha
+    code-fold: show # Código desplegado por defecto en salida documento con botón para ocultarlo DUDA
+    theme: journal # Tema visual bootswatch. Más temas disponibles en: https://bootswatch.com/
+    embed-resources: true # Incluir todos recursos dentro archivo HTML
 execute: # Opciones globales fragmentos código
   message: false # Ocultar mensajes
   warning: false # Ocultar advertencias
