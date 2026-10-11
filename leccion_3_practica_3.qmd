@@ -1,0 +1,554 @@
+---
+# ENCABEZADO YAML
+title: "Lección 3 - Práctica 3: Python visualization packages" # Título documento
+author: "Nombre y apellidos" # Autor documento
+date: "aaaa-mm-dd" # Fecha documento
+date-format: "DD/MM/YYYY" # Formato visualización fecha documento
+lang: es # Idioma documento
+engine: knitr # Motor ejecución fragmentos código
+format: # Formato salida documento
+  html: # Salida documento formato HTML
+    toc: true # Incluir tabla contenido
+    toc-title: "Índice" # Título tabla contenido
+    toc-location: right # Mostrar tabla contenido en barra lateral derecha
+    code-fold: show # Código desplegado por defecto en salida documento con botón para ocultarlo
+    theme: journal # Tema visual bootswatch. Más temas disponibles en: https://bootswatch.com/
+    embed-resources: true # Incluir todos recursos dentro archivo HTML
+execute: # Opciones globales fragmentos código
+  message: false # Ocultar mensajes
+  warning: false # Ocultar advertencias
+---
+
+# Objetivo de la práctica
+
+- Crear un mismo diagrama de caja (*boxplot*) con distintos paquetes de Python para visualizar la relación entre la posición de juego y la altura en metros de los jugadores de la NBA en la temporada regular 2025-26.
+
+# Opciones de los fragmentos de código
+
+- En el encabezado YAML se han definido las opciones globales de los fragmentos de código con el campo `execute` para que estas opciones se apliquen a todos los fragmentos del archivo `.qmd` sin tener que repetirlas al inicio de cada fragmento.
+
+- Las opciones de un fragmento de código concreto se escriben en sus primeras líneas con el prefijo `#|` y tienen prioridad sobre las opciones globales.
+
+- Las opciones de los fragmentos de código utilizadas en esta práctica, por orden de aparición en el documento, son las siguientes:
+
+  - `message: false`: se ejecuta el código de R y Python sin mostrar en el documento HTML resultante los mensajes generados durante su ejecución.
+
+  - `warning: false`: se ejecuta el código de R y Python sin mostrar en el documento HTML resultante las advertencias generadas durante su ejecución.
+
+  - `include: true`: se ejecuta el código de R y Python y se muestran en el documento HTML resultante el código ejecutado y sus resultados, ya sean valores, tablas o gráficos.
+
+  - `results: hide`: se ejecuta el código de R y Python y se muestran en el documento HTML resultante el código ejecutado y los gráficos, pero no sus resultados en formato de texto (valores y tablas).
+
+  - `code-fold: true`: se muestra en el documento HTML resultante el código ejecutado, colapsado y con un botón `Código` para desplegarlo.
+
+  - `collapse: true`: se muestra en el documento HTML resultante el código ejecutado en un único bloque, en lugar de dividirlo en varios bloques cuando hay varias expresiones que generan resultados.
+
+# Instalación y carga de paquetes
+
+- En el primer y único fragmento de código de R, denominado `install_and_load_packages`, instala y carga el paquete de R `reticulate` (paquete para interoperabilidad entre R y Python) e instala los paquetes de Python necesarios para realizar la práctica (los paquetes de Python se cargarán cuando corresponda).
+
+```{r}
+#| label: install_and_load_packages
+#| include: true
+
+# Instalar paquete R reticulate si no instalado
+install.packages(setdiff("reticulate", rownames(installed.packages())), repos = "https://cloud.r-project.org")
+
+# Cargar paquete R reticulate
+library("reticulate")
+
+# Definir paquetes Python necesarios
+  # pandas: paquete para importar y transformar datos
+  # numpy: paquete para operaciones numéricas
+  # matplotlib: paquete para gráficos estáticos con interfaces Axes y pyplot
+  # seaborn: paquete para gráficos estáticos con funciones especializadas
+  # plotnine: paquete para gráficos estáticos con gramática en capas
+  # plotly: paquete para gráficos interactivos
+py_packages <- c("pandas", "numpy", "matplotlib", "seaborn", "plotnine", "plotly")
+
+# Instalar conjuntamente paquetes Python necesarios si no instalados
+if (!all(py_module_available(py_packages))) system2(py_config()$python, c("-m", "pip", "install", py_packages))
+```
+
+# Importación y transformación de datos
+
+- En el primer fragmento de código de Python, denominado `data_import_and_transformation`, copia y pega el código del archivo [`py_script_nba_rs_2526.py`](https://github.com/EasySportsApps/analisis-visualizacion-datos-euncet/blob/main/py_script_nba_rs_2526.py).
+
+```{python}
+#| label: data_import_and_transformation
+#| include: true
+#| results: hide
+#| code-fold: true
+#| collapse: true
+
+#### Importación paquetes y datos Python ####
+
+# Importar paquete pandas como pd
+import pandas as pd
+
+# Importar paquete numpy como np
+import numpy as np
+
+# Importar conjunto datos formato CSV + asignar dataframe df_py_nba_rs_2526
+df_py_nba_rs_2526 = pd.read_csv("https://raw.githubusercontent.com/EasySportsApps/nba_api_25_26_data/refs/heads/main/nba_players_regular_season_25_26_wide_data.csv")
+
+#### Pipeline transformación datos Python (pandas) ####
+
+# Detectar player_name con valores faltantes (NaN) en weight_kg (opcional)
+df_py_nba_rs_2526.loc[df_py_nba_rs_2526['weight_kg'].isna(), 'player_name']
+
+# Asignar dataframe original a nuevo dataframe transformado
+df_py_nba_rs_2526_transformed = (df_py_nba_rs_2526
+
+     # Completar valores faltantes (NaN) de variable weight_kg obtenidos de Wikipedia
+    .assign(
+        weight_kg=lambda df: df['weight_kg'].fillna(df['player_name'].map({
+            "Chris Youngblood": 100.2, # https://en.wikipedia.org/wiki/Chris_Youngblood_(basketball)
+            "Jahmyl Telfort": 99.8, # https://en.wikipedia.org/wiki/Jahmyl_Telfort
+            "Jaylen Wells": 93.0, # https://en.wikipedia.org/wiki/Jaylen_Wells
+            "LJ Cryer": 90.7, # https://en.wikipedia.org/wiki/LJ_Cryer
+            "Lawson Lovering": 106.6, # https://en.wikipedia.org/wiki/Lawson_Lovering
+            "Tolu Smith": 111.1 # https://en.wikipedia.org/wiki/Tolu_Smith
+        }))
+    )
+
+    # Crear nuevas variables a partir de variables originales
+    .assign(
+      
+        # Crear variable conference a partir de variable team
+        conference=lambda df: np.select(
+            [df['team'].isin(["ATL", "BKN", "BOS", "CHA", "CHI", "CLE", "DET", "IND",
+                               "MIA", "MIL", "NYK", "ORL", "PHI", "TOR", "WAS"]),
+             df['team'].isin(["DAL", "DEN", "GSW", "HOU", "LAC", "LAL", "MEM", "MIN",
+                               "NOP", "OKC", "PHX", "POR", "SAC", "SAS", "UTA"])],
+            ["Eastern", "Western"], default=None
+        ),
+
+        # Crear variable bmi_kgm2 a partir de variables weight_kg y height_m
+        bmi_kgm2=lambda df: df['weight_kg'] / df['height_m'] ** 2,
+
+        # Crear variable bmi_category a partir de variable bmi_kgm2
+        bmi_category=lambda df: pd.cut(
+            df['bmi_kgm2'], bins=[-np.inf, 18.5, 25, 30, 35, 40, np.inf],
+            labels=["U", "N", "O", "OI", "OII", "OIII"], right=False
+        ),
+
+        # Crear variable usa_player a partir de variable country
+        usa_player=lambda df: df['country'] == "USA",
+
+        # Crear variable age_decimal_years a partir de fecha inicio temporada y variable birthdate
+        age_decimal_years=lambda df: (pd.Timestamp("2025-10-21") - pd.to_datetime(df['birthdate'])).dt.days / 365.25,
+        
+        # Crear variable birth_year a partir de variable birthdate
+        birth_year=lambda df: pd.to_datetime(df['birthdate']).dt.year,
+
+        # Crear variable games_played a partir de variables wins y losses
+        games_played=lambda df: df['wins'] + df['losses'],
+
+        # Crear variable minutes_per_game a partir de variables minutes_played y games_played
+        minutes_per_game=lambda df: np.where(df['games_played'] == 0, 0, df['minutes_played'] / df['games_played']),
+
+        # Crear variable points a partir de variables one_point_made, two_point_made y three_point_made
+        points=lambda df: df['one_point_made'] + df['two_point_made'] * 2 + df['three_point_made'] * 3,
+
+        # Crear variable points_per_game a partir de variables points y games_played
+        points_per_game=lambda df: np.where(df['games_played'] == 0, 0, df['points'] / df['games_played']),
+
+        # Crear variable one_point_percentage a partir de variables one_point_made y one_point_attempted
+        one_point_percentage=lambda df: np.where(
+            df['one_point_attempted'] == 0, 0, df['one_point_made'] / df['one_point_attempted'] * 100
+        ),
+
+        # Crear variable two_point_percentage a partir de variables two_point_made y two_point_attempted
+        two_point_percentage=lambda df: np.where(
+            df['two_point_attempted'] == 0, 0, df['two_point_made'] / df['two_point_attempted'] * 100
+        ),
+
+        # Crear variable three_point_percentage a partir de variables three_point_made y three_point_attempted
+        three_point_percentage=lambda df: np.where(
+            df['three_point_attempted'] == 0, 0, df['three_point_made'] / df['three_point_attempted'] * 100
+        ),
+
+        # Crear variable field_goals_made a partir de variables two_point_made y three_point_made
+        field_goals_made=lambda df: df['two_point_made'] + df['three_point_made'],
+
+        # Crear variable field_goals_attempted a partir de variables two_point_attempted y three_point_attempted
+        field_goals_attempted=lambda df: df['two_point_attempted'] + df['three_point_attempted'],
+
+        # Crear variable field_goals_percentage a partir de variables field_goals_made y field_goals_attempted
+        field_goals_percentage=lambda df: np.where(
+            df['field_goals_attempted'] == 0, 0, df['field_goals_made'] / df['field_goals_attempted'] * 100
+        ),
+
+        # Crear variable effective_field_goals_percentage a partir de variables field_goals_made, three_point_made y field_goals_attempted
+        effective_field_goals_percentage=lambda df: np.where(
+            df['field_goals_attempted'] == 0, 0,
+            (df['field_goals_made'] + 0.5 * df['three_point_made']) / df['field_goals_attempted'] * 100
+        ),
+
+        # Crear variable true_shooting_percentage a partir de variables points, field_goals_attempted y one_point_attempted
+        true_shooting_percentage=lambda df: np.where(
+            (df['field_goals_attempted'] + 0.44 * df['one_point_attempted']) == 0, 0,
+            df['points'] / (2 * (df['field_goals_attempted'] + 0.44 * df['one_point_attempted'])) * 100
+        ),
+
+        # Crear variable rebounds a partir de variables offensive_rebounds y defensive_rebounds
+        rebounds=lambda df: df['offensive_rebounds'] + df['defensive_rebounds'],
+
+        # Crear variable rebounds_per_game a partir de variables rebounds y games_played
+        rebounds_per_game=lambda df: np.where(df['games_played'] == 0, 0, df['rebounds'] / df['games_played']),
+
+        # Crear variable assists_per_game a partir de variables assists y games_played
+        assists_per_game=lambda df: np.where(df['games_played'] == 0, 0, df['assists'] / df['games_played']),
+
+        # Crear variable turnovers_per_game a partir de variables turnovers y games_played
+        turnovers_per_game=lambda df: np.where(df['games_played'] == 0, 0, df['turnovers'] / df['games_played']),
+
+        # Crear variable steals_per_game a partir de variables steals y games_played
+        steals_per_game=lambda df: np.where(df['games_played'] == 0, 0, df['steals'] / df['games_played']),
+
+        # Crear variable blocks_per_game a partir de variables blocks y games_played
+        blocks_per_game=lambda df: np.where(df['games_played'] == 0, 0, df['blocks'] / df['games_played']),
+
+        # Crear variable personal_fouls_per_game a partir de variables personal_fouls y games_played
+        personal_fouls_per_game=lambda df: np.where(df['games_played'] == 0, 0, df['personal_fouls'] / df['games_played']),
+
+        # Crear variable fantasy_points a partir de variables points, rebounds, assists, steals, blocks y turnovers
+        fantasy_points=lambda df: (
+            df['points'] + df['rebounds'] * 1.2 + df['assists'] * 1.5
+            + df['steals'] * 3 + df['blocks'] * 3 - df['turnovers']
+        )
+    )
+
+    # Ordenar variables + eliminar variables no incluidas (season, season_type, player_id, age_completed_years, birthdate)
+    .pipe(lambda df: df[[
+        'player_name', 'team', 'conference', 'position', 
+        'height_m', 'weight_kg', 'bmi_kgm2', 'bmi_category', 
+        'country', 'usa_player', 
+        'age_decimal_years', 'birth_year', 'experience', 
+        'games_played', 'wins', 'losses', 
+        'minutes_played', 'minutes_per_game',
+        'points', 'points_per_game',
+        'one_point_made', 'one_point_attempted', 'one_point_percentage',
+        'two_point_made', 'two_point_attempted', 'two_point_percentage',
+        'three_point_made', 'three_point_attempted', 'three_point_percentage',
+        'field_goals_made', 'field_goals_attempted', 'field_goals_percentage',
+        'effective_field_goals_percentage', 'true_shooting_percentage',
+        'offensive_rebounds', 'defensive_rebounds', 'rebounds', 'rebounds_per_game',
+        'assists', 'assists_per_game', 
+        'turnovers', 'turnovers_per_game',
+        'steals', 'steals_per_game', 
+        'blocks', 'blocks_per_game',
+        'personal_fouls', 'personal_fouls_per_game', 
+        'fantasy_points'
+    ]])
+
+    # Convertir variables cualitativas nominales a tipo categórico no ordenado
+    .astype({col: 'category' for col in ['player_name', 'team', 'conference', 'position', 'country']})
+
+    # Convertir variable cualitativa ordinal a tipo categórico ordenado
+    .astype({'bmi_category': pd.CategoricalDtype(categories=["U", "N", "O", "OI", "OII", "OIII"], ordered=True)})
+
+    # Convertir variables cuantitativas discretas a tipo entero (números enteros)
+    .astype({col: 'int64' for col in [
+        'birth_year', 'experience', 'games_played', 'wins', 'losses', 'points',
+        'one_point_made', 'one_point_attempted', 'two_point_made', 'two_point_attempted',
+        'three_point_made', 'three_point_attempted', 'field_goals_made', 'field_goals_attempted',
+        'offensive_rebounds', 'defensive_rebounds', 'rebounds', 'assists', 'turnovers', 'steals', 'blocks',
+        'personal_fouls'
+    ]})
+
+    # Convertir variables cuantitativas continuas a tipo numérico (números decimales)
+    .astype({col: 'float64' for col in [
+        'height_m', 'weight_kg', 'bmi_kgm2', 'age_decimal_years',
+        'minutes_played', 'minutes_per_game', 'points_per_game',
+        'one_point_percentage', 'two_point_percentage', 'three_point_percentage',
+        'field_goals_percentage', 'effective_field_goals_percentage', 'true_shooting_percentage',
+        'rebounds_per_game', 'assists_per_game', 'turnovers_per_game', 'steals_per_game',
+        'blocks_per_game', 'personal_fouls_per_game', 'fantasy_points'
+    ]})
+
+    # Etiquetar categorías variable position
+    .assign(position=lambda df: df['position'].cat.rename_categories({
+        "C": "Center", "C-F": "Center-Forward", "F": "Forward", "F-C": "Forward-Center",
+        "F-G": "Forward-Guard", "G": "Guard", "G-F": "Guard-Forward"
+    }))
+
+    # Etiquetar categorías variable bmi_category
+    .assign(bmi_category=lambda df: df['bmi_category'].cat.rename_categories({
+        "U": "Underweight", "N": "Normal", "O": "Overweight",
+        "OI": "Obese I", "OII": "Obese II", "OIII": "Obese III"
+    }))
+)
+
+# Etiquetar variables (fuera del pipeline)
+# NBA Stats Glossary: https://www.nba.com/stats/help/glossary
+df_py_nba_rs_2526_transformed.attrs['column_labels'] = {
+    'player_name': "Player Name", 
+    'team': "Team", 
+    'conference': "Conference",
+    'position': "Position", 
+    'height_m': "Height (m)", 
+    'weight_kg': "Weight (kg)",
+    'bmi_kgm2': "BMI (kg/m²)", 
+    'bmi_category': "BMI Category", 
+    'country': "Country",
+    'usa_player': "USA Player", 
+    'age_decimal_years': "Age (years)",
+    'birth_year': "Birth Year",
+    'experience': "Years of Experience", 
+    'games_played': "Games Played (GP)",
+    'wins': "Wins (W)", 
+    'losses': "Losses (L)", 
+    'minutes_played': "Minutes Played (MIN)",
+    'minutes_per_game': "Minutes Per Game (MPG)", 
+    'points': "Points (PTS)",
+    'points_per_game': "Points Per Game (PPG)",
+    'one_point_made': "Free Throws Made (FTM)", 
+    'one_point_attempted': "Free Throws Attempted (FTA)",
+    'one_point_percentage': "Free Throw Percentage (FT%)",
+    'two_point_made': "2 Point Field Goals Made (2PM)", 
+    'two_point_attempted': "2 Point Field Goals Attempted (2PA)",
+    'two_point_percentage': "2 Point Field Goal Percentage (2P%)",
+    'three_point_made': "3 Point Field Goals Made (3PM)", 
+    'three_point_attempted': "3 Point Field Goals Attempted (3PA)",
+    'three_point_percentage': "3 Point Field Goal Percentage (3P%)",
+    'field_goals_made': "Field Goals Made (FGM)", 
+    'field_goals_attempted': "Field Goals Attempted (FGA)",
+    'field_goals_percentage': "Field Goal Percentage (FG%)",
+    'effective_field_goals_percentage': "Effective Field Goal Percentage (eFG%)",
+    'true_shooting_percentage': "True Shooting Percentage (TS%)",
+    'offensive_rebounds': "Offensive Rebounds (OREB)", 
+    'defensive_rebounds': "Defensive Rebounds (DREB)",
+    'rebounds': "Rebounds (REB)", 
+    'rebounds_per_game': "Rebounds Per Game (RPG)",
+    'assists': "Assists (AST)", 
+    'assists_per_game': "Assists Per Game (APG)",
+    'turnovers': "Turnovers (TOV)", 
+    'turnovers_per_game': "Turnovers Per Game (TOPG)",
+    'steals': "Steals (STL)", 
+    'steals_per_game': "Steals Per Game (SPG)",
+    'blocks': "Blocks (BLK)", 
+    'blocks_per_game': "Blocks Per Game (BPG)",
+    'personal_fouls': "Personal Fouls (PF)", 
+    'personal_fouls_per_game': "Personal Fouls Per Game (PFPG)",
+    'fantasy_points': "Fantasy Points (FP)"
+}
+```
+
+# Exploración de la estructura de los datos
+
+- En el segundo fragmento de código de Python, denominado `explore_data_structure`, explora la estructura del *dataframe* `df_py_nba_rs_2526_transformed` con el método `info()`.
+
+- En la salida de este fragmento de código se muestran el número de observaciones (filas) y variables (columnas), los nombres de las variables, el número de valores no faltantes y el tipo de dato de cada variable.
+
+```{python}
+#| label: explore_data_structure
+#| include: true
+
+# Explorar estructura dataframe df_py_nba_rs_2526_transformed
+df_py_nba_rs_2526_transformed.info()
+```
+
+# Selección y filtrado de datos
+
+- En el tercer fragmento de código de Python, denominado `select_and_filter_data`, selecciona las variables `player_name`, `position` y `height_m`, filtra las observaciones para conservar solo a los jugadores clasificados en una única posición de juego (`Center`, `Forward`, `Guard`), elimina las categorías no utilizadas de la variable `position` (`Center-Forward`, `Forward-Center`, `Forward-Guard`, `Guard-Forward`) y almacena el resultado en el *dataframe* `df_py_nba_rs_2526_reduced`.
+
+```{python}
+#| label: select_and_filter_data
+#| include: true
+
+# Asignar dataframe transformado a nuevo dataframe reducido
+df_py_nba_rs_2526_reduced = (df_py_nba_rs_2526_transformed
+
+    # Seleccionar variables (eliminar resto)
+    .loc[:, ['player_name', 'position', 'height_m']]
+
+    # Filtrar observaciones por variable position
+    .query("position in ['Center', 'Forward', 'Guard']")
+
+    # Eliminar categorías no utilizadas variable position
+    .assign(position=lambda df: df['position'].cat.remove_unused_categories())
+)
+
+# Explorar estructura dataframe df_py_nba_rs_2526_reduced
+df_py_nba_rs_2526_reduced.info()
+```
+
+# Creación del boxplot con la interfaz Axes del paquete matplotlib
+
+- En el cuarto fragmento de código de Python, denominado `boxplot_matplotlib_axes`, importa el módulo `pyplot` del paquete `matplotlib`, crea los objetos `positions` y `heights` con las posiciones de juego y sus alturas, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_py_nba_rs_2526_reduced` con el método `boxplot()` de la clase `Axes` del paquete `matplotlib` y guárdalo en el objeto `boxplot_matplotlib_axes`.
+
+- El método `boxplot()` no agrupa los datos por categorías, por lo que `heights` contiene un conjunto de alturas por cada posición de juego.
+
+
+```{python}
+#| label: boxplot_matplotlib_axes
+#| include: true
+
+# Importar módulo pyplot paquete matplotlib como plt
+import matplotlib.pyplot as plt
+
+# Crear objetos posiciones y alturas por posición
+positions = df_py_nba_rs_2526_reduced['position'].cat.categories
+heights = [df_py_nba_rs_2526_reduced.loc[df_py_nba_rs_2526_reduced['position'] == p, 'height_m'] for p in positions]
+
+# Crear figura (fig) y ejes (ax)
+fig, ax = plt.subplots()
+
+# Crear boxplot con interfaz Axes paquete matplotlib y guardarlo en objeto boxplot_matplotlib_axes
+boxplot_matplotlib_axes = ax.boxplot(
+    x = heights, # lista alturas por posición
+    tick_labels = positions, # etiquetas cajas (eje X)
+    patch_artist = True, # permitir color relleno cajas
+    boxprops = dict(facecolor = "#107dc1", color = "#000000"), # color cajas y bordes cajas
+    medianprops = dict(color = "#000000"), # color mediana
+    whiskerprops = dict(color = "#000000"), # color bigotes
+    capprops = dict(color = "#000000"), # color extremos bigotes
+    flierprops = dict(markeredgecolor = "#000000") # color valores atípicos
+)
+
+# Añadir títulos gráfico y ejes
+ax.set_title("Boxplot with the matplotlib package Axes interface") # título gráfico
+ax.set_xlabel("Position") # título eje X
+ax.set_ylabel("Height (m)") # título eje Y
+
+# Mostrar boxplot creado con interfaz Axes paquete matplotlib
+plt.show()
+```
+
+# Creación del boxplot con la interfaz pyplot del paquete matplotlib
+
+- En el quinto fragmento de código de Python, denominado `boxplot_matplotlib_pyplot`, crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_py_nba_rs_2526_reduced` con la función `boxplot()` del módulo `pyplot` del paquete `matplotlib` y guárdalo en el objeto `boxplot_matplotlib_pyplot`, reutilizando el módulo `plt` y los objetos `positions` y `heights` creados en el fragmento anterior.
+
+- A diferencia de la interfaz `Axes`, no se crean explícitamente la figura ni los ejes, sino que `pyplot` los gestiona de forma implícita y todo se configura con funciones de `plt`.
+
+```{python}
+#| label: boxplot_matplotlib_pyplot
+#| include: true
+
+# Crear boxplot con interfaz pyplot paquete matplotlib y guardarlo en objeto boxplot_matplotlib_pyplot
+boxplot_matplotlib_pyplot = plt.boxplot(
+    x = heights, # lista alturas por posición
+    tick_labels = positions, # etiquetas cajas (eje X)
+    patch_artist = True, # permitir color relleno cajas
+    boxprops = dict(facecolor = "#107dc1", color = "#000000"), # color cajas y bordes cajas
+    medianprops = dict(color = "#000000"), # color mediana
+    whiskerprops = dict(color = "#000000"), # color bigotes
+    capprops = dict(color = "#000000"), # color extremos bigotes
+    flierprops = dict(markeredgecolor = "#000000") # color valores atípicos
+)
+
+# Añadir títulos gráfico y ejes
+plt.title("Boxplot with the matplotlib package pyplot interface") # título gráfico
+plt.xlabel("Position") # título eje X
+plt.ylabel("Height (m)") # título eje Y
+
+# Mostrar boxplot creado con interfaz pyplot paquete matplotlib
+plt.show()
+```
+
+# Creación del boxplot con el paquete seaborn
+
+- En el sexto fragmento de código de Python, denominado `boxplot_seaborn`, importa el paquete `seaborn` y crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_py_nba_rs_2526_reduced` con la función `boxplot()` del paquete `seaborn` y guárdalo en el objeto `boxplot_seaborn`.
+
+- A diferencia de `matplotlib`, la función `boxplot()` de `seaborn` agrupa los datos por categorías, por lo que no hace falta crear listas con las alturas de cada posición de juego.
+
+```{python}
+#| label: boxplot_seaborn
+#| include: true
+
+# Importar paquete seaborn como sns
+import seaborn as sns
+
+# Crear boxplot con paquete seaborn y guardarlo en objeto boxplot_seaborn
+boxplot_seaborn = sns.boxplot(
+    data = df_py_nba_rs_2526_reduced, # nombre dataframe
+    x = "position", # variable categórica position (eje X)
+    y = "height_m", # variable cuantitativa height_m (eje Y)
+    color = "#107dc1", # color cajas
+    linecolor = "#000000" # color mediana, bordes cajas, bigotes y valores atípicos
+)
+
+# Añadir títulos gráfico y ejes
+boxplot_seaborn.set_title("Boxplot with the seaborn package") # título gráfico
+boxplot_seaborn.set_xlabel("Position") # título eje X
+boxplot_seaborn.set_ylabel("Height (m)") # título eje Y
+
+# Mostrar boxplot creado con paquete seaborn
+plt.show()
+```
+
+# Creación del boxplot con el paquete plotnine
+
+- En el séptimo fragmento de código de Python, denominado `boxplot_plotnine`, importa el paquete `plotnine` y crea el diagrama de caja de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_py_nba_rs_2526_reduced` con las funciones `ggplot()` y `geom_boxplot()` del paquete `plotnine` y guárdalo en el objeto `boxplot_plotnine`.
+
+- El paquete `plotnine` de Python está basado en el paquete `ggplot2` de R y, por lo tanto, crea gráficos mediante la **gramática de gráficos en capas** (*layered grammar of graphics*).
+
+```{python}
+#| label: boxplot_plotnine
+#| include: true
+
+# Importar funciones paquete plotnine
+from plotnine import *
+
+# Crear boxplot con paquete plotnine y guardarlo en objeto boxplot_plotnine
+boxplot_plotnine = (
+    ggplot(
+        data = df_py_nba_rs_2526_reduced, # nombre dataframe
+        mapping = aes(x = "position", y = "height_m")) # variable categórica position (eje X) y variable cuantitativa height_m (eje Y)
+    + geom_boxplot( # añadir capa diagrama caja
+        fill = "#107dc1", # color cajas
+        color = "#000000") # color mediana, bordes cajas, bigotes y valores atípicos
+    + labs( # añadir etiquetas gráfico
+        title = "Boxplot with the plotnine package", # título gráfico
+        x = "Position", # título eje X
+        y = "Height (m)") # título eje Y
+    + theme_classic() # añadir tema clásico
+)
+
+# Mostrar boxplot creado con paquete plotnine
+boxplot_plotnine
+```
+
+# Creación del boxplot con el paquete plotly
+
+- En el octavo fragmento de código de Python, denominado `boxplot_plotly`, importa el módulo `express` del paquete `plotly` y crea el diagrama de caja interactivo de la altura en metros (`height_m`) según la posición de juego (`position`) del *dataframe* `df_py_nba_rs_2526_reduced` con la función `box()` del módulo `express` del paquete `plotly` y guárdalo en el objeto `boxplot_plotly`.
+
+- En el gráfico resultante se muestran los mismos elementos del diagrama de caja que en los creados con los paquetes anteriores, con la diferencia de que `plotly` lo convierte en un gráfico interactivo que muestra los valores de los elementos del diagrama de caja y el nombre del jugador (`player_name`) en cada valor atípico al pasar el cursor del ratón sobre él.
+
+```{python}
+#| label: boxplot_plotly
+#| include: true
+
+# Importar módulo express paquete plotly como px
+import plotly.express as px
+
+# Crear boxplot con paquete plotly y guardarlo en objeto boxplot_plotly
+boxplot_plotly = px.box(
+    data_frame = df_py_nba_rs_2526_reduced, # nombre dataframe
+    x = "position", # variable categórica position (eje X)
+    y = "height_m", # variable cuantitativa height_m (eje Y)
+    hover_name = "player_name", # variable player_name como texto etiqueta
+    category_orders = {"position": ["Center", "Forward", "Guard"]}, # orden categorías eje X
+    title = "Boxplot with the plotly package", # título gráfico
+    labels = {"position": "Position", "height_m": "Height (m)"}, # títulos ejes
+    template = "plotly_white" # tema fondo blanco
+)
+
+# Añadir colores
+boxplot_plotly = boxplot_plotly.update_traces(
+    fillcolor = "#107dc1", # color cajas
+    line_color = "#000000", # color mediana, bordes cajas y bigotes
+    marker_color = "#000000" # color valores atípicos
+)
+
+# Mostrar boxplot creado con paquete plotly
+boxplot_plotly
+```
+
+# Combinación de boxplots estáticos
+
+- A diferencia del paquete `cowplot` en R, los diagramas de caja estáticos creados con diferentes paquetes de Python no se pueden combinar fácilmente y, por ello, no se incluye en esta práctica un apartado equivalente.
+
+- Esto se debe a que `matplotlib` y `seaborn` dibujan directamente sobre los ejes (`Axes`) de una figura, mientras que `plotnine` genera sus propios objetos, por lo que no existe una función sencilla que combine gráficos guardados en objetos de paquetes distintos.
