@@ -160,6 +160,6 @@ execute: # Opciones globales fragmentos código
 
 # Combinación de boxplots estáticos
 
-- A diferencia del paquete `cowplot` en R, los diagramas de caja estáticos creados con diferentes paquetes de Python no se pueden combinar fácilmente y, por ello, no se incluye en esta práctica un apartado equivalente.
+- A diferencia del paquete `cowplot` en R, los diagramas de caja estáticos creados con diferentes paquetes de Python no se pueden combinar fácilmente y, por ello, no se incluye en esta práctica una sección equivalente.
 
 - Esto se debe a que `matplotlib` y `seaborn` dibujan directamente sobre los ejes (`Axes`) de una figura, mientras que `plotnine` genera sus propios objetos, por lo que no existe una función sencilla que combine gráficos guardados en objetos de paquetes distintos.
