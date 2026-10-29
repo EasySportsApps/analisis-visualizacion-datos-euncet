@@ -1,8 +1,8 @@
 ---
 # ENCABEZADO YAML
 title: "Lección 3 - Práctica 2: R visualization packages" # Título documento
-author: "Nombre y apellidos" # Autor documento
-date: "dd/mm/aaaa" # Fecha documento
+# author: "Nombre y apellidos" # Autor documento
+# date: "dd/mm/aaaa" # Fecha documento
 output: # Formato salida documento  
   html_document: # Salida documento formato HTML    
     toc: true # Incluir tabla contenido (índice) 
@@ -10,7 +10,7 @@ output: # Formato salida documento
     code_folding: show # Código desplegado por defecto en salida documento con botón Hide para ocultarlo
     theme: # Tema visual bootswatch      
       bootswatch: journal # Más temas disponibles en: https://bootswatch.com/
-    self_contained: true # Incluir todos recursos dentro archivo HTML 
+    self_contained: true # Incluir todos recursos dentro archivo HTML
 ---
 
 # Objetivo de la práctica
@@ -208,17 +208,17 @@ df_r_nba_rs_2526_transformed <- df_r_nba_rs_2526 |>
     fantasy_points
   ) |>
   
-  # Convertir variables cualitativas nominales a tipo categórico no ordenado
+  # Convertir variables categóricas nominales a tipo categórico no ordenado (factor)
   mutate(across(c(player_name, team, conference, position, country), as.factor)) |>
   
-  # Convertir variables cualitativas ordinales a tipo categórico ordenado
+  # Convertir variable categórica ordinal a tipo categórico ordenado (ordered factor)
   mutate(
     bmi_category = factor(bmi_category,
                           levels = c("U", "N", "O", "OI", "OII", "OIII"),
                           ordered = TRUE)
   ) |>
   
-  # Convertir variables cuantitativas discretas a tipo entero (números enteros)
+  # Convertir variables cuantitativas discretas a tipo entero (integer)
   mutate(across(c(birth_year, experience, games_played, wins, losses, points,
                   one_point_made, one_point_attempted, two_point_made, two_point_attempted,
                   three_point_made, three_point_attempted, field_goals_made, field_goals_attempted,
@@ -226,7 +226,7 @@ df_r_nba_rs_2526_transformed <- df_r_nba_rs_2526 |>
                   personal_fouls),
                 as.integer)) |>
   
-  # Convertir variables cuantitativas continuas a tipo numérico (números decimales)
+  # Convertir variables cuantitativas continuas a tipo numérico (numeric)
   mutate(across(c(height_m, weight_kg, bmi_kgm2, age_decimal_years, 
                   minutes_played, minutes_per_game, points_per_game,
                   one_point_percentage, two_point_percentage, three_point_percentage,
