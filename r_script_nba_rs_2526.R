@@ -157,17 +157,17 @@ df_r_nba_rs_2526_transformed <- df_r_nba_rs_2526 |>
     fantasy_points
   ) |>
   
-  # Convertir variables cualitativas nominales a tipo categórico no ordenado
+  # Convertir variables categóricas nominales a tipo categórico no ordenado (factor)
   mutate(across(c(player_name, team, conference, position, country), as.factor)) |>
   
-  # Convertir variables cualitativas ordinales a tipo categórico ordenado
+  # Convertir variable categórica ordinal a tipo categórico ordenado (ordered factor)
   mutate(
     bmi_category = factor(bmi_category,
                           levels = c("U", "N", "O", "OI", "OII", "OIII"),
                           ordered = TRUE)
   ) |>
   
-  # Convertir variables cuantitativas discretas a tipo entero (números enteros)
+  # Convertir variables cuantitativas discretas a tipo entero (integer)
   mutate(across(c(birth_year, experience, games_played, wins, losses, points,
                   one_point_made, one_point_attempted, two_point_made, two_point_attempted,
                   three_point_made, three_point_attempted, field_goals_made, field_goals_attempted,
@@ -175,7 +175,7 @@ df_r_nba_rs_2526_transformed <- df_r_nba_rs_2526 |>
                   personal_fouls),
                 as.integer)) |>
   
-  # Convertir variables cuantitativas continuas a tipo numérico (números decimales)
+  # Convertir variables cuantitativas continuas a tipo numérico (numeric)
   mutate(across(c(height_m, weight_kg, bmi_kgm2, age_decimal_years, 
                   minutes_played, minutes_per_game, points_per_game,
                   one_point_percentage, two_point_percentage, three_point_percentage,
