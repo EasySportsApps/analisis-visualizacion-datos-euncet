@@ -160,13 +160,13 @@ df_py_nba_rs_2526_transformed = (df_py_nba_rs_2526
         'fantasy_points'
     ]])
 
-    # Convertir variables cualitativas nominales a tipo categórico no ordenado
+    # Convertir variables categóricas nominales a tipo categórico no ordenado (category)
     .astype({col: 'category' for col in ['player_name', 'team', 'conference', 'position', 'country']})
 
-    # Convertir variable cualitativa ordinal a tipo categórico ordenado
+    # Convertir variable categórica ordinal a tipo categórico ordenado (ordered category)
     .astype({'bmi_category': pd.CategoricalDtype(categories=["U", "N", "O", "OI", "OII", "OIII"], ordered=True)})
 
-    # Convertir variables cuantitativas discretas a tipo entero (números enteros)
+    # Convertir variables cuantitativas discretas a tipo entero (int)
     .astype({col: 'int64' for col in [
         'birth_year', 'experience', 'games_played', 'wins', 'losses', 'points',
         'one_point_made', 'one_point_attempted', 'two_point_made', 'two_point_attempted',
@@ -175,7 +175,7 @@ df_py_nba_rs_2526_transformed = (df_py_nba_rs_2526
         'personal_fouls'
     ]})
 
-    # Convertir variables cuantitativas continuas a tipo numérico (números decimales)
+    # Convertir variables cuantitativas continuas a tipo numérico (float)
     .astype({col: 'float64' for col in [
         'height_m', 'weight_kg', 'bmi_kgm2', 'age_decimal_years',
         'minutes_played', 'minutes_per_game', 'points_per_game',
