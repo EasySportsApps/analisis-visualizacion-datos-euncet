@@ -1,0 +1,1926 @@
+---
+# ENCABEZADO YAML: solo modificar campo author
+title: "Lección 3 - Práctica 5: R mock practical exam" # Título documento
+author: "Nombre y apellidos" # Autor documento
+output: # Formato salida documento
+  html_document: # Salida documento formato HTML
+    toc: true # Incluir tabla contenido (índice)
+    toc_float: true # Mantener tabla contenido visible durante scroll
+---
+
+<!-- Estilos CSS: no modificar -->
+
+```{=html}
+<style>
+#TOC, #TOC .list-group-item { font-size: 13px; } /* Estilo tabla de contenido */
+h1 { font-weight: bold; } /* Estilo títulos nivel 1 */
+body { font-size: 16px; line-height: 1.5; } /* Estilo texto general */
+ul { padding-left: 1.2em; } /* Estilo listas */
+a { word-break: break-all; } /* Estilo enlaces */
+code { font-size: 16px; white-space: normal; word-break: normal; } /* Estilo código inline */
+pre code { font-size: 15px; white-space: pre-wrap; } /* Estilo código fragmentos */
+</style>
+```
+
+<!-- Opciones globales fragmentos código: no modificar -->
+
+```{r setup, include=FALSE}
+# Ocultar mensajes y avisos documento renderizado
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+```
+
+# Objetivo
+
+- Realizar una simulación de examen práctico que evalúe la capacidad del estudiante para resolver de forma autónoma ejercicios de importación, exploración, transformación y visualización de datos en R.
+
+# Instrucciones
+
+- Escribe tu nombre completo en el campo `author` del encabezado YAML.
+
+- Lee atentamente el enunciado de cada ejercicio antes de resolverlo.
+
+- Completa los fragmentos de código vacíos de cada ejercicio y añade comentarios breves con `#`.
+
+- Para resolver los ejercicios, puedes consultar los recursos de apoyo disponibles tanto en el sitio web de la asignatura como en este documento.
+
+- Tras finalizar cada ejercicio, se recomienda hacer clic en el botón *Knit* para renderizar el archivo `.Rmd` a formato HTML y comprobar que no se producen errores.
+
+- Tras finalizar la práctica, copia o mueve los archivos `.Rmd` y `.html` a una carpeta nueva con tu nombre completo, comprime esta carpeta en formato ZIP o RAR y envíala al profesor a través del formulario correspondiente.
+
+- El profesor solo evaluará el archivo `.html` y, por lo tanto, la nota de la práctica será igual a 0 si el documento no se renderiza correctamente.
+
+# Comprobaciones
+
+- No modifiques el siguiente fragmento de código.
+
+```{r checks, echo=FALSE}
+# Usuario del sistema
+Sys.info()["user"]
+
+# Fecha y hora del sistema
+Sys.time()
+```
+
+# Ejercicio 1: packages
+
+- En la consola de R o en la pestaña *Packages* de RStudio, instala los paquetes `readr`, `dplyr`, `skimr`, `ggplot2`, `forcats`, `scales`, `ggstats`, `ggforce` y `ggridges`, si aún no los tienes instalados.
+
+- En el fragmento de código `e1_f1`, carga los paquetes `readr`, `dplyr`, `skimr`, `ggplot2`, `forcats`, `scales`, `ggstats`, `ggforce` y `ggridges`.
+
+- **Recursos de apoyo:**
+
+  - Lección 1 - Práctica 7
+
+```{r e1_f1}
+# Ejercicio 1 - Fragmento 1 (nivel dificultad: +)
+
+# Cargar paquete readr para importar datos
+library(readr)
+
+# Cargar paquete dplyr para transformar datos
+library(dplyr)
+
+# Cargar paquete skimr para explorar datos
+library(skimr)
+
+# Cargar paquete ggplot2 para visualizar datos
+library(ggplot2)
+
+# Cargar paquete forcats para cambiar orden categorías ejes gráficos
+library(forcats)
+
+# Cargar paquete scales para cambiar marcas y formato porcentaje ejes gráficos
+library(scales)
+
+# Cargar paquete ggstats para calcular estadísticos adicionales en gráficos
+library(ggstats)
+
+# Cargar paquete ggforce para crear diagramas sina
+library(ggforce)
+
+# Cargar paquete ggridges para crear gráficos de crestas
+library(ggridges)
+```
+
+# Ejercicio 2: data import
+
+- En el fragmento de código `e2_f1`, importa el conjunto de datos de los jugadores de la NBA en la temporada regular 2025-26 y asígnalo con el operador de asignación `<-` a un objeto llamado `df`.
+
+  - **Opción A:** importa el conjunto de datos directamente desde la URL <https://raw.githubusercontent.com/EasySportsApps/nba_api_25_26_data/refs/heads/main/nba_players_regular_season_25_26_wide_data.csv>
+
+  - **Opción B:** descarga el conjunto de datos desde GitHub haciendo clic primero en este [enlace](https://github.com/EasySportsApps/nba_api_25_26_data/blob/main/nba_players_regular_season_25_26_wide_data.csv) y después en el botón *Download raw file* (flecha hacia abajo) y, a continuación, impórtalo desde tu ordenador
+
+- En el fragmento de código `e2_f2`, muestra las primeras observaciones (filas) del *dataframe* `df` con la función correspondiente.
+
+- **Recursos de apoyo:**
+
+  - Lección 2 - Práctica 4
+
+  - Lección 2 - Práctica 5
+
+```{r e2_f1}
+# Ejercicio 2 - Fragmento 1 (nivel dificultad: ++)
+
+# Importar conjunto datos formato CSV + asignar a objeto df
+df <- read_csv("https://raw.githubusercontent.com/EasySportsApps/nba_api_25_26_data/refs/heads/main/nba_players_regular_season_25_26_wide_data.csv")
+```
+
+```{r e2_f2}
+# Ejercicio 2 - Fragmento 2 (nivel dificultad: +)
+
+# Mostrar primeras observaciones dataframe df
+head(df)
+```
+
+# Ejercicio 3: data transformation
+
+- En el fragmento de código `e3_f1`, crea un nuevo objeto llamado `df_transformed`, asígnale el *dataframe* `df` con el operador de asignación `<-` y utiliza el operador de tubería `|>` para encadenar un *pipeline* que aplique secuencialmente las siguientes transformaciones:
+
+  - **Transformación 1:** selecciona las variables o columnas `player_name` (nombre del jugador), `team` (equipo), `position` (posición de juego), `country` (país de origen), `height_m` (altura en metros), `weight_kg` (peso en kilogramos), `experience` (años de experiencia), `minutes_played` (minutos jugados) y `one_point_made` (tiros libres anotados), eliminando el resto de variables.
+
+  - **Transformación 2:** filtra las observaciones o filas donde la variable `position` sea igual a `"C"`, `"F"` o `"G"`, eliminando el resto de observaciones.
+
+  - **Transformación 3:** crea la variable `bmi_kgm2` (índice de masa corporal en kg/m²) dividiendo `weight_kg` entre `height_m` elevada al cuadrado.
+
+  - **Transformación 4:** crea la variable `bmi_category` (categoría del índice de masa corporal) a partir de la variable `bmi_kgm2` con las siguientes categorías:
+
+    - `"U"` si `bmi_kgm2` es menor que 18.5.
+
+    - `"N"` si `bmi_kgm2` es mayor o igual que 18.5 y menor que 25.
+
+    - `"O"` si `bmi_kgm2` es mayor o igual que 25 y menor que 30.
+
+    - `"OI"` si `bmi_kgm2` es mayor o igual que 30 y menor que 35.
+
+    - `"OII"` si `bmi_kgm2` es mayor o igual que 35 y menor que 40.
+
+    - `"OIII"` si `bmi_kgm2` es mayor o igual que 40.
+
+  - **Transformación 5:** crea la variable `usa_player` (jugador estadounidense), con valor `TRUE` si la variable `country` es igual a `"USA"` y `FALSE` en caso contrario.
+
+  - **Transformación 6:** convierte las variables categóricas nominales `player_name`, `team`, `position`, `country` y `usa_player` a tipo categórico no ordenado (*factor*).
+
+  - **Transformación 7:** convierte la variable categórica ordinal `bmi_category` a tipo categórico ordenado (*ordered factor*), con las categorías en este orden: `"U"`, `"N"`, `"O"`, `"OI"`, `"OII"` y `"OIII"`.
+
+  - **Transformación 8:** convierte las variables cuantitativas discretas `experience` y `one_point_made` a tipo entero (*integer*).
+
+  - **Transformación 9:** convierte las variables cuantitativas continuas `height_m`, `weight_kg`, `bmi_kgm2` y `minutes_played` a tipo numérico (*numeric*).
+
+  - **Transformación 10:** etiqueta las categorías de la variable `position` del siguiente modo: `"C"` como `"Center"` (pívot), `"F"` como `"Forward"` (alero) y `"G"` como `"Guard"` (base/escolta).
+
+  - **Transformación 11:** etiqueta las categorías de la variable `bmi_category` del siguiente modo: `"U"` como `"Underweight"` (bajo peso), `"N"` como `"Normal"` (normopeso), `"O"` como `"Overweight"` (sobrepeso), `"OI"` como `"Obese I"` (obesidad grado I), `"OII"` como `"Obese II"` (obesidad grado II) y `"OIII"` como `"Obese III"` (obesidad grado III).
+
+  - **Transformación 12:** etiqueta las categorías de la variable `usa_player` del siguiente modo: `FALSE` como `"No"` y `TRUE` como `"Yes"`.
+
+- En el fragmento de código `e3_f2`, muestra las primeras observaciones (filas) del *dataframe* `df_transformed` con la función correspondiente.
+
+- **Recursos de apoyo:**
+
+  - Lección 2 - Práctica 8
+
+  - Lección 3 - Práctica 2 - Figura 5
+
+```{r e3_f1}
+# Ejercicio 3 - Fragmento 1 (nivel dificultad: ++++)
+
+# Crear objeto df_transformed + asignarle dataframe df + encadenar pipeline
+df_transformed <- df |>
+
+  # Transformación 1: seleccionar variables
+  select(player_name, team, position, country, height_m, weight_kg,
+         experience, minutes_played, one_point_made) |>
+
+  # Transformación 2: filtrar observaciones
+  filter(position %in% c("C", "F", "G")) |>
+
+  # Transformación 3: crear variable bmi_kgm2
+  mutate(bmi_kgm2 = weight_kg / height_m^2) |>
+
+  # Transformación 4: crear variable bmi_category
+  mutate(
+    bmi_category = case_when(
+      bmi_kgm2 < 18.5 ~ "U",
+      bmi_kgm2 < 25   ~ "N",
+      bmi_kgm2 < 30   ~ "O",
+      bmi_kgm2 < 35   ~ "OI",
+      bmi_kgm2 < 40   ~ "OII",
+      bmi_kgm2 >= 40  ~ "OIII")) |>
+
+  # Transformación 5: crear variable usa_player
+  mutate(usa_player = country == "USA") |>
+
+  # Transformación 6: convertir variables categóricas nominales a tipo factor
+  mutate(across(c(player_name, team, position, country, usa_player), as.factor)) |>
+
+  # Transformación 7: convertir variable categórica ordinal a tipo ordered factor
+  mutate(
+    bmi_category = factor(bmi_category,
+                          levels = c("U", "N", "O", "OI", "OII", "OIII"),
+                          ordered = TRUE)) |>
+
+  # Transformación 8: convertir variables cuantitativas discretas a tipo integer
+  mutate(across(c(experience, one_point_made), as.integer)) |>
+
+  # Transformación 9: convertir variables cuantitativas continuas a tipo numeric
+  mutate(across(c(height_m, weight_kg, bmi_kgm2, minutes_played), as.numeric)) |>
+
+  # Transformación 10: etiquetar categorías variable position
+  mutate(
+    position = recode(position,
+                      "C" = "Center",
+                      "F" = "Forward",
+                      "G" = "Guard")) |>
+
+  # Transformación 11: etiquetar categorías variable bmi_category
+  mutate(
+    bmi_category = recode(bmi_category,
+                          "U" = "Underweight",
+                          "N" = "Normal",
+                          "O" = "Overweight",
+                          "OI" = "Obese I",
+                          "OII" = "Obese II",
+                          "OIII" = "Obese III")) |>
+
+  # Transformación 12: etiquetar categorías variable usa_player
+  mutate(
+    usa_player = recode(usa_player,
+                        "FALSE" = "No",
+                        "TRUE" = "Yes"))
+```
+
+```{r e3_f2}
+# Ejercicio 3 - Fragmento 2 (nivel dificultad: +)
+
+# Mostrar primeras observaciones dataframe df_transformed
+head(df_transformed)
+```
+
+# Ejercicio 4: data exploration
+
+- En el fragmento de código `e4_f1`, explora el *dataframe* `df_transformed` con la función correspondiente para comprobar su estructura, el tipo de dato de sus variables, sus valores faltantes y sus medidas descriptivas.
+
+- Responde a las siguientes preguntas sobre el *dataframe* `df_transformed` a partir de la salida obtenida tras el fragmento de código `e4_f1`:
+
+  - **Pregunta 1:** ¿Cuántas observaciones (filas) y variables (columnas) tiene el *dataframe* `df_transformed`?
+
+    **Respuesta:** 484 observaciones y 12 variables.
+
+  - **Pregunta 2:** ¿Cuántas variables son de naturaleza categórica y cuántas de naturaleza cuantitativa?
+
+    **Respuesta:** 6 categóricas y 6 cuantitativas.
+
+  - **Pregunta 3:** ¿Qué variables presentan valores faltantes (*missings*) y cuántos tiene cada una?
+
+    **Respuesta:** `weight_kg`, `bmi_kgm2` y `bmi_category`, con 6 valores faltantes cada una.
+
+  - **Pregunta 4:** ¿Qué variables cuantitativas parecen ajustarse a una distribución normal?
+
+    **Respuesta:** `height_m`, `weight_kg` y `bmi_kgm2`.
+
+  - **Pregunta 5:** ¿Qué medidas de tendencia central y de dispersión es adecuado utilizar para describir las variables cuantitativas que se ajustan a una distribución normal?
+
+    **Respuesta:** media y desviación estándar.
+
+  - **Pregunta 6:** ¿Qué medidas de tendencia central y de dispersión es adecuado utilizar para describir las variables cuantitativas que no se ajustan a una distribución normal?
+
+    **Respuesta:** mediana e intervalo intercuartílico.
+
+- En el fragmento de código `e4_f2`, copia y pega la línea de código `df_transformed <- na.omit(df_transformed)` para eliminar todas las observaciones (filas) del *dataframe* `df_transformed` que contengan al menos un valor faltante en cualquiera de las variables (*listwise deletion*).
+
+- **Recursos de apoyo:**
+
+  - Lección 2 - Práctica 7 - Tabla 5
+
+  - Lección 2 - Práctica 9 - Tabla 8
+
+```{r e4_f1}
+# Ejercicio 4 - Fragmento 1 (nivel dificultad: +)
+
+# Explorar dataframe df_transformed
+skim(df_transformed)
+```
+
+```{r e4_f2}
+# Ejercicio 4 - Fragmento 2 (nivel dificultad: +)
+
+# Eliminar observaciones con valores faltantes (listwise deletion)
+df_transformed <- na.omit(df_transformed)
+```
+
+# Ejercicio 5: bar chart
+
+- En el fragmento de código `e5_f1`, crea un **gráfico de barras vertical** que muestre la distribución de la variable categórica ordinal `bmi_category` del *dataframe* `df_transformed`, con las barras ordenadas según el orden natural de las categorías, el color `#107dc1` para todas las barras, el título `Vertical bar chart`, el subtítulo `Distribution of BMI category (ordinal)`, las etiquetas `BMI category` y `Count` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+
+- En el fragmento de código `e5_f2`, crea un **gráfico de barras vertical** que muestre la distribución de la variable categórica nominal `position` del *dataframe* `df_transformed`, con las barras ordenadas de mayor a menor frecuencia, el color `#107dc1` para todas las barras, el título `Vertical bar chart`, el subtítulo `Distribution of position (nominal)`, las etiquetas `Position` y `Count` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+
+- En el fragmento de código `e5_f3`, crea un **gráfico de barras horizontal** que muestre la distribución de la variable categórica nominal `country` del *dataframe* `df_transformed`, con las barras ordenadas de mayor a menor frecuencia de arriba abajo, la barra de `France` destacada respecto al resto de barras, el color `#107dc1` para la barra de `France` y el color `#b3cde0` para el resto de barras, sin leyenda, el título `Horizontal bar chart`, el subtítulo `Distribution of country (nominal)`, las etiquetas `Count` y `Country` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+
+- En el fragmento de código `e5_f4`, crea un **gráfico de barras vertical** que muestre la distribución de la variable cuantitativa discreta `experience` del *dataframe* `df_transformed`, con las barras ordenadas según el orden natural de los valores, el color `#107dc1` para todas las barras, las marcas del eje *X* cada 1 año, desde 1 hasta 23 años, el título `Vertical bar chart`, el subtítulo `Distribution of years of experience (discrete)`, las etiquetas `Years of experience` y `Count` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+
+- En el fragmento de código `e5_f5`, crea un **gráfico de barras horizontal** que muestre la variable cuantitativa continua `minutes_played` por cada categoría de la variable categórica nominal `player_name` del *dataframe* `df_transformed`, filtrando solo las observaciones del equipo New York Knicks (`NYK`), con `minutes_played` en el eje *X*, `player_name` en el eje *Y*, las barras ordenadas de mayor a menor minutos jugados de arriba abajo, el color `#107dc1` para todas las barras, el título `Horizontal bar chart`, el subtítulo `Minutes played (continuous) by player (nominal) - New York Knicks`, las etiquetas `Minutes played` y `Player` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+
+- **Recursos de apoyo:**
+
+  - Lección 3 - Figura 8
+
+  - [The R Graph Gallery - Basic barplot with ggplot2](https://r-graph-gallery.com/218-basic-barplots-with-ggplot2.html)
+
+  - [ggplot2 - Bar charts](https://ggplot2.tidyverse.org/reference/geom_bar.html)
+
+  - [ggplot2 - FAQ: Barplots](https://ggplot2.tidyverse.org/articles/faq-bars.html)
+
+  - [ggplot2 - Modify axis, legend, and plot labels](https://ggplot2.tidyverse.org/reference/labs.html)
+
+  - [ggplot2 - Complete themes](https://ggplot2.tidyverse.org/reference/ggtheme.html)
+
+  - [forcats - Introduction to forcats](https://forcats.tidyverse.org/articles/forcats.html)
+  
+  - [forcats - Reorder factor levels by first appearance, frequency, or numeric order](https://forcats.tidyverse.org/reference/fct_inorder.html)
+  
+  - [forcats - Reverse order of factor levels](https://forcats.tidyverse.org/reference/fct_rev.html)
+  
+  - [forcats - Reorder factor levels by sorting along another variable](https://forcats.tidyverse.org/reference/fct_reorder.html)
+
+  - [ggplot2 - FAQ: Reordering](https://ggplot2.tidyverse.org/articles/faq-reordering.html)
+
+  - [Posit Community - How do I highlight one bar in a bar graph using ggplot2](https://forum.posit.co/t/how-do-i-highlight-one-bar-in-a-bar-graph-using-ggplot2/36849)
+
+  - [ggplot2 - Create your own discrete scale](https://ggplot2.tidyverse.org/reference/scale_manual.html)
+
+  - [ggplot2 - Position scales for continuous data (x & y)](https://ggplot2.tidyverse.org/reference/scale_continuous.html)
+
+```{r e5_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
+# Ejercicio 5 - Fragmento 1 (nivel dificultad: ++)
+
+# Vertical bar chart: distribution bmi_category
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variable a estética
+  mapping = aes(
+
+    # Mapear variable a eje X + ordenar barras según orden natural categorías
+    x = bmi_category)) +
+
+  # Añadir capa gráfico barras
+  geom_bar(
+
+    # Asignar color relleno barras
+    fill = "#107dc1") +
+
+  # Añadir títulos y etiquetas ejes
+  labs(
+
+    # Añadir título
+    title = "Vertical bar chart",
+
+    # Añadir subtítulo
+    subtitle = "Distribution of BMI category (ordinal)",
+
+    # Añadir etiqueta eje X
+    x = "BMI category",
+
+    # Añadir etiqueta eje Y
+    y = "Count") +
+
+  # Aplicar tema
+  theme_classic()
+```
+
+```{r e5_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
+# Ejercicio 5 - Fragmento 2 (nivel dificultad: +++)
+
+# Vertical bar chart: distribution position
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variable a estética
+  mapping = aes(
+
+    # Mapear variable a eje X + ordenar barras mayor a menor frecuencia
+    x = fct_infreq(position))) +
+
+  # Añadir capa gráfico barras
+  geom_bar(
+
+    # Asignar color relleno barras
+    fill = "#107dc1") +
+
+  # Añadir títulos y etiquetas ejes
+  labs(
+
+    # Añadir título
+    title = "Vertical bar chart",
+
+    # Añadir subtítulo
+    subtitle = "Distribution of position (nominal)",
+
+    # Añadir etiqueta eje X
+    x = "Position",
+
+    # Añadir etiqueta eje Y
+    y = "Count") +
+
+  # Aplicar tema
+  theme_classic()
+```
+
+```{r e5_f3, fig.width = 9, fig.height = 10, out.width = "100%"}
+# Ejercicio 5 - Fragmento 3 (nivel dificultad: ++++)
+
+# Horizontal bar chart: distribution country
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variables a estéticas
+  mapping = aes(
+
+    # Mapear variable a eje Y + ordenar barras mayor a menor frecuencia de arriba abajo
+    y = fct_rev(fct_infreq(country)),
+
+    # Mapear dos grupos países a relleno
+    fill = ifelse(country == "France", "France", "Others"))) +
+
+  # Añadir capa gráfico barras
+  geom_bar(
+
+    # Ocultar leyenda
+    show.legend = FALSE) +
+
+  # Asignar escala relleno manualmente
+  scale_fill_manual(
+
+    # Asignar color relleno barras
+    values = c("France" = "#107dc1",
+               "Others" = "#b3cde0")) +
+
+  # Añadir títulos y etiquetas ejes
+  labs(
+
+    # Añadir título
+    title = "Horizontal bar chart",
+
+    # Añadir subtítulo
+    subtitle = "Distribution of country (nominal)",
+
+    # Añadir etiqueta eje X
+    x = "Count",
+
+    # Añadir etiqueta eje Y
+    y = "Country") +
+
+  # Aplicar tema
+  theme_classic()
+```
+
+```{r e5_f4, fig.width = 6, fig.height = 5, out.width = "75%"}
+# Ejercicio 5 - Fragmento 4 (nivel dificultad: +++)
+
+# Vertical bar chart: distribution experience
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variable a estética
+  mapping = aes(
+
+    # Mapear variable a eje X + ordenar barras según orden natural valores
+    x = experience)) +
+
+  # Añadir capa gráfico barras
+  geom_bar(
+
+    # Asignar color relleno barras
+    fill = "#107dc1") +
+
+  # Personalizar eje X
+  scale_x_continuous(
+
+    # Definir posición marcas
+    breaks = 1:23) +
+
+  # Añadir títulos y etiquetas ejes
+  labs(
+
+    # Añadir título
+    title = "Vertical bar chart",
+
+    # Añadir subtítulo
+    subtitle = "Distribution of years of experience (discrete)",
+
+    # Añadir etiqueta eje X
+    x = "Years of experience",
+
+    # Añadir etiqueta eje Y
+    y = "Count") +
+
+  # Aplicar tema
+  theme_classic()
+```
+
+```{r e5_f5, fig.width = 8, fig.height = 8, out.width = "100%"}
+# Ejercicio 5 - Fragmento 5 (nivel dificultad: ++++)
+
+# Horizontal bar chart: minutes_played by player_name
+
+# Encadenar pipeline sobre dataframe df_transformed
+df_transformed |>
+
+  # Filtrar observaciones
+  filter(team == "NYK") |>
+
+  # Inicializar gráfico
+  ggplot(
+
+    # Mapear variables a estéticas
+    mapping = aes(
+
+      # Mapear variable a eje X
+      x = minutes_played,
+
+      # Mapear variable a eje Y + ordenar barras mayor a menor valor de arriba abajo
+      y = fct_reorder(player_name, minutes_played))) +
+
+    # Añadir capa gráfico barras
+    geom_col(
+
+      # Asignar color relleno barras
+      fill = "#107dc1") +
+
+    # Añadir títulos y etiquetas ejes
+    labs(
+
+      # Añadir título
+      title = "Horizontal bar chart",
+
+      # Añadir subtítulo
+      subtitle = "Minutes played (continuous) by player (nominal) - New York Knicks",
+
+      # Añadir etiqueta eje X
+      x = "Minutes played",
+
+      # Añadir etiqueta eje Y
+      y = "Player") +
+
+    # Aplicar tema
+    theme_classic()
+```
+
+# Ejercicio 6: pie chart
+
+- En el fragmento de código `e6_f1`, crea un **gráfico circular** que muestre la distribución de la variable categórica nominal `usa_player` del *dataframe* `df_transformed`, con el color `#ffffff` para el borde de los sectores, el color `#cc1237` para la categoría `No`, el color `#107dc1` para la categoría `Yes`, el título `Pie chart`, el subtítulo `Distribution of USA player (nominal)`, la etiqueta `USA player` en la leyenda y el tema visual `theme_void`.
+
+- **Recursos de apoyo:**
+
+  - Lección 3 - Figura 9
+
+  - [The R Graph Gallery - ggplot2 Piechart](https://r-graph-gallery.com/piechart-ggplot2.html)
+
+  - [ggplot2 - Polar coordinates](https://ggplot2.tidyverse.org/reference/coord_polar.html)
+
+```{r e6_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
+# Ejercicio 6 - Fragmento 1 (nivel dificultad: +++)
+
+# Pie chart: distribution usa_player
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variables a estéticas
+  mapping = aes(
+
+    # Mapear valor constante a eje X
+    x = 1,
+
+    # Mapear variable a relleno
+    fill = usa_player)) +
+
+  # Añadir capa gráfico circular
+  geom_bar(
+
+    # Asignar color borde sectores
+    color = "#ffffff") +
+
+  # Transformar sistema coordenadas a polar para crear círculo
+  coord_polar(
+
+    # Mapear eje Y a ángulo
+    theta = "y") +
+
+  # Asignar escala relleno manualmente
+  scale_fill_manual(
+
+    # Asignar color relleno sectores
+    values = c("No" = "#cc1237",
+               "Yes" = "#107dc1")) +
+
+  # Añadir títulos y etiqueta leyenda
+  labs(
+
+    # Añadir título
+    title = "Pie chart",
+
+    # Añadir subtítulo
+    subtitle = "Distribution of USA player (nominal)",
+
+    # Añadir etiqueta leyenda
+    fill = "USA player") +
+
+  # Aplicar tema
+  theme_void()
+```
+
+# Ejercicio 7: histogram
+
+- En el fragmento de código `e7_f1`, crea un **histograma** que muestre la distribución de la variable cuantitativa discreta `one_point_made` del *dataframe* `df_transformed`, con un ancho de intervalo de 20 tiros libres anotados, el primer intervalo comenzando en 0, el color `#107dc1` para el relleno de las barras, el color `#334155` para el borde de las barras, las marcas del eje *X* cada 60 tiros libres anotados, las marcas del eje *Y* cada 25 jugadores, el título `Histogram`, el subtítulo `Distribution of free throws made (discrete)`, las etiquetas `Free throws made` y `Count` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+
+- En el fragmento de código `e7_f2`, crea un **histograma** que muestre la distribución de la variable cuantitativa continua `weight_kg` del *dataframe* `df_transformed`, con un ancho de intervalo de 5 kilogramos, el primer intervalo comenzando en 70, el color `#107dc1` para el relleno de las barras, el color `#334155` para el borde de las barras, las marcas del eje *X* cada 10 kilogramos, las marcas del eje *Y* cada 10 jugadores, el título `Histogram`, el subtítulo `Distribution of weight (continuous)`, las etiquetas `Weight (kg)` y `Count` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+
+- **Recursos de apoyo:**
+
+  - Lección 3 - Figura 10
+
+  - Lección 3 - Figura 11
+
+  - [The R Graph Gallery - Basic histogram with ggplot2](https://r-graph-gallery.com/220-basic-ggplot2-histogram.html)
+
+  - [ggplot2 - Histograms and frequency polygons](https://ggplot2.tidyverse.org/reference/geom_histogram.html)
+
+  - [Stack Overflow - How to make histogram in ggplot2 start at zero on X axis](https://stackoverflow.com/questions/67998673/how-to-make-histogram-in-ggplot2-start-at-zero-on-x-axis)
+
+  - [scales - Equally spaced breaks](https://scales.r-lib.org/reference/breaks_width.html)
+
+```{r e7_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
+# Ejercicio 7 - Fragmento 1 (nivel dificultad: +++)
+
+# Histogram: distribution one_point_made
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variable a estética
+  mapping = aes(
+
+    # Mapear variable a eje X
+    x = one_point_made)) +
+
+  # Añadir capa histograma
+  geom_histogram(
+
+    # Asignar ancho intervalo
+    binwidth = 20,
+
+    # Asignar inicio primer intervalo
+    boundary = 0,
+
+    # Asignar color relleno barras
+    fill = "#107dc1",
+
+    # Asignar color borde barras
+    color = "#334155") +
+
+  # Personalizar eje X
+  scale_x_continuous(
+
+    # Definir separación marcas
+    breaks = breaks_width(60)) +
+
+  # Personalizar eje Y
+  scale_y_continuous(
+
+    # Definir separación marcas
+    breaks = breaks_width(25)) +
+
+  # Añadir títulos y etiquetas ejes
+  labs(
+
+    # Añadir título
+    title = "Histogram",
+
+    # Añadir subtítulo
+    subtitle = "Distribution of free throws made (discrete)",
+
+    # Añadir etiqueta eje X
+    x = "Free throws made",
+
+    # Añadir etiqueta eje Y
+    y = "Count") +
+
+  # Aplicar tema
+  theme_classic()
+```
+
+```{r e7_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
+# Ejercicio 7 - Fragmento 2 (nivel dificultad: +++)
+
+# Histogram: distribution weight_kg
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variable a estética
+  mapping = aes(
+
+    # Mapear variable a eje X
+    x = weight_kg)) +
+
+  # Añadir capa histograma
+  geom_histogram(
+
+    # Asignar ancho intervalo
+    binwidth = 5,
+
+    # Asignar inicio primer intervalo
+    boundary = 70,
+
+    # Asignar color relleno barras
+    fill = "#107dc1",
+
+    # Asignar color borde barras
+    color = "#334155") +
+
+  # Personalizar eje X
+  scale_x_continuous(
+
+    # Definir separación marcas
+    breaks = breaks_width(10)) +
+
+  # Personalizar eje Y
+  scale_y_continuous(
+
+    # Definir separación marcas
+    breaks = breaks_width(10)) +
+
+  # Añadir títulos y etiquetas ejes
+  labs(
+
+    # Añadir título
+    title = "Histogram",
+
+    # Añadir subtítulo
+    subtitle = "Distribution of weight (continuous)",
+
+    # Añadir etiqueta eje X
+    x = "Weight (kg)",
+
+    # Añadir etiqueta eje Y
+    y = "Count") +
+
+  # Aplicar tema
+  theme_classic()
+```
+
+# Ejercicio 8: density plot
+
+- En el fragmento de código `e8_f1`, crea un **gráfico de densidad** que muestre la distribución de la variable cuantitativa discreta `one_point_made` del *dataframe* `df_transformed`, con un ancho de banda de 20 tiros libres anotados, el color `#107dc1` para el relleno y el borde del área, las marcas del eje *X* cada 60 tiros libres anotados, el título `Density plot`, el subtítulo `Distribution of free throws made (discrete)`, las etiquetas `Free throws made` y `Density` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+
+- En el fragmento de código `e8_f2`, crea un **gráfico de densidad** que muestre la distribución de la variable cuantitativa continua `weight_kg` del *dataframe* `df_transformed`, con un ancho de banda de 5 kilogramos, el color `#107dc1` para el relleno y el borde del área, las marcas del eje *X* cada 10 kilogramos, el título `Density plot`, el subtítulo `Distribution of weight (continuous)`, las etiquetas `Weight (kg)` y `Density` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+
+- **Recursos de apoyo:**
+
+  - Lección 3 - Figura 11
+
+  - [The R Graph Gallery - Basic density chart with ggplot2](https://r-graph-gallery.com/21-distribution-plot-using-ggplot2.html)
+
+  - [ggplot2 - Smoothed density estimates](https://ggplot2.tidyverse.org/reference/geom_density.html)
+
+```{r e8_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
+# Ejercicio 8 - Fragmento 1 (nivel dificultad: +++)
+
+# Density plot: distribution one_point_made
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variable a estética
+  mapping = aes(
+
+    # Mapear variable a eje X
+    x = one_point_made)) +
+
+  # Añadir capa gráfico densidad
+  geom_density(
+
+    # Asignar ancho banda
+    bw = 20,
+
+    # Asignar color relleno área
+    fill = "#107dc1",
+
+    # Asignar color borde área
+    color = "#107dc1") +
+
+  # Personalizar eje X
+  scale_x_continuous(
+
+    # Definir separación marcas
+    breaks = breaks_width(60)) +
+
+  # Añadir títulos y etiquetas ejes
+  labs(
+
+    # Añadir título
+    title = "Density plot",
+
+    # Añadir subtítulo
+    subtitle = "Distribution of free throws made (discrete)",
+
+    # Añadir etiqueta eje X
+    x = "Free throws made",
+
+    # Añadir etiqueta eje Y
+    y = "Density") +
+
+  # Aplicar tema
+  theme_classic()
+```
+
+```{r e8_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
+# Ejercicio 8 - Fragmento 2 (nivel dificultad: +++)
+
+# Density plot: distribution weight_kg
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variable a estética
+  mapping = aes(
+
+    # Mapear variable a eje X
+    x = weight_kg)) +
+
+  # Añadir capa gráfico densidad
+  geom_density(
+
+    # Asignar ancho banda
+    bw = 5,
+
+    # Asignar color relleno área
+    fill = "#107dc1",
+
+    # Asignar color borde área
+    color = "#107dc1") +
+
+  # Personalizar eje X
+  scale_x_continuous(
+
+    # Definir separación marcas
+    breaks = breaks_width(10)) +
+
+  # Añadir títulos y etiquetas ejes
+  labs(
+
+    # Añadir título
+    title = "Density plot",
+
+    # Añadir subtítulo
+    subtitle = "Distribution of weight (continuous)",
+
+    # Añadir etiqueta eje X
+    x = "Weight (kg)",
+
+    # Añadir etiqueta eje Y
+    y = "Density") +
+
+  # Aplicar tema
+  theme_classic()
+```
+
+# Ejercicio 9: grouped bar chart
+
+- En el fragmento de código `e9_f1`, crea un **gráfico de barras agrupadas** que muestre la relación entre las variables categóricas nominales `position` y `usa_player` del *dataframe* `df_transformed`, con las categorías de `position` ordenadas de mayor a menor frecuencia en el eje *X*, el porcentaje de `usa_player` dentro de cada `position` en el eje *Y*, las barras de cada `position` una al lado de otra y ligeramente separadas, el color `#cc1237` para la categoría `No`, el color `#107dc1` para la categoría `Yes`, el título `Grouped bar chart`, el subtítulo `Relationship between position (nominal) and USA player (nominal)`, las etiquetas `Position` y `Percentage` en los ejes *X* e *Y*, la etiqueta `USA player` en la leyenda y el tema visual `theme_classic`.
+
+- En el fragmento de código `e9_f2`, crea un **gráfico de barras agrupadas** que muestre la relación entre la variable categórica nominal `position` y la variable categórica ordinal `bmi_category` del *dataframe* `df_transformed`, con las categorías de `position` ordenadas de mayor a menor frecuencia en el eje *X*, el porcentaje de `bmi_category` dentro de cada `position` en el eje *Y*, las barras de cada `position` una al lado de otra, ligeramente separadas y todas con el mismo ancho aunque en alguna `position` falte alguna categoría de `bmi_category`, el color `#b3cde0` para la categoría `Normal`, el color `#107dc1` para la categoría `Overweight`, el color `#08519c` para la categoría `Obese I`, el título `Grouped bar chart`, el subtítulo `Relationship between position (nominal) and BMI category (ordinal)`, las etiquetas `Position` y `Percentage` en los ejes *X* e *Y*, la etiqueta `BMI category` en la leyenda y el tema visual `theme_classic`.
+
+- **Recursos de apoyo:**
+
+  - Lección 3 - Figura 12
+
+  - [The R Graph Gallery - Grouped, stacked and percent stacked barplot in ggplot2](https://r-graph-gallery.com/48-grouped-barplot-with-ggplot2.html)
+
+  - [ggplot2 - FAQ: Barplots](https://ggplot2.tidyverse.org/articles/faq-bars.html)
+
+  - [ggstats - Compute custom proportions with stat_prop()](https://cran.r-project.org/web/packages/ggstats/vignettes/stat_prop.html)
+
+  - [ggplot2 - Dodge overlapping objects side-to-side](https://ggplot2.tidyverse.org/reference/position_dodge.html)
+
+  - [scales - Label percentages (2.5%, 50%, etc)](https://scales.r-lib.org/reference/label_percent.html)
+  
+  - [forcats - Drop unused levels](https://forcats.tidyverse.org/reference/fct_drop.html)
+
+```{r e9_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
+# Ejercicio 9 - Fragmento 1 (nivel dificultad: ++++)
+
+# Grouped bar chart: relationship position - usa_player
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variables a estéticas
+  mapping = aes(
+
+    # Mapear variable a eje X + ordenar categorías mayor a menor frecuencia
+    x = fct_infreq(position),
+
+    # Mapear variable a relleno
+    fill = usa_player,
+
+    # Mapear variable a grupo
+    by = position,
+
+    # Mapear proporción a eje Y
+    y = after_stat(prop))) +
+
+  # Añadir capa gráfico barras
+  geom_bar(
+
+    # Calcular proporciones
+    stat = "prop",
+
+    # Posicionar barras una al lado de otra + ligeramente separadas
+    position = "dodge2",
+
+    # Completar categorías ausentes variable relleno
+    complete = "fill") +
+
+  # Personalizar eje Y
+  scale_y_continuous(
+
+    # Cambiar formato marcas de proporción a porcentaje
+    labels = label_percent()) +
+
+  # Asignar escala relleno manualmente
+  scale_fill_manual(
+
+    # Asignar color relleno barras
+    values = c("No" = "#cc1237",
+               "Yes" = "#107dc1")) +
+
+  # Añadir títulos y etiquetas ejes y leyenda
+  labs(
+
+    # Añadir título
+    title = "Grouped bar chart",
+
+    # Añadir subtítulo
+    subtitle = "Relationship between position (nominal) and USA player (nominal)",
+
+    # Añadir etiqueta eje X
+    x = "Position",
+
+    # Añadir etiqueta eje Y
+    y = "Percentage",
+
+    # Añadir etiqueta leyenda
+    fill = "USA player") +
+
+  # Aplicar tema
+  theme_classic()
+```
+
+```{r e9_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
+# Ejercicio 9 - Fragmento 2 (nivel dificultad: ++++)
+
+# Grouped bar chart: relationship position - bmi_category
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variables a estéticas
+  mapping = aes(
+
+    # Mapear variable a eje X + ordenar categorías mayor a menor frecuencia
+    x = fct_infreq(position),
+
+    # Mapear variable a relleno + eliminar categorías definidas sin observaciones
+    fill = fct_drop(bmi_category),
+
+    # Mapear variable a grupo
+    by = position,
+
+    # Mapear proporción a eje Y
+    y = after_stat(prop))) +
+
+  # Añadir capa gráfico barras
+  geom_bar(
+
+    # Calcular proporciones
+    stat = "prop",
+
+    # Posicionar barras una al lado de otra + ligeramente separadas
+    position = "dodge2",
+
+    # Completar categorías ausentes variable relleno
+    complete = "fill") +
+
+  # Personalizar eje Y
+  scale_y_continuous(
+
+    # Cambiar formato marcas de proporción a porcentaje
+    labels = label_percent()) +
+
+  # Asignar escala relleno manualmente
+  scale_fill_manual(
+
+    # Asignar color relleno barras
+    values = c("Normal" = "#b3cde0",
+               "Overweight" = "#107dc1",
+               "Obese I" = "#08519c")) +
+
+  # Añadir títulos y etiquetas ejes y leyenda
+  labs(
+
+    # Añadir título
+    title = "Grouped bar chart",
+
+    # Añadir subtítulo
+    subtitle = "Relationship between position (nominal) and BMI category (ordinal)",
+
+    # Añadir etiqueta eje X
+    x = "Position",
+
+    # Añadir etiqueta eje Y
+    y = "Percentage",
+
+    # Añadir etiqueta leyenda
+    fill = "BMI category") +
+
+  # Aplicar tema
+  theme_classic()
+```
+
+# Ejercicio 10: stacked bar chart
+
+- En el fragmento de código `e10_f1`, crea un **gráfico de barras apiladas** que muestre la relación entre las variables categóricas nominales `position` y `usa_player` del *dataframe* `df_transformed`, con las categorías de `position` ordenadas de mayor a menor frecuencia en el eje *X*, el porcentaje de `usa_player` dentro de cada `position` en el eje *Y*, la categoría `No` apilada sobre la categoría `Yes` en cada barra, el color `#cc1237` para la categoría `No`, el color `#107dc1` para la categoría `Yes`, el título `Stacked bar chart`, el subtítulo `Relationship between position (nominal) and USA player (nominal)`, las etiquetas `Position` y `Percentage` en los ejes *X* e *Y*, la etiqueta `USA player` en la leyenda y el tema visual `theme_classic`.
+
+- En el fragmento de código `e10_f2`, crea el mismo **gráfico de barras apiladas** del fragmento `e10_f1`, pero con la categoría `Yes` apilada sobre la categoría `No` en cada barra.
+
+- **Recursos de apoyo:**
+
+  - Lección 3 - Figura 12
+
+  - [The R Graph Gallery - Grouped, stacked and percent stacked barplot in ggplot2](https://r-graph-gallery.com/48-grouped-barplot-with-ggplot2.html)
+
+  - [ggplot2 - FAQ: Barplots](https://ggplot2.tidyverse.org/articles/faq-bars.html)
+
+  - [ggplot2 - Stack overlapping objects on top of one another](https://ggplot2.tidyverse.org/reference/position_stack.html)
+
+```{r e10_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
+# Ejercicio 10 - Fragmento 1 (nivel dificultad: +++)
+
+# Stacked bar chart: relationship position - usa_player
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variables a estéticas
+  mapping = aes(
+
+    # Mapear variable a eje X + ordenar categorías mayor a menor frecuencia
+    x = fct_infreq(position),
+
+    # Mapear variable a relleno
+    fill = usa_player)) +
+
+  # Añadir capa gráfico barras
+  geom_bar(
+
+    # Posicionar barras una encima de otra
+    position = "fill") +
+
+  # Personalizar eje Y
+  scale_y_continuous(
+
+    # Cambiar formato marcas de proporción a porcentaje
+    labels = label_percent()) +
+
+  # Asignar escala relleno manualmente
+  scale_fill_manual(
+
+    # Asignar color relleno barras
+    values = c("No" = "#cc1237",
+               "Yes" = "#107dc1")) +
+
+  # Añadir títulos y etiquetas ejes y leyenda
+  labs(
+
+    # Añadir título
+    title = "Stacked bar chart",
+
+    # Añadir subtítulo
+    subtitle = "Relationship between position (nominal) and USA player (nominal)",
+
+    # Añadir etiqueta eje X
+    x = "Position",
+
+    # Añadir etiqueta eje Y
+    y = "Percentage",
+
+    # Añadir etiqueta leyenda
+    fill = "USA player") +
+
+  # Aplicar tema
+  theme_classic()
+```
+
+```{r e10_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
+# Ejercicio 10 - Fragmento 2 (nivel dificultad: +++)
+
+# Stacked bar chart: relationship position - usa_player
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variables a estéticas
+  mapping = aes(
+
+    # Mapear variable a eje X + ordenar categorías mayor a menor frecuencia
+    x = fct_infreq(position),
+
+    # Mapear variable a relleno + invertir orden categorías
+    fill = fct_rev(usa_player))) +
+
+  # Añadir capa gráfico barras
+  geom_bar(
+
+    # Posicionar barras una encima de otra
+    position = "fill") +
+
+  # Personalizar eje Y
+  scale_y_continuous(
+
+    # Cambiar formato marcas de proporción a porcentaje
+    labels = label_percent()) +
+
+  # Asignar escala relleno manualmente
+  scale_fill_manual(
+
+    # Asignar color relleno barras
+    values = c("No" = "#cc1237",
+               "Yes" = "#107dc1")) +
+
+  # Añadir títulos y etiquetas ejes y leyenda
+  labs(
+
+    # Añadir título
+    title = "Stacked bar chart",
+
+    # Añadir subtítulo
+    subtitle = "Relationship between position (nominal) and USA player (nominal)",
+
+    # Añadir etiqueta eje X
+    x = "Position",
+
+    # Añadir etiqueta eje Y
+    y = "Percentage",
+
+    # Añadir etiqueta leyenda
+    fill = "USA player") +
+
+  # Aplicar tema
+  theme_classic()
+```
+
+# Ejercicio 11: heatmap
+
+- En el fragmento de código `e11_f1`, crea un **mapa de calor** que muestre la relación entre la variable categórica nominal `position` y la variable categórica ordinal `bmi_category` del *dataframe* `df_transformed`, con las categorías de `position` ordenadas de mayor a menor frecuencia en el eje *X*, las categorías de `bmi_category` en su orden natural de abajo arriba en el eje *Y*, el porcentaje de `bmi_category` dentro de cada `position` como color de relleno de las celdas, el color `#ffffff` para el borde de las celdas, una escala de color que va de `#b3cde0` (valores bajos) a `#08519c` (valores altos), las marcas de la leyenda en porcentaje, el eje *X* en la parte superior, el título `Heatmap`, el subtítulo `Relationship between position (nominal) and BMI category (ordinal)`, las etiquetas `Position` y `BMI category` en los ejes *X* e *Y*, la etiqueta `% within position` en la leyenda, el tema visual `theme_minimal` y sin cuadrícula.
+
+- **Nota:** el mapa de calor se utiliza sobre todo cuando alguna de las variables tiene muchas categorías, pero aquí se emplea con pocas para poder compararlo con el gráfico de barras agrupadas del fragmento de código `e9_f2`.
+
+- **Recursos de apoyo:**
+
+  - Lección 3 - Figura 13
+
+  - [The R Graph Gallery - ggplot2 heatmap](https://r-graph-gallery.com/79-levelplot-with-ggplot2.html)
+
+  - [ggplot2 - Rectangles](https://ggplot2.tidyverse.org/reference/geom_tile.html)
+
+  - [ggstats - Compute cross-tabulation statistics with stat_cross()](https://cran.r-project.org/web/packages/ggstats/vignettes/stat_cross.html)
+
+  - [ggplot2 - Gradient colour scales](https://ggplot2.tidyverse.org/reference/scale_gradient.html)
+
+  - [ggplot2 - Position scales for discrete data](https://ggplot2.tidyverse.org/reference/scale_discrete.html)
+
+  - [ggplot2 - Modify components of a theme](https://ggplot2.tidyverse.org/reference/theme.html)
+
+```{r e11_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
+# Ejercicio 11 - Fragmento 1 (nivel dificultad: ++++)
+
+# Heatmap: relationship position - bmi_category
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variables a estéticas
+  mapping = aes(
+
+    # Mapear variable a eje X + ordenar categorías mayor a menor frecuencia
+    x = fct_infreq(position),
+
+    # Mapear variable a eje Y + ordenar categorías según orden natural de abajo arriba
+    y = bmi_category,
+
+    # Mapear proporción dentro cada categoría eje X a relleno
+    fill = after_stat(col.prop))) +
+
+  # Añadir capa mapa calor
+  geom_tile(
+
+    # Calcular tabla contingencia
+    stat = "cross",
+
+    # Asignar color borde celdas
+    color = "#ffffff") +
+
+  # Personalizar escala relleno
+  scale_fill_gradient(
+
+    # Asignar color valores bajos
+    low = "#b3cde0",
+
+    # Asignar color valores altos
+    high = "#08519c",
+
+    # Cambiar formato marcas de proporción a porcentaje
+    labels = label_percent()) +
+
+  # Personalizar eje X
+  scale_x_discrete(
+
+    # Ubicar eje X en parte superior
+    position = "top") +
+
+  # Añadir títulos y etiquetas ejes y leyenda
+  labs(
+
+    # Añadir título
+    title = "Heatmap",
+
+    # Añadir subtítulo
+    subtitle = "Relationship between position (nominal) and BMI category (ordinal)",
+
+    # Añadir etiqueta eje X
+    x = "Position",
+
+    # Añadir etiqueta eje Y
+    y = "BMI category",
+
+    # Añadir etiqueta leyenda
+    fill = "% within position") +
+
+  # Aplicar tema
+  theme_minimal() +
+
+  # Personalizar tema
+  theme(
+
+    # Ocultar cuadrícula
+    panel.grid = element_blank())
+```
+
+# Ejercicio 12: parallel boxplots
+
+- En el fragmento de código `e12_f1`, representa la relación entre la variable categórica nominal `position` y la variable cuantitativa continua `bmi_kgm2` del *dataframe* `df_transformed` mediante **diagramas de caja paralelos (*parallel boxplots*)**, con las categorías de `position` ordenadas de mayor a menor frecuencia en el eje *X*, `bmi_kgm2` en el eje *Y*, un ancho de caja de 0.5, el color `#ffffff` para el relleno de las cajas, el color `#334155` para sus bordes, la mediana, los bigotes y los valores atípicos, el título `Parallel boxplots`, el subtítulo `Relationship between position (nominal) and BMI (continuous)`, las etiquetas `Position` y `BMI (kg/m²)` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+
+- En el fragmento de código `e12_f2`, crea los mismos **diagramas de caja paralelos** del fragmento `e12_f1`, pero ocultando los valores atípicos y superponiendo las observaciones individuales mediante un **gráfico de puntos con desplazamiento aleatorio (*jitter plot*)**, con un desplazamiento horizontal de 0.25, un desplazamiento vertical de 0, la forma 21 (círculo con relleno y borde), un tamaño de 2, el color `#b3cde0` para el relleno de los puntos, el color `#334155` para sus bordes, una transparencia de 0.5 y el título `Parallel boxplots with jitter plots`.
+
+- En el fragmento de código `e12_f3`, crea los mismos **diagramas de caja paralelos** del fragmento `e12_f1`, pero ocultando los valores atípicos y superponiendo las observaciones individuales mediante un **diagrama de sina (*sina plot*)**, con un ancho máximo de dispersión de 0.7, la forma 21 (círculo con relleno y borde), un tamaño de 2, el color `#b3cde0` para el relleno de los puntos, el color `#334155` para sus bordes, una transparencia de 0.5 y el título `Parallel boxplots with sina plots`.
+
+- En el fragmento de código `e12_f4`, crea los mismos **diagramas de caja paralelos** del fragmento `e12_f1`, pero con un ancho de caja de 0.3, ocultando los valores atípicos y añadiendo detrás de cada caja un **diagrama de violín (*violin plot*)** de ancho 0.7, con el color `#107dc1` tanto para el relleno como para el borde, y el título `Parallel boxplots with violin plots`.
+
+- **Recursos de apoyo:**
+
+  - Lección 3 - Figura 15
+
+  - [The R Graph Gallery - Basic ggplot2 boxplot](https://r-graph-gallery.com/262-basic-boxplot-with-ggplot2.html)
+
+  - [ggplot2 - A box and whiskers plot (in the style of Tukey)](https://ggplot2.tidyverse.org/reference/geom_boxplot.html)
+
+  - [The R Graph Gallery - Boxplot with individual data points](https://r-graph-gallery.com/89-box-and-scatter-plot-with-ggplot2.html)
+
+  - [ggplot2 - Jitter points to avoid overplotting](https://ggplot2.tidyverse.org/reference/position_jitter.html)
+
+  - [ggplot2 - Aesthetic specifications - Point - Shape](https://ggplot2.tidyverse.org/articles/ggplot2-specs.html)
+
+  - [ggforce - Sina plot](https://ggforce.data-imaginist.com/reference/geom_sina.html)
+
+  - [The R Graph Gallery - Violin plot with included boxplot and sample size in ggplot2](https://r-graph-gallery.com/violin_and_boxplot_ggplot2.html)
+
+  - [ggplot2 - Violin plot](https://ggplot2.tidyverse.org/reference/geom_violin.html)
+
+```{r e12_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
+# Ejercicio 12 - Fragmento 1 (nivel dificultad: ++)
+
+# Parallel boxplots: relationship position - bmi_kgm2
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variables a estéticas
+  mapping = aes(
+
+    # Mapear variable a eje X + ordenar categorías mayor a menor frecuencia
+    x = fct_infreq(position),
+
+    # Mapear variable a eje Y
+    y = bmi_kgm2)) +
+
+  # Añadir capa diagrama caja
+  geom_boxplot(
+
+    # Asignar ancho cajas
+    width = 0.5,
+
+    # Asignar color relleno cajas
+    fill = "#ffffff",
+
+    # Asignar color borde cajas, mediana, bigotes y valores atípicos
+    color = "#334155") +
+
+  # Añadir títulos y etiquetas ejes
+  labs(
+
+    # Añadir título
+    title = "Parallel boxplots",
+
+    # Añadir subtítulo
+    subtitle = "Relationship between position (nominal) and BMI (continuous)",
+
+    # Añadir etiqueta eje X
+    x = "Position",
+
+    # Añadir etiqueta eje Y
+    y = "BMI (kg/m²)") +
+
+  # Aplicar tema
+  theme_classic()
+```
+
+```{r e12_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
+# Ejercicio 12 - Fragmento 2 (nivel dificultad: +++)
+
+# Parallel boxplots with jitter plots: relationship position - bmi_kgm2
+
+# Fijar semilla para reproducibilidad
+set.seed(123)
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variables a estéticas
+  mapping = aes(
+
+    # Mapear variable a eje X + ordenar categorías mayor a menor frecuencia
+    x = fct_infreq(position),
+
+    # Mapear variable a eje Y
+    y = bmi_kgm2)) +
+
+  # Añadir capa diagrama caja
+  geom_boxplot(
+
+    # Asignar ancho cajas
+    width = 0.5,
+
+    # Asignar color relleno cajas
+    fill = "#ffffff",
+
+    # Asignar color borde cajas, mediana y bigotes
+    color = "#334155",
+
+    # Ocultar valores atípicos
+    outliers = FALSE) +
+
+  # Añadir capa jitter
+  geom_jitter(
+
+    # Asignar desplazamiento horizontal
+    width = 0.25,
+
+    # Asignar desplazamiento vertical
+    height = 0,
+
+    # Asignar forma puntos
+    shape = 21,
+
+    # Asignar tamaño puntos
+    size = 2,
+
+    # Asignar color relleno puntos
+    fill = "#b3cde0",
+
+    # Asignar color borde puntos
+    color = "#334155",
+
+    # Asignar transparencia puntos
+    alpha = 0.5) +
+
+  # Añadir títulos y etiquetas ejes
+  labs(
+
+    # Añadir título
+    title = "Parallel boxplots with jitter plots",
+
+    # Añadir subtítulo
+    subtitle = "Relationship between position (nominal) and BMI (continuous)",
+
+    # Añadir etiqueta eje X
+    x = "Position",
+
+    # Añadir etiqueta eje Y
+    y = "BMI (kg/m²)") +
+
+  # Aplicar tema
+  theme_classic()
+```
+
+```{r e12_f3, fig.width = 6, fig.height = 5, out.width = "75%"}
+# Ejercicio 12 - Fragmento 3 (nivel dificultad: +++)
+
+# Parallel boxplots with sina plots: relationship position - bmi_kgm2
+
+# Fijar semilla para reproducibilidad
+set.seed(123)
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variables a estéticas
+  mapping = aes(
+
+    # Mapear variable a eje X + ordenar categorías mayor a menor frecuencia
+    x = fct_infreq(position),
+
+    # Mapear variable a eje Y
+    y = bmi_kgm2)) +
+
+  # Añadir capa diagrama caja
+  geom_boxplot(
+
+    # Asignar ancho cajas
+    width = 0.5,
+
+    # Asignar color relleno cajas
+    fill = "#ffffff",
+
+    # Asignar color borde cajas, mediana y bigotes
+    color = "#334155",
+
+    # Ocultar valores atípicos
+    outliers = FALSE) +
+
+  # Añadir capa sina
+  geom_sina(
+
+    # Asignar ancho máximo dispersión puntos
+    maxwidth = 0.7,
+
+    # Asignar forma puntos
+    shape = 21,
+
+    # Asignar tamaño puntos
+    size = 2,
+
+    # Asignar color relleno puntos
+    fill = "#b3cde0",
+
+    # Asignar color borde puntos
+    color = "#334155",
+
+    # Asignar transparencia puntos
+    alpha = 0.5) +
+
+  # Añadir títulos y etiquetas ejes
+  labs(
+
+    # Añadir título
+    title = "Parallel boxplots with sina plots",
+
+    # Añadir subtítulo
+    subtitle = "Relationship between position (nominal) and BMI (continuous)",
+
+    # Añadir etiqueta eje X
+    x = "Position",
+
+    # Añadir etiqueta eje Y
+    y = "BMI (kg/m²)") +
+
+  # Aplicar tema
+  theme_classic()
+```
+
+```{r e12_f4, fig.width = 6, fig.height = 5, out.width = "75%"}
+# Ejercicio 12 - Fragmento 4 (nivel dificultad: +++)
+
+# Parallel boxplots with violin plots: relationship position - bmi_kgm2
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variables a estéticas
+  mapping = aes(
+
+    # Mapear variable a eje X + ordenar categorías mayor a menor frecuencia
+    x = fct_infreq(position),
+
+    # Mapear variable a eje Y
+    y = bmi_kgm2)) +
+
+  # Añadir capa violín
+  geom_violin(
+
+    # Asignar ancho violines
+    width = 0.7,
+
+    # Asignar color relleno violines
+    fill = "#107dc1",
+
+    # Asignar color borde violines
+    color = "#107dc1") +
+
+  # Añadir capa diagrama caja
+  geom_boxplot(
+
+    # Asignar ancho cajas
+    width = 0.3,
+
+    # Asignar color relleno cajas
+    fill = "#ffffff",
+
+    # Asignar color borde cajas, mediana y bigotes
+    color = "#334155",
+
+    # Ocultar valores atípicos
+    outliers = FALSE) +
+
+  # Añadir títulos y etiquetas ejes
+  labs(
+
+    # Añadir título
+    title = "Parallel boxplots with violin plots",
+
+    # Añadir subtítulo
+    subtitle = "Relationship between position (nominal) and BMI (continuous)",
+
+    # Añadir etiqueta eje X
+    x = "Position",
+
+    # Añadir etiqueta eje Y
+    y = "BMI (kg/m²)") +
+
+  # Aplicar tema
+  theme_classic()
+```
+
+# Ejercicio 13: ridgeline plot
+
+- En el fragmento de código `e13_f1`, crea un **gráfico de crestas** que muestre la relación entre la variable categórica nominal `team` y la variable cuantitativa continua `height_m` del *dataframe* `df_transformed`, con `height_m` en el eje *X*, las categorías de `team` ordenadas de menor a mayor mediana de `height_m` de abajo arriba en el eje *Y*, un solapamiento entre crestas de 1.5, el recorte de las colas de las crestas por debajo del 1 % de la altura de la cresta más alta, el color `#107dc1` para el relleno de las crestas, el color `#ffffff` para su borde, una línea vertical en la mediana de `height_m` de cada `team`, el título `Ridgeline plot`, el subtítulo `Relationship between team (nominal) and height (continuous)`, las etiquetas `Height (m)` y `Team` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+
+- **Recursos de apoyo:**
+
+  - Lección 3 - Figura 15
+
+  - [The R Graph Gallery - Basic ridgeline plot](https://r-graph-gallery.com/294-basic-ridgeline-plot.html)
+
+  - [ggridges - Introduction to ggridges](https://wilkelab.org/ggridges/articles/introduction.html)
+
+  - [ggridges - Create ridgeline plot](https://wilkelab.org/ggridges/reference/geom_density_ridges.html)
+
+  - [ggplot2 - FAQ: Reordering](https://ggplot2.tidyverse.org/articles/faq-reordering.html)
+
+```{r e13_f1, fig.width = 8, fig.height = 8, out.width = "100%"}
+# Ejercicio 13 - Fragmento 1 (nivel dificultad: ++++)
+
+# Ridgeline plot: relationship team - height_m
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variables a estéticas
+  mapping = aes(
+
+    # Mapear variable a eje X
+    x = height_m,
+
+    # Mapear variable a eje Y + ordenar categorías menor a mayor mediana de abajo arriba
+    y = fct_reorder(team, height_m, .fun = median))) +
+
+  # Añadir capa crestas
+  geom_density_ridges(
+
+    # Asignar solapamiento crestas
+    scale = 1.5,
+
+    # Recortar colas crestas por debajo 1 % altura cresta más alta
+    rel_min_height = 0.01,
+
+    # Asignar color relleno crestas
+    fill = "#107dc1",
+
+    # Asignar color borde crestas
+    color = "#ffffff",
+
+    # Dibujar líneas verticales cuantiles
+    quantile_lines = TRUE,
+
+    # Dibujar solo línea vertical mediana
+    quantiles = 2) +
+
+  # Añadir títulos y etiquetas ejes
+  labs(
+
+    # Añadir título
+    title = "Ridgeline plot",
+
+    # Añadir subtítulo
+    subtitle = "Relationship between team (nominal) and height (continuous)",
+
+    # Añadir etiqueta eje X
+    x = "Height (m)",
+
+    # Añadir etiqueta eje Y
+    y = "Team") +
+
+  # Aplicar tema
+  theme_classic()
+```
+
+# Ejercicio 14: scatter plot
+
+- En el fragmento de código `e14_f1`, crea un **diagrama de dispersión** que muestre la relación entre las variables cuantitativas continuas `height_m` y `minutes_played` del *dataframe* `df_transformed`, con `height_m` en el eje *X*, `minutes_played` en el eje *Y*, la forma 21 (círculo con relleno y borde) para los puntos, el color `#b3cde0` para su relleno, el color `#334155` para sus bordes, una transparencia de 0.5, una línea de tendencia suavizada LOESS de color `#cc1237` sin intervalo de confianza, una leyenda en la parte inferior sin título con el texto `LOESS trend line`, las marcas del eje *X* cada 0.1 metros, las marcas del eje *Y* cada 500 minutos, el título `Scatter plot with semi-transparent points`, el subtítulo `Relationship between height (continuous) and minutes played (continuous)`, las etiquetas `Height (m)` y `Minutes played` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+
+- En el fragmento de código `e14_f2`, crea el mismo **diagrama de dispersión** del fragmento `e14_f1`, pero dividido en tres paneles (uno por cada categoría de la variable categórica nominal `position`) dispuestos en una sola fila y ordenados de mayor a menor frecuencia, con las mismas escalas en los ejes *X* e *Y* de todos los paneles, el título `Scatter plot with facets` y el subtítulo `Relationship between height (continuous) and minutes played (continuous) by position (nominal)`.
+
+- **Recursos de apoyo:**
+
+  - Lección 3 - Figura 16
+  
+  - Lección 3 - Figura 17
+  
+  - [The R Graph Gallery - Basic scatterplot with R and ggplot2](https://r-graph-gallery.com/272-basic-scatterplot-with-ggplot2.html)
+
+  - [ggplot2 - Points](https://ggplot2.tidyverse.org/reference/geom_point.html)
+
+  - [ggplot2 - Smoothed conditional means](https://ggplot2.tidyverse.org/reference/geom_smooth.html)
+
+  - [ggplot2 - Wrap a 1d ribbon of panels into 2d](https://ggplot2.tidyverse.org/reference/facet_wrap.html)
+  
+  - [ggplot2 - Lay out panels in a grid](https://ggplot2.tidyverse.org/reference/facet_grid.html)
+
+```{r e14_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
+# Ejercicio 14 - Fragmento 1 (nivel dificultad: +++)
+
+# Scatter plot: relationship height_m - minutes_played
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variables a estéticas
+  mapping = aes(
+
+    # Mapear variable a eje X
+    x = height_m,
+
+    # Mapear variable a eje Y
+    y = minutes_played)) +
+
+  # Añadir capa puntos
+  geom_point(
+
+    # Asignar forma puntos
+    shape = 21,
+
+    # Asignar color relleno puntos
+    fill = "#b3cde0",
+
+    # Asignar color borde puntos
+    color = "#334155",
+
+    # Asignar transparencia puntos
+    alpha = 0.5) +
+
+  # Añadir capa línea tendencia
+  geom_smooth(
+
+    # Mapear valor constante a color línea
+    mapping = aes(color = "LOESS trend line"),
+
+    # Asignar método suavizado
+    method = "loess",
+
+    # Ocultar intervalo confianza
+    se = FALSE) +
+
+  # Asignar escala color manualmente
+  scale_color_manual(
+
+    # Asignar color línea
+    values = c("LOESS trend line" = "#cc1237")) +
+
+  # Personalizar eje X
+  scale_x_continuous(
+
+    # Definir separación marcas
+    breaks = breaks_width(0.1)) +
+
+  # Personalizar eje Y
+  scale_y_continuous(
+
+    # Definir separación marcas
+    breaks = breaks_width(500)) +
+
+  # Añadir títulos y etiquetas ejes y leyenda
+  labs(
+
+    # Añadir título
+    title = "Scatter plot with semi-transparent points",
+
+    # Añadir subtítulo
+    subtitle = "Relationship between height (continuous) and minutes played (continuous)",
+
+    # Añadir etiqueta eje X
+    x = "Height (m)",
+
+    # Añadir etiqueta eje Y
+    y = "Minutes played",
+
+    # Ocultar título leyenda
+    color = NULL) +
+
+  # Aplicar tema
+  theme_classic() +
+
+  # Personalizar tema
+  theme(
+
+    # Ubicar leyenda parte inferior
+    legend.position = "bottom")
+```
+
+```{r e14_f2, fig.width = 9, fig.height = 5, out.width = "100%"}
+# Ejercicio 14 - Fragmento 2 (nivel dificultad: ++++)
+
+# Scatter plot: relationship height_m - minutes_played
+
+# Inicializar gráfico
+ggplot(
+
+  # Especificar datos
+  data = df_transformed,
+
+  # Mapear variables a estéticas
+  mapping = aes(
+
+    # Mapear variable a eje X
+    x = height_m,
+
+    # Mapear variable a eje Y
+    y = minutes_played)) +
+
+  # Añadir capa puntos
+  geom_point(
+
+    # Asignar forma puntos
+    shape = 21,
+
+    # Asignar color relleno puntos
+    fill = "#b3cde0",
+
+    # Asignar color borde puntos
+    color = "#334155",
+
+    # Asignar transparencia puntos
+    alpha = 0.5) +
+
+  # Añadir capa línea tendencia
+  geom_smooth(
+
+    # Mapear valor constante a color línea
+    mapping = aes(color = "LOESS trend line"),
+
+    # Asignar método suavizado
+    method = "loess",
+
+    # Ocultar intervalo confianza
+    se = FALSE) +
+
+  # Asignar escala color manualmente
+  scale_color_manual(
+
+    # Asignar color línea
+    values = c("LOESS trend line" = "#cc1237")) +
+
+  # Personalizar eje X
+  scale_x_continuous(
+
+    # Definir separación marcas
+    breaks = breaks_width(0.1)) +
+
+  # Personalizar eje Y
+  scale_y_continuous(
+
+    # Definir separación marcas
+    breaks = breaks_width(500)) +
+
+  # Dividir gráfico en paneles
+  facet_wrap(
+
+    # Asignar variable paneles + ordenar categorías mayor a menor frecuencia
+    facets = vars(fct_infreq(position)),
+
+    # Asignar número filas
+    nrow = 1,
+
+    # Compartir escalas ejes entre paneles
+    scales = "fixed") +
+
+  # Añadir títulos y etiquetas ejes y leyenda
+  labs(
+
+    # Añadir título
+    title = "Scatter plot with facets",
+
+    # Añadir subtítulo
+    subtitle = "Relationship between height (continuous) and minutes played (continuous) by position (nominal)",
+
+    # Añadir etiqueta eje X
+    x = "Height (m)",
+
+    # Añadir etiqueta eje Y
+    y = "Minutes played",
+
+    # Ocultar título leyenda
+    color = NULL) +
+
+  # Aplicar tema
+  theme_classic() +
+
+  # Personalizar tema
+  theme(
+
+    # Ubicar leyenda parte inferior
+    legend.position = "bottom")
+```
