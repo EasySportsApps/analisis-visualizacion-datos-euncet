@@ -1,7 +1,7 @@
 ---
 # ENCABEZADO YAML: solo modificar campo author
 title: "Lección 3 - Práctica 5: R mock practical exam" # Título documento
-# author: "Nombre y apellidos" # Autor documento
+author: "Nombre y apellidos" # Autor documento
 output: # Formato salida documento
   html_document: # Salida documento formato HTML
     toc: true # Incluir tabla contenido (índice)
