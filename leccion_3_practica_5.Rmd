@@ -1,7 +1,7 @@
 ---
 # ENCABEZADO YAML: solo modificar campo author
 title: "Lección 3 - Práctica 5: R mock practical exam" # Título documento
-author: "Nombre y apellidos" # Autor documento
+# author: "Nombre y apellidos" # Autor documento
 output: # Formato salida documento
   html_document: # Salida documento formato HTML
     toc: true # Incluir tabla contenido (índice)
@@ -12,13 +12,15 @@ output: # Formato salida documento
 
 ```{=html}
 <style>
-#TOC, #TOC .list-group-item { font-size: 13px; } /* Estilo tabla de contenido */
+#TOC, #TOC .list-group-item { font-size: 13px; } /* Estilo texto tabla contenido */
+.tocify li { line-height: 19px; } /* Estilo interlineado tabla contenido */
 h1 { font-weight: bold; } /* Estilo títulos nivel 1 */
 body { font-size: 16px; line-height: 1.5; } /* Estilo texto general */
 ul { padding-left: 1.2em; } /* Estilo listas */
 a { word-break: break-all; } /* Estilo enlaces */
 code { font-size: 16px; white-space: normal; word-break: normal; } /* Estilo código inline */
-pre code { font-size: 15px; white-space: pre-wrap; } /* Estilo código fragmentos */
+pre code { font-size: 15px; white-space: pre-wrap; word-break: break-all; } /* Estilo código fragmentos */
+.tocify-extend-page { height: 0 !important; } /* Estilo espacio final documento */
 </style>
 ```
 
@@ -48,18 +50,6 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 - Tras finalizar la práctica, copia o mueve los archivos `.Rmd` y `.html` a una carpeta nueva con tu nombre completo, comprime esta carpeta en formato ZIP o RAR y envíala al profesor a través del formulario correspondiente.
 
 - El profesor solo evaluará el archivo `.html` y, por lo tanto, la nota de la práctica será igual a 0 si el documento no se renderiza correctamente.
-
-# Comprobaciones
-
-- No modifiques el siguiente fragmento de código.
-
-```{r checks, echo=FALSE}
-# Usuario del sistema
-Sys.info()["user"]
-
-# Fecha y hora del sistema
-Sys.time()
-```
 
 # Ejercicio 1: packages
 
@@ -166,7 +156,7 @@ head(df)
 
   - **Transformación 9:** convierte las variables cuantitativas continuas `height_m`, `weight_kg`, `bmi_kgm2` y `minutes_played` a tipo numérico (*numeric*).
 
-  - **Transformación 10:** etiqueta las categorías de la variable `position` del siguiente modo: `"C"` como `"Center"` (pívot), `"F"` como `"Forward"` (alero) y `"G"` como `"Guard"` (base/escolta).
+  - **Transformación 10:** etiqueta las categorías de la variable `position` del siguiente modo: `"C"` como `"Center"` (pívot), `"F"` como `"Forward"` (alero) y `"G"` como `"Guard"` (base).
 
   - **Transformación 11:** etiqueta las categorías de la variable `bmi_category` del siguiente modo: `"U"` como `"Underweight"` (bajo peso), `"N"` como `"Normal"` (normopeso), `"O"` como `"Overweight"` (sobrepeso), `"OI"` como `"Obese I"` (obesidad grado I), `"OII"` como `"Obese II"` (obesidad grado II) y `"OIII"` como `"Obese III"` (obesidad grado III).
 
@@ -259,31 +249,31 @@ head(df_transformed)
 
 - En el fragmento de código `e4_f1`, explora el *dataframe* `df_transformed` con la función correspondiente para comprobar su estructura, el tipo de dato de sus variables, sus valores faltantes y sus medidas descriptivas.
 
-- Responde a las siguientes preguntas sobre el *dataframe* `df_transformed` a partir de la salida obtenida tras el fragmento de código `e4_f1`:
+  - A partir de la salida obtenida tras el fragmento de código `e4_f1`, responde a las siguientes preguntas:
 
-  - **Pregunta 1:** ¿Cuántas observaciones (filas) y variables (columnas) tiene el *dataframe* `df_transformed`?
+    - **Pregunta 1:** ¿Cuántas observaciones (filas) y variables (columnas) tiene el *dataframe* `df_transformed`?
 
-    **Respuesta:** 484 observaciones y 12 variables.
+      **Respuesta:** 484 observaciones y 12 variables.
 
-  - **Pregunta 2:** ¿Cuántas variables son de naturaleza categórica y cuántas de naturaleza cuantitativa?
+    - **Pregunta 2:** ¿Cuántas variables son de naturaleza categórica y cuántas de naturaleza cuantitativa?
 
-    **Respuesta:** 6 categóricas y 6 cuantitativas.
+      **Respuesta:** 6 categóricas y 6 cuantitativas.
 
-  - **Pregunta 3:** ¿Qué variables presentan valores faltantes (*missings*) y cuántos tiene cada una?
+    - **Pregunta 3:** ¿Qué variables presentan valores faltantes (*missings*) y cuántos tiene cada una?
 
-    **Respuesta:** `weight_kg`, `bmi_kgm2` y `bmi_category`, con 6 valores faltantes cada una.
+      **Respuesta:** `weight_kg`, `bmi_kgm2` y `bmi_category`, con 6 valores faltantes cada una.
 
-  - **Pregunta 4:** ¿Qué variables cuantitativas parecen ajustarse a una distribución normal?
+    - **Pregunta 4:** ¿Qué variables cuantitativas parecen ajustarse a una distribución normal?
 
-    **Respuesta:** `height_m`, `weight_kg` y `bmi_kgm2`.
+      **Respuesta:** `height_m`, `weight_kg` y `bmi_kgm2`.
 
-  - **Pregunta 5:** ¿Qué medidas de tendencia central y de dispersión es adecuado utilizar para describir las variables cuantitativas que se ajustan a una distribución normal?
+    - **Pregunta 5:** ¿Qué medidas de tendencia central y de dispersión es adecuado utilizar para describir las variables cuantitativas que se ajustan a una distribución normal?
 
-    **Respuesta:** media y desviación estándar.
+      **Respuesta:** media y desviación estándar.
 
-  - **Pregunta 6:** ¿Qué medidas de tendencia central y de dispersión es adecuado utilizar para describir las variables cuantitativas que no se ajustan a una distribución normal?
+    - **Pregunta 6:** ¿Qué medidas de tendencia central y de dispersión es adecuado utilizar para describir las variables cuantitativas que no se ajustan a una distribución normal?
 
-    **Respuesta:** mediana e intervalo intercuartílico.
+      **Respuesta:** mediana e intervalo intercuartílico.
 
 - En el fragmento de código `e4_f2`, copia y pega la línea de código `df_transformed <- na.omit(df_transformed)` para eliminar todas las observaciones (filas) del *dataframe* `df_transformed` que contengan al menos un valor faltante en cualquiera de las variables (*listwise deletion*).
 
@@ -920,7 +910,19 @@ ggplot(
 
 - En el fragmento de código `e9_f1`, crea un **gráfico de barras agrupadas** que muestre la relación entre las variables categóricas nominales `position` y `usa_player` del *dataframe* `df_transformed`, con las categorías de `position` ordenadas de mayor a menor frecuencia en el eje *X*, el porcentaje de `usa_player` dentro de cada `position` en el eje *Y*, las barras de cada `position` una al lado de otra y ligeramente separadas, el color `#cc1237` para la categoría `No`, el color `#107dc1` para la categoría `Yes`, el título `Grouped bar chart`, el subtítulo `Relationship between position (nominal) and USA player (nominal)`, las etiquetas `Position` y `Percentage` en los ejes *X* e *Y*, la etiqueta `USA player` en la leyenda y el tema visual `theme_classic`.
 
+  - A partir del gráfico obtenido tras el fragmento de código `e9_f1`, responde a la siguiente pregunta:
+
+    - **Pregunta 7:** ¿En qué posiciones de juego predominan los jugadores estadounidenses y en cuál no?
+
+      **Respuesta:** los jugadores estadounidenses predominan de forma destacada en las posiciones `Guard` (base) y `Forward` (alero), mientras que los jugadores no estadounidenses predominan ligeramente en la posición `Center` (pívot).
+
 - En el fragmento de código `e9_f2`, crea un **gráfico de barras agrupadas** que muestre la relación entre la variable categórica nominal `position` y la variable categórica ordinal `bmi_category` del *dataframe* `df_transformed`, con las categorías de `position` ordenadas de mayor a menor frecuencia en el eje *X*, el porcentaje de `bmi_category` dentro de cada `position` en el eje *Y*, las barras de cada `position` una al lado de otra, ligeramente separadas y todas con el mismo ancho aunque en alguna `position` falte alguna categoría de `bmi_category`, el color `#b3cde0` para la categoría `Normal`, el color `#107dc1` para la categoría `Overweight`, el color `#08519c` para la categoría `Obese I`, el título `Grouped bar chart`, el subtítulo `Relationship between position (nominal) and BMI category (ordinal)`, las etiquetas `Position` y `Percentage` en los ejes *X* e *Y*, la etiqueta `BMI category` en la leyenda y el tema visual `theme_classic`.
+
+  - A partir del gráfico obtenido tras el fragmento de código `e9_f2`, responde a la siguiente pregunta:
+
+    - **Pregunta 8:** ¿Qué categoría del índice de masa corporal predomina en cada posición de juego?
+
+      **Respuesta:** la categoría `Normal` (normopeso) predomina de forma destacada en las posiciones `Guard` (base) y `Forward` (alero), mientras que la categoría `Overweight` (sobrepeso) predomina ligeramente en la posición `Center` (pívot).
 
 - **Recursos de apoyo:**
 
