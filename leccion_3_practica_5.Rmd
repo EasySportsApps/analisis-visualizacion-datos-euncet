@@ -62,7 +62,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE)
   - Lección 1 - Práctica 7
 
 ```{r e1_f1}
-# Ejercicio 1 - Fragmento 1 (nivel dificultad: +)
+#### Ejercicio 1 - Fragmento 1 (nivel dificultad: +) ####
 
 # Cargar paquete readr para importar datos
 library(readr)
@@ -109,14 +109,14 @@ library(ggridges)
   - Lección 2 - Práctica 5
 
 ```{r e2_f1}
-# Ejercicio 2 - Fragmento 1 (nivel dificultad: ++)
+#### Ejercicio 2 - Fragmento 1 (nivel dificultad: ++) ####
 
 # Importar conjunto datos formato CSV + asignar a objeto df
 df <- read_csv("https://raw.githubusercontent.com/EasySportsApps/nba_api_25_26_data/refs/heads/main/nba_players_regular_season_25_26_wide_data.csv")
 ```
 
 ```{r e2_f2}
-# Ejercicio 2 - Fragmento 2 (nivel dificultad: +)
+#### Ejercicio 2 - Fragmento 2 (nivel dificultad: +) ####
 
 # Mostrar primeras observaciones dataframe df
 head(df)
@@ -171,7 +171,7 @@ head(df)
   - Lección 3 - Práctica 2 - Figura 5
 
 ```{r e3_f1}
-# Ejercicio 3 - Fragmento 1 (nivel dificultad: ++++)
+#### Ejercicio 3 - Fragmento 1 (nivel dificultad: ++++) ####
 
 # Crear objeto df_transformed + asignarle dataframe df + encadenar pipeline
 df_transformed <- df |>
@@ -239,7 +239,7 @@ df_transformed <- df |>
 ```
 
 ```{r e3_f2}
-# Ejercicio 3 - Fragmento 2 (nivel dificultad: +)
+#### Ejercicio 3 - Fragmento 2 (nivel dificultad: +) ####
 
 # Mostrar primeras observaciones dataframe df_transformed
 head(df_transformed)
@@ -284,14 +284,14 @@ head(df_transformed)
   - Lección 2 - Práctica 9 - Tabla 8
 
 ```{r e4_f1}
-# Ejercicio 4 - Fragmento 1 (nivel dificultad: +)
+#### Ejercicio 4 - Fragmento 1 (nivel dificultad: +) ####
 
 # Explorar dataframe df_transformed
 skim(df_transformed)
 ```
 
 ```{r e4_f2}
-# Ejercicio 4 - Fragmento 2 (nivel dificultad: +)
+#### Ejercicio 4 - Fragmento 2 (nivel dificultad: +) ####
 
 # Eliminar observaciones con valores faltantes (listwise deletion)
 df_transformed <- na.omit(df_transformed)
@@ -324,11 +324,11 @@ df_transformed <- na.omit(df_transformed)
   - [ggplot2 - Complete themes](https://ggplot2.tidyverse.org/reference/ggtheme.html)
 
   - [forcats - Introduction to forcats](https://forcats.tidyverse.org/articles/forcats.html)
-  
+
   - [forcats - Reorder factor levels by first appearance, frequency, or numeric order](https://forcats.tidyverse.org/reference/fct_inorder.html)
-  
+
   - [forcats - Reverse order of factor levels](https://forcats.tidyverse.org/reference/fct_rev.html)
-  
+
   - [forcats - Reorder factor levels by sorting along another variable](https://forcats.tidyverse.org/reference/fct_reorder.html)
 
   - [ggplot2 - FAQ: Reordering](https://ggplot2.tidyverse.org/articles/faq-reordering.html)
@@ -340,7 +340,7 @@ df_transformed <- na.omit(df_transformed)
   - [ggplot2 - Position scales for continuous data (x & y)](https://ggplot2.tidyverse.org/reference/scale_continuous.html)
 
 ```{r e5_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
-# Ejercicio 5 - Fragmento 1 (nivel dificultad: ++)
+#### Ejercicio 5 - Fragmento 1 (nivel dificultad: ++) ####
 
 # Vertical bar chart: distribution bmi_category
 
@@ -382,7 +382,7 @@ ggplot(
 ```
 
 ```{r e5_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
-# Ejercicio 5 - Fragmento 2 (nivel dificultad: +++)
+#### Ejercicio 5 - Fragmento 2 (nivel dificultad: +++) ####
 
 # Vertical bar chart: distribution position
 
@@ -424,7 +424,7 @@ ggplot(
 ```
 
 ```{r e5_f3, fig.width = 9, fig.height = 10, out.width = "100%"}
-# Ejercicio 5 - Fragmento 3 (nivel dificultad: ++++)
+#### Ejercicio 5 - Fragmento 3 (nivel dificultad: ++++) ####
 
 # Horizontal bar chart: distribution country
 
@@ -476,7 +476,7 @@ ggplot(
 ```
 
 ```{r e5_f4, fig.width = 6, fig.height = 5, out.width = "75%"}
-# Ejercicio 5 - Fragmento 4 (nivel dificultad: +++)
+#### Ejercicio 5 - Fragmento 4 (nivel dificultad: +++) ####
 
 # Vertical bar chart: distribution experience
 
@@ -524,7 +524,7 @@ ggplot(
 ```
 
 ```{r e5_f5, fig.width = 8, fig.height = 8, out.width = "100%"}
-# Ejercicio 5 - Fragmento 5 (nivel dificultad: ++++)
+#### Ejercicio 5 - Fragmento 5 (nivel dificultad: ++++) ####
 
 # Horizontal bar chart: minutes_played by player_name
 
@@ -584,7 +584,7 @@ df_transformed |>
   - [ggplot2 - Polar coordinates](https://ggplot2.tidyverse.org/reference/coord_polar.html)
 
 ```{r e6_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
-# Ejercicio 6 - Fragmento 1 (nivel dificultad: +++)
+#### Ejercicio 6 - Fragmento 1 (nivel dificultad: +++) ####
 
 # Pie chart: distribution usa_player
 
@@ -659,7 +659,7 @@ ggplot(
   - [scales - Equally spaced breaks](https://scales.r-lib.org/reference/breaks_width.html)
 
 ```{r e7_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
-# Ejercicio 7 - Fragmento 1 (nivel dificultad: +++)
+#### Ejercicio 7 - Fragmento 1 (nivel dificultad: +++) ####
 
 # Histogram: distribution one_point_made
 
@@ -722,7 +722,7 @@ ggplot(
 ```
 
 ```{r e7_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
-# Ejercicio 7 - Fragmento 2 (nivel dificultad: +++)
+#### Ejercicio 7 - Fragmento 2 (nivel dificultad: +++) ####
 
 # Histogram: distribution weight_kg
 
@@ -799,7 +799,7 @@ ggplot(
   - [ggplot2 - Smoothed density estimates](https://ggplot2.tidyverse.org/reference/geom_density.html)
 
 ```{r e8_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
-# Ejercicio 8 - Fragmento 1 (nivel dificultad: +++)
+#### Ejercicio 8 - Fragmento 1 (nivel dificultad: +++) ####
 
 # Density plot: distribution one_point_made
 
@@ -853,7 +853,7 @@ ggplot(
 ```
 
 ```{r e8_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
-# Ejercicio 8 - Fragmento 2 (nivel dificultad: +++)
+#### Ejercicio 8 - Fragmento 2 (nivel dificultad: +++) ####
 
 # Density plot: distribution weight_kg
 
@@ -937,11 +937,11 @@ ggplot(
   - [ggplot2 - Dodge overlapping objects side-to-side](https://ggplot2.tidyverse.org/reference/position_dodge.html)
 
   - [scales - Label percentages (2.5%, 50%, etc)](https://scales.r-lib.org/reference/label_percent.html)
-  
+
   - [forcats - Drop unused levels](https://forcats.tidyverse.org/reference/fct_drop.html)
 
 ```{r e9_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
-# Ejercicio 9 - Fragmento 1 (nivel dificultad: ++++)
+#### Ejercicio 9 - Fragmento 1 (nivel dificultad: ++++) ####
 
 # Grouped bar chart: relationship position - usa_player
 
@@ -1014,7 +1014,7 @@ ggplot(
 ```
 
 ```{r e9_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
-# Ejercicio 9 - Fragmento 2 (nivel dificultad: ++++)
+#### Ejercicio 9 - Fragmento 2 (nivel dificultad: ++++) ####
 
 # Grouped bar chart: relationship position - bmi_category
 
@@ -1104,7 +1104,7 @@ ggplot(
   - [ggplot2 - Stack overlapping objects on top of one another](https://ggplot2.tidyverse.org/reference/position_stack.html)
 
 ```{r e10_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
-# Ejercicio 10 - Fragmento 1 (nivel dificultad: +++)
+#### Ejercicio 10 - Fragmento 1 (nivel dificultad: +++) ####
 
 # Stacked bar chart: relationship position - usa_player
 
@@ -1165,7 +1165,7 @@ ggplot(
 ```
 
 ```{r e10_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
-# Ejercicio 10 - Fragmento 2 (nivel dificultad: +++)
+#### Ejercicio 10 - Fragmento 2 (nivel dificultad: +++) ####
 
 # Stacked bar chart: relationship position - usa_player
 
@@ -1248,7 +1248,7 @@ ggplot(
   - [ggplot2 - Modify components of a theme](https://ggplot2.tidyverse.org/reference/theme.html)
 
 ```{r e11_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
-# Ejercicio 11 - Fragmento 1 (nivel dificultad: ++++)
+#### Ejercicio 11 - Fragmento 1 (nivel dificultad: ++++) ####
 
 # Heatmap: relationship position - bmi_category
 
@@ -1356,7 +1356,7 @@ ggplot(
   - [ggplot2 - Violin plot](https://ggplot2.tidyverse.org/reference/geom_violin.html)
 
 ```{r e12_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
-# Ejercicio 12 - Fragmento 1 (nivel dificultad: ++)
+#### Ejercicio 12 - Fragmento 1 (nivel dificultad: ++) ####
 
 # Parallel boxplots: relationship position - bmi_kgm2
 
@@ -1407,7 +1407,7 @@ ggplot(
 ```
 
 ```{r e12_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
-# Ejercicio 12 - Fragmento 2 (nivel dificultad: +++)
+#### Ejercicio 12 - Fragmento 2 (nivel dificultad: +++) ####
 
 # Parallel boxplots with jitter plots: relationship position - bmi_kgm2
 
@@ -1488,7 +1488,7 @@ ggplot(
 ```
 
 ```{r e12_f3, fig.width = 6, fig.height = 5, out.width = "75%"}
-# Ejercicio 12 - Fragmento 3 (nivel dificultad: +++)
+#### Ejercicio 12 - Fragmento 3 (nivel dificultad: +++) ####
 
 # Parallel boxplots with sina plots: relationship position - bmi_kgm2
 
@@ -1566,7 +1566,7 @@ ggplot(
 ```
 
 ```{r e12_f4, fig.width = 6, fig.height = 5, out.width = "75%"}
-# Ejercicio 12 - Fragmento 4 (nivel dificultad: +++)
+#### Ejercicio 12 - Fragmento 4 (nivel dificultad: +++) ####
 
 # Parallel boxplots with violin plots: relationship position - bmi_kgm2
 
@@ -1648,7 +1648,7 @@ ggplot(
   - [ggplot2 - FAQ: Reordering](https://ggplot2.tidyverse.org/articles/faq-reordering.html)
 
 ```{r e13_f1, fig.width = 8, fig.height = 8, out.width = "100%"}
-# Ejercicio 13 - Fragmento 1 (nivel dificultad: ++++)
+#### Ejercicio 13 - Fragmento 1 (nivel dificultad: ++++) ####
 
 # Ridgeline plot: relationship team - height_m
 
@@ -1716,9 +1716,9 @@ ggplot(
 - **Recursos de apoyo:**
 
   - Lección 3 - Figura 16
-  
+
   - Lección 3 - Figura 17
-  
+
   - [The R Graph Gallery - Basic scatterplot with R and ggplot2](https://r-graph-gallery.com/272-basic-scatterplot-with-ggplot2.html)
 
   - [ggplot2 - Points](https://ggplot2.tidyverse.org/reference/geom_point.html)
@@ -1726,11 +1726,11 @@ ggplot(
   - [ggplot2 - Smoothed conditional means](https://ggplot2.tidyverse.org/reference/geom_smooth.html)
 
   - [ggplot2 - Wrap a 1d ribbon of panels into 2d](https://ggplot2.tidyverse.org/reference/facet_wrap.html)
-  
+
   - [ggplot2 - Lay out panels in a grid](https://ggplot2.tidyverse.org/reference/facet_grid.html)
 
 ```{r e14_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
-# Ejercicio 14 - Fragmento 1 (nivel dificultad: +++)
+#### Ejercicio 14 - Fragmento 1 (nivel dificultad: +++) ####
 
 # Scatter plot: relationship height_m - minutes_played
 
@@ -1823,7 +1823,7 @@ ggplot(
 ```
 
 ```{r e14_f2, fig.width = 9, fig.height = 5, out.width = "100%"}
-# Ejercicio 14 - Fragmento 2 (nivel dificultad: ++++)
+#### Ejercicio 14 - Fragmento 2 (nivel dificultad: ++++) ####
 
 # Scatter plot: relationship height_m - minutes_played - position
 
