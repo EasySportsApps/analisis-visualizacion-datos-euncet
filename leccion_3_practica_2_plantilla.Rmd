@@ -10,8 +10,16 @@ output: # Formato salida documento
     code_folding: show # Código desplegado por defecto en salida documento con botón Hide para ocultarlo
     theme: # Tema visual bootswatch      
       bootswatch: journal # Más temas disponibles en: https://bootswatch.com/
-    self_contained: true # Incluir todos recursos dentro archivo HTML 
+    self_contained: true # Incluir todos recursos dentro archivo HTML
 ---
+
+<!-- Estilos CSS: no modificar -->
+
+```{=html}
+<style>
+.tocify-extend-page { height: 0 !important; } /* Estilo del espacio al final del documento */
+</style>
+```
 
 # Objetivo de la práctica
 
@@ -26,20 +34,21 @@ output: # Formato salida documento
 - Las opciones de los fragmentos de código utilizadas en esta práctica, por orden de aparición en el documento, son las siguientes:
 
   - `include=TRUE`: se ejecuta el código de R y se muestran en el documento HTML resultante el código ejecutado y sus resultados, ya sean valores, tablas o gráficos.
-  
+
   - `message=FALSE`: se ejecuta el código de R sin mostrar en el documento HTML resultante los mensajes generados durante su ejecución.
 
   - `warning=FALSE`: se ejecuta el código de R sin mostrar en el documento HTML resultante las advertencias generadas durante su ejecución.
 
   - `results='hide'`: se ejecuta el código de R y se muestran en el documento HTML resultante el código ejecutado y los gráficos, pero no sus resultados en formato de texto (valores y tablas).
-  
+
   - `class.source='fold-hide'`: se muestra en el documento HTML resultante el código ejecutado, colapsado y con un botón `Show` para desplegarlo.
-  
+
   - `fig.width=10`: se define en 10 pulgadas el ancho de los gráficos mostrados en el documento HTML resultante.
 
   - `fig.height=15`: se define en 15 pulgadas el alto de los gráficos mostrados en el documento HTML resultante.
 
 ```{r setup, include=TRUE}
+
 
 ```
 
@@ -48,6 +57,7 @@ output: # Formato salida documento
 - En el segundo fragmento de código de R, denominado `data_import_and_transformation`, copia y pega el código del archivo [`r_script_nba_rs_2526.R`](https://github.com/EasySportsApps/analisis-visualizacion-datos-euncet/blob/main/r_script_nba_rs_2526.R), teniendo en cuenta que no es necesario copiar la sección `#### Instalación paquetes Python ####`.
 
 ```{r data_import_and_transformation, include=TRUE, results='hide', class.source='fold-hide'}
+
 
 ```
 
@@ -59,6 +69,7 @@ output: # Formato salida documento
 
 ```{r explore_data_structure, include=TRUE}
 
+
 ```
 
 # Selección y filtrado de datos
@@ -66,6 +77,7 @@ output: # Formato salida documento
 - En el cuarto fragmento de código de R, denominado `select_and_filter_data`, selecciona las variables `player_name`, `position` y `height_m`, filtra las observaciones para conservar solo a los jugadores clasificados en una única posición de juego (`Center`, `Forward`, `Guard`), elimina las categorías no utilizadas de la variable `position` (`Center-Forward`, `Forward-Center`, `Forward-Guard`, `Guard-Forward`) y almacena el resultado en el *dataframe* `df_r_nba_rs_2526_reduced`.
 
 ```{r select_and_filter_data, include=TRUE}
+
 
 ```
 
@@ -78,6 +90,7 @@ output: # Formato salida documento
 - Entre estos paquetes se incluye también `gridGraphics`, porque el paquete `cowplot`, que se utiliza al final de la práctica para combinar varios gráficos en una misma figura, lo necesita para poder incluir el gráfico creado con el paquete `graphics`.
 
 ```{r install_and_load_packages, include=TRUE, results='hide'}
+
 
 ```
 
@@ -99,6 +112,7 @@ output: # Formato salida documento
 
 ```{r boxplot_graphics, include=TRUE}
 
+
 ```
 
 # Creación del boxplot con el paquete lattice
@@ -108,6 +122,7 @@ output: # Formato salida documento
 - En el gráfico resultante se muestran los mismos elementos del diagrama de caja que en el creado con el paquete `graphics`, con la diferencia de que `bwplot()` representa por defecto la mediana con un punto, por lo que se ha incluido `pch = "|"` en `par.settings` para representarla con una línea, que es lo habitual, ya que el punto suele reservarse para representar la media en este tipo de gráfico.
 
 ```{r boxplot_lattice, include=TRUE}
+
 
 ```
 
@@ -131,6 +146,7 @@ output: # Formato salida documento
 
 ```{r boxplot_ggplot2, include=TRUE}
 
+
 ```
 
 # Conversión del boxplot de ggplot2 a animado con el paquete gganimate
@@ -140,6 +156,7 @@ output: # Formato salida documento
 - En el gráfico resultante se muestran los mismos elementos del diagrama de caja que en el creado con el paquete `ggplot2`, con la diferencia de que `gganimate` lo convierte en una animación en la que las cajas aparecen una a una según la posición de juego.
 
 ```{r boxplot_ggplot2_gganimate, include=TRUE}
+
 
 ```
 
@@ -151,6 +168,7 @@ output: # Formato salida documento
 
 ```{r boxplot_ggplot2_plotly, include=TRUE}
 
+
 ```
 
 # Creación del boxplot con el paquete plotly
@@ -160,6 +178,7 @@ output: # Formato salida documento
 - En el gráfico resultante se muestran los mismos elementos que en el diagrama de caja convertido a interactivo con la función `ggplotly()`, con la diferencia de que `plot_ly()` permite personalizar la información que aparece al pasar el cursor del ratón, como el nombre del jugador (`player_name`) en cada valor atípico.
 
 ```{r boxplot_plotly, include=TRUE}
+
 
 ```
 
@@ -171,6 +190,7 @@ output: # Formato salida documento
 
 ```{r boxplot_ggpubr, include=TRUE}
 
+
 ```
 
 # Creación del boxplot con el paquete tidyplots
@@ -181,6 +201,7 @@ output: # Formato salida documento
 
 ```{r boxplot_tidyplots, include=TRUE}
 
+
 ```
 
 # Creación del boxplot con el paquete ggstatsplot
@@ -189,9 +210,10 @@ output: # Formato salida documento
 
 - En el gráfico resultante se muestran los elementos del diagrama de caja junto con otros elementos que `ggbetweenstats()` añade por defecto (diagrama de violín, gráfico de puntos con desplazamiento aleatorio, media y resultados de pruebas estadísticas), ya que `ggstatsplot`, como extensión de `ggplot2`, combina visualización de datos y análisis estadístico.
 
-- Los resultados de las pruebas estadísticas (ANOVA de Welch y comparaciones por pares de Games-Howell con ajuste de Holm) indican diferencias estadísticamente significativas en la altura media tanto entre las tres posiciones de juego a la vez, *F*(2, 186.77) = 547.19, *p* < .001, como entre cada par de posiciones, *p*~Holm~ < .001, con los `Center` (*M* = 2.11 m) por encima de los `Forward` (*M* = 2.03 m) y estos por encima de los `Guard` (*M* = 1.92 m).
+- Los resultados de las pruebas estadísticas (ANOVA de Welch y comparaciones por pares de Games-Howell con ajuste de Holm) indican diferencias estadísticamente significativas en la altura media tanto entre las tres posiciones de juego a la vez, *F*(2, 186.77) = 547.19, *p* \< .001, como entre cada par de posiciones, *p*~Holm~ \< .001, con los `Center` (*M* = 2.11 m) por encima de los `Forward` (*M* = 2.03 m) y estos por encima de los `Guard` (*M* = 1.92 m).
 
 ```{r boxplot_ggstatsplot, include=TRUE}
+
 
 ```
 
@@ -202,5 +224,6 @@ output: # Formato salida documento
 - Solo se combinan los diagramas de caja estáticos, ya que `cowplot` no puede incluir en una figura estática los gráficos interactivos creados con `plotly` ni el gráfico animado creado con `gganimate`.
 
 ```{r static_boxplots_cowplot, include=TRUE, fig.width=10, fig.height=15}
+
 
 ```
