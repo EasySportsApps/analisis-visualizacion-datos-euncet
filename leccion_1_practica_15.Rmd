@@ -2,8 +2,8 @@
 # ENCABEZADO YAML
 # Aquí se personaliza el formato de salida del archivo .Rmd
 title: "Lección 1 - Práctica 15: R Markdown" # Título del documento
-author: "Nombre y apellidos" # Autor del documento
-date: "dd/mm/aaaa" # Fecha del documento
+# author: "Nombre y apellidos" # Autor del documento
+# date: "dd/mm/aaaa" # Fecha del documento
 output: # Formato de salida del documento  
   html_document: # Salida del documento en formato HTML    
     toc: true # Incluir una tabla de contenido (índice) 
@@ -14,15 +14,26 @@ output: # Formato de salida del documento
     self_contained: true # Incluir todos los recursos dentro del archivo HTML 
 ---
 
+<!-- ESTILOS CSS -->
+
+```{=html}
+<style>
+.tocify-extend-page { height: 0 !important; } /* Estilo espacio final documento */
+</style>
+```
+
 <!-- CUERPO DEL ARCHIVO -->
 
 <!-- Aquí se muestra cómo crear un encabezado de primer nivel -->
-# Introducción 
+
+# Introducción
 
 <!-- Aquí se muestra cómo crear un encabezado de segundo nivel en cursiva -->
+
 ## *Objetivo*
 
 <!-- Aquí se muestra cómo escribir texto en negrita, en cursiva y cómo insertar un hipervínculo en un texto explicativo -->
+
 En este **documento HTML** creado con [R Markdown](https://rmarkdown.rstudio.com/) se muestra cómo combinar fragmentos de código (*code chunks*) de R y Python.
 
 ## *¿Qué es R Markdown?*
@@ -34,6 +45,7 @@ R Markdown es una herramienta para generar documentos o presentaciones profesion
 Para aprender más sobre R Markdown se recomienda consultar las siguientes referencias:
 
 <!-- Aquí se muestra cómo crear una lista con viñetas y cómo insertar hipervínculos en URLs -->
+
 - Posit. (s. f.). *rmarkdown :: Cheatsheet*. <https://rstudio.github.io/cheatsheets/html/rmarkdown.html>
 - Xie, Y., Allaire, J. J. y Grolemund, G. (2026). *R Markdown: The definitive guide*. Chapman & Hall/CRC. <https://pkg.yihui.org/rmarkdown-book/>
 - Xie, Y., Dervieux, C. y Riederer, E. (2026). *R Markdown cookbook*. Chapman & Hall/CRC. <https://pkg.yihui.org/rmarkdown-cookbook/>
@@ -43,11 +55,13 @@ Para aprender más sobre R Markdown se recomienda consultar las siguientes refer
 ## *Paquetes de R*
 
 <!-- Aquí se muestra cómo dar formato de código a varias palabras -->
+
 Los paquetes de R necesarios para la práctica son `reticulate` y `ggplot2`.
 
 El código para cargar estos paquetes se ha ocultado con la opción `echo=FALSE`.
 
 <!-- Aquí se muestra cómo insertar un fragmento de código de R y cómo ocultar código en el documento de salida con la opción echo-->
+
 ```{r, echo=FALSE}
 # Cargar el paquete reticulate
 library("reticulate")
@@ -63,6 +77,7 @@ Los paquetes de Python necesarios para la práctica son `pandas` y `matplotlib`.
 El código para importar estos paquetes se ha ocultado con la opción `echo=FALSE`.
 
 <!-- Aquí se muestra cómo insertar un fragmento de código de Python -->
+
 ```{python, echo=FALSE}
 # Importar el paquete pandas como pd
 import pandas as pd
@@ -116,10 +131,11 @@ df_py
 A continuación, se mostrarán cuatro diagramas de caja (*boxplots*):
 
 <!-- Aquí se muestra cómo crear una lista numerada -->
-1. *Boxplot* creado con el paquete `ggplot2` de R y con datos de R.
-2. *Boxplot* creado con el paquete `ggplot2` de R y con datos de Python.
-3. *Boxplot* creado con el paquete `matplotlib` de Python y con datos de Python.
-4. *Boxplot* creado con el paquete `matplotlib` de Python y con datos de R.
+
+1.  *Boxplot* creado con el paquete `ggplot2` de R y con datos de R.
+2.  *Boxplot* creado con el paquete `ggplot2` de R y con datos de Python.
+3.  *Boxplot* creado con el paquete `matplotlib` de Python y con datos de Python.
+4.  *Boxplot* creado con el paquete `matplotlib` de Python y con datos de R.
 
 ## *Creación de un boxplot con R y con datos de R*
 
