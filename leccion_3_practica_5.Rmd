@@ -190,11 +190,11 @@ df_transformed <- df |>
   mutate(
     bmi_category = case_when(
       bmi_kgm2 < 18.5 ~ "U",
-      bmi_kgm2 < 25   ~ "N",
-      bmi_kgm2 < 30   ~ "O",
-      bmi_kgm2 < 35   ~ "OI",
-      bmi_kgm2 < 40   ~ "OII",
-      bmi_kgm2 >= 40  ~ "OIII")) |>
+      bmi_kgm2 < 25 ~ "N",
+      bmi_kgm2 < 30 ~ "O",
+      bmi_kgm2 < 35 ~ "OI",
+      bmi_kgm2 < 40 ~ "OII",
+      bmi_kgm2 >= 40 ~ "OIII")) |>
 
   # Transformación 5: crear variable usa_player
   mutate(usa_player = country == "USA") |>
