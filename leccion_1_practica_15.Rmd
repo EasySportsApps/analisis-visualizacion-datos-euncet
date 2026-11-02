@@ -18,7 +18,7 @@ output: # Formato de salida del documento
 
 ```{=html}
 <style>
-.tocify-extend-page { height: 0 !important; } /* Estilo espacio final documento */
+.tocify-extend-page { height: 0 !important; } /* Estilo del espacio al final del documento */
 </style>
 ```
 
