@@ -112,12 +112,16 @@ library(ggridges)
 ```{r e2_f1}
 #### Ejercicio 2 - Fragmento 1 (nivel dificultad: ++) ####
 
+# --- readr ---
+
 # Importar conjunto datos formato CSV + asignar a objeto df
 df <- read_csv("https://raw.githubusercontent.com/EasySportsApps/nba_api_25_26_data/refs/heads/main/nba_players_regular_season_25_26_wide_data.csv")
 ```
 
 ```{r e2_f2}
 #### Ejercicio 2 - Fragmento 2 (nivel dificultad: +) ####
+
+# --- base R ---
 
 # Mostrar primeras observaciones dataframe df
 head(df)
@@ -173,6 +177,8 @@ head(df)
 
 ```{r e3_f1}
 #### Ejercicio 3 - Fragmento 1 (nivel dificultad: ++++) ####
+
+# --- dplyr ---
 
 # Crear objeto df_transformed + asignarle dataframe df + encadenar pipeline
 df_transformed <- df |>
@@ -242,6 +248,8 @@ df_transformed <- df |>
 ```{r e3_f2}
 #### Ejercicio 3 - Fragmento 2 (nivel dificultad: +) ####
 
+# --- base R ---
+
 # Mostrar primeras observaciones dataframe df_transformed
 head(df_transformed)
 ```
@@ -287,12 +295,16 @@ head(df_transformed)
 ```{r e4_f1}
 #### Ejercicio 4 - Fragmento 1 (nivel dificultad: +) ####
 
+# --- skimr ---
+
 # Explorar dataframe df_transformed
 skim(df_transformed)
 ```
 
 ```{r e4_f2}
 #### Ejercicio 4 - Fragmento 2 (nivel dificultad: +) ####
+
+# --- base R ---
 
 # Eliminar observaciones con valores faltantes (listwise deletion)
 df_transformed <- na.omit(df_transformed)
@@ -345,6 +357,8 @@ df_transformed <- na.omit(df_transformed)
 
 # Vertical bar chart: distribution bmi_category
 
+# --- ggplot2 ---
+
 # Inicializar gráfico
 ggplot(
 
@@ -387,6 +401,8 @@ ggplot(
 
 # Vertical bar chart: distribution position
 
+# --- ggplot2 ---
+
 # Inicializar gráfico
 ggplot(
 
@@ -428,6 +444,8 @@ ggplot(
 #### Ejercicio 5 - Fragmento 3 (nivel dificultad: ++++) ####
 
 # Horizontal bar chart: distribution country
+
+# --- ggplot2 ---
 
 # Inicializar gráfico
 ggplot(
@@ -481,6 +499,8 @@ ggplot(
 
 # Vertical bar chart: distribution experience
 
+# --- ggplot2 ---
+
 # Inicializar gráfico
 ggplot(
 
@@ -528,6 +548,8 @@ ggplot(
 #### Ejercicio 5 - Fragmento 5 (nivel dificultad: ++++) ####
 
 # Horizontal bar chart: minutes_played by player_name
+
+# --- ggplot2 ---
 
 # Encadenar pipeline sobre dataframe df_transformed
 df_transformed |>
@@ -588,6 +610,8 @@ df_transformed |>
 #### Ejercicio 6 - Fragmento 1 (nivel dificultad: +++) ####
 
 # Pie chart: distribution usa_player
+
+# --- ggplot2 ---
 
 # Inicializar gráfico
 ggplot(
@@ -664,6 +688,8 @@ ggplot(
 
 # Histogram: distribution one_point_made
 
+# --- ggplot2 ---
+
 # Inicializar gráfico
 ggplot(
 
@@ -726,6 +752,8 @@ ggplot(
 #### Ejercicio 7 - Fragmento 2 (nivel dificultad: +++) ####
 
 # Histogram: distribution weight_kg
+
+# --- ggplot2 ---
 
 # Inicializar gráfico
 ggplot(
@@ -804,6 +832,8 @@ ggplot(
 
 # Density plot: distribution one_point_made
 
+# --- ggplot2 ---
+
 # Inicializar gráfico
 ggplot(
 
@@ -857,6 +887,8 @@ ggplot(
 #### Ejercicio 8 - Fragmento 2 (nivel dificultad: +++) ####
 
 # Density plot: distribution weight_kg
+
+# --- ggplot2 ---
 
 # Inicializar gráfico
 ggplot(
@@ -946,6 +978,8 @@ ggplot(
 
 # Grouped bar chart: relationship position - usa_player
 
+# --- ggplot2 ---
+
 # Inicializar gráfico
 ggplot(
 
@@ -1018,6 +1052,8 @@ ggplot(
 #### Ejercicio 9 - Fragmento 2 (nivel dificultad: ++++) ####
 
 # Grouped bar chart: relationship position - bmi_category
+
+# --- ggplot2 ---
 
 # Inicializar gráfico
 ggplot(
@@ -1109,6 +1145,8 @@ ggplot(
 
 # Stacked bar chart: relationship position - usa_player
 
+# --- ggplot2 ---
+
 # Inicializar gráfico
 ggplot(
 
@@ -1169,6 +1207,8 @@ ggplot(
 #### Ejercicio 10 - Fragmento 2 (nivel dificultad: +++) ####
 
 # Stacked bar chart: relationship position - usa_player
+
+# --- ggplot2 ---
 
 # Inicializar gráfico
 ggplot(
@@ -1253,6 +1293,8 @@ ggplot(
 
 # Heatmap: relationship position - bmi_category
 
+# --- ggplot2 ---
+
 # Inicializar gráfico
 ggplot(
 
@@ -1330,9 +1372,9 @@ ggplot(
 
 - En el fragmento de código `e12_f1`, representa la relación entre la variable categórica nominal `position` y la variable cuantitativa continua `bmi_kgm2` del *dataframe* `df_transformed` mediante **diagramas de caja paralelos (*parallel boxplots*)**, con las categorías de `position` ordenadas de mayor a menor frecuencia en el eje *X*, `bmi_kgm2` en el eje *Y*, un ancho de caja de 0.5, el color `#ffffff` para el relleno de las cajas, el color `#334155` para sus bordes, la mediana, los bigotes y los valores atípicos, el título `Parallel boxplots`, el subtítulo `Relationship between position (nominal) and BMI (continuous)`, las etiquetas `Position` y `BMI (kg/m²)` en los ejes *X* e *Y* y el tema visual `theme_classic`.
 
-- En el fragmento de código `e12_f2`, crea los mismos **diagramas de caja paralelos** del fragmento `e12_f1`, pero ocultando los valores atípicos y superponiendo las observaciones individuales mediante un **gráfico de puntos con desplazamiento aleatorio (*jitter plot*)**, con un desplazamiento horizontal de 0.25, un desplazamiento vertical de 0, la forma 21 (círculo con relleno y borde), un tamaño de 2, el color `#b3cde0` para el relleno de los puntos, el color `#334155` para sus bordes, una transparencia de 0.5 y el título `Parallel boxplots with jitter plots`.
+- En el fragmento de código `e12_f2`, crea los mismos **diagramas de caja paralelos** del fragmento `e12_f1`, pero ocultando los valores atípicos y superponiendo las observaciones individuales mediante un **gráfico de puntos con desplazamiento aleatorio (*jitter plot*)**, con un desplazamiento horizontal de 0.25, un desplazamiento vertical de 0, puntos circulares con relleno y borde, un tamaño de 2, el color `#b3cde0` para el relleno de los puntos, el color `#334155` para sus bordes, una transparencia de 0.5 y el título `Parallel boxplots with jitter plots`.
 
-- En el fragmento de código `e12_f3`, crea los mismos **diagramas de caja paralelos** del fragmento `e12_f1`, pero ocultando los valores atípicos y superponiendo las observaciones individuales mediante un **diagrama de sina (*sina plot*)**, con un ancho máximo de dispersión de 0.7, la forma 21 (círculo con relleno y borde), un tamaño de 2, el color `#b3cde0` para el relleno de los puntos, el color `#334155` para sus bordes, una transparencia de 0.5 y el título `Parallel boxplots with sina plots`.
+- En el fragmento de código `e12_f3`, crea los mismos **diagramas de caja paralelos** del fragmento `e12_f1`, pero ocultando los valores atípicos y superponiendo las observaciones individuales mediante un **diagrama de sina (*sina plot*)**, con un ancho máximo de dispersión de 0.7, puntos circulares con relleno y borde, un tamaño de 2, el color `#b3cde0` para el relleno de los puntos, el color `#334155` para sus bordes, una transparencia de 0.5 y el título `Parallel boxplots with sina plots`.
 
 - En el fragmento de código `e12_f4`, crea los mismos **diagramas de caja paralelos** del fragmento `e12_f1`, pero con un ancho de caja de 0.3, ocultando los valores atípicos y añadiendo detrás de cada caja un **diagrama de violín (*violin plot*)** de ancho 0.7, con el color `#107dc1` tanto para el relleno como para el borde, y el título `Parallel boxplots with violin plots`.
 
@@ -1360,6 +1402,8 @@ ggplot(
 #### Ejercicio 12 - Fragmento 1 (nivel dificultad: ++) ####
 
 # Parallel boxplots: relationship position - bmi_kgm2
+
+# --- ggplot2 ---
 
 # Inicializar gráfico
 ggplot(
@@ -1412,8 +1456,12 @@ ggplot(
 
 # Parallel boxplots with jitter plots: relationship position - bmi_kgm2
 
+# --- base R ---
+
 # Fijar semilla para reproducibilidad
 set.seed(123)
+
+# --- ggplot2 ---
 
 # Inicializar gráfico
 ggplot(
@@ -1454,7 +1502,7 @@ ggplot(
     # Asignar desplazamiento vertical
     height = 0,
 
-    # Asignar forma puntos
+    # Asignar puntos circulares con relleno y borde
     shape = 21,
 
     # Asignar tamaño puntos
@@ -1493,8 +1541,12 @@ ggplot(
 
 # Parallel boxplots with sina plots: relationship position - bmi_kgm2
 
+# --- base R ---
+
 # Fijar semilla para reproducibilidad
 set.seed(123)
+
+# --- ggplot2 + ggforce ---
 
 # Inicializar gráfico
 ggplot(
@@ -1532,7 +1584,7 @@ ggplot(
     # Asignar ancho máximo dispersión puntos
     maxwidth = 0.7,
 
-    # Asignar forma puntos
+    # Asignar puntos circulares con relleno y borde
     shape = 21,
 
     # Asignar tamaño puntos
@@ -1570,6 +1622,8 @@ ggplot(
 #### Ejercicio 12 - Fragmento 4 (nivel dificultad: +++) ####
 
 # Parallel boxplots with violin plots: relationship position - bmi_kgm2
+
+# --- ggplot2 ---
 
 # Inicializar gráfico
 ggplot(
@@ -1653,6 +1707,8 @@ ggplot(
 
 # Ridgeline plot: relationship team - height_m
 
+# --- ggplot2 + ggridges ---
+
 # Inicializar gráfico
 ggplot(
 
@@ -1710,7 +1766,7 @@ ggplot(
 
 # Ejercicio 14: scatter plot
 
-- En el fragmento de código `e14_f1`, crea un **diagrama de dispersión** que muestre la relación entre las variables cuantitativas continuas `height_m` y `minutes_played` del *dataframe* `df_transformed`, con `height_m` en el eje *X*, `minutes_played` en el eje *Y*, la forma 21 (círculo con relleno y borde) para los puntos, el color `#b3cde0` para su relleno, el color `#334155` para sus bordes, una transparencia de 0.5, una línea de tendencia suavizada LOESS de color `#cc1237` sin intervalo de confianza, una leyenda en la parte inferior sin título con el texto `LOESS trend line`, las marcas del eje *X* cada 0.1 metros, las marcas del eje *Y* cada 500 minutos, el título `Scatter plot with semi-transparent points`, el subtítulo `Relationship between height (continuous) and minutes played (continuous)`, las etiquetas `Height (m)` y `Minutes played` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+- En el fragmento de código `e14_f1`, crea un **diagrama de dispersión** que muestre la relación entre las variables cuantitativas continuas `height_m` y `minutes_played` del *dataframe* `df_transformed`, con `height_m` en el eje *X*, `minutes_played` en el eje *Y*, puntos circulares con relleno y borde, el color `#b3cde0` para su relleno, el color `#334155` para sus bordes, una transparencia de 0.5, una línea de tendencia suavizada LOESS de color `#cc1237` sin intervalo de confianza, una leyenda en la parte inferior sin título con el texto `LOESS trend line`, las marcas del eje *X* cada 0.1 metros, las marcas del eje *Y* cada 500 minutos, el título `Scatter plot with semi-transparent points`, el subtítulo `Relationship between height (continuous) and minutes played (continuous)`, las etiquetas `Height (m)` y `Minutes played` en los ejes *X* e *Y* y el tema visual `theme_classic`.
 
 - En el fragmento de código `e14_f2`, crea el mismo **diagrama de dispersión** del fragmento `e14_f1`, pero dividido en tres paneles (uno por cada categoría de la variable categórica nominal `position`) dispuestos en una sola fila y ordenados de mayor a menor frecuencia, con las mismas escalas en los ejes *X* e *Y* de todos los paneles, el título `Scatter plot with facets` y el subtítulo `Relationship between height (continuous) and minutes played (continuous) by position (nominal)`.
 
@@ -1735,6 +1791,8 @@ ggplot(
 
 # Scatter plot: relationship height_m - minutes_played
 
+# --- ggplot2 ---
+
 # Inicializar gráfico
 ggplot(
 
@@ -1753,7 +1811,7 @@ ggplot(
   # Añadir capa puntos
   geom_point(
 
-    # Asignar forma puntos
+    # Asignar puntos circulares con relleno y borde
     shape = 21,
 
     # Asignar color relleno puntos
@@ -1828,6 +1886,8 @@ ggplot(
 
 # Scatter plot: relationship height_m - minutes_played - position
 
+# --- ggplot2 ---
+
 # Inicializar gráfico
 ggplot(
 
@@ -1846,7 +1906,7 @@ ggplot(
   # Añadir capa puntos
   geom_point(
 
-    # Asignar forma puntos
+    # Asignar puntos circulares con relleno y borde
     shape = 21,
 
     # Asignar color relleno puntos
@@ -1907,7 +1967,8 @@ ggplot(
     title = "Scatter plot with facets",
 
     # Añadir subtítulo
-    subtitle = "Relationship between height (continuous) and minutes played (continuous) by position (nominal)",
+    subtitle = paste0("Relationship between height (continuous) and ",
+                      "minutes played (continuous) by position (nominal)"),
 
     # Añadir etiqueta eje X
     x = "Height (m)",
