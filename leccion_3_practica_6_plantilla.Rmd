@@ -20,6 +20,7 @@ ul { padding-left: 1.2em; } /* Estilo listas */
 a { word-break: break-all; } /* Estilo enlaces */
 code { font-size: 16px; white-space: normal; word-break: normal; } /* Estilo código inline */
 pre code { font-size: 15px; white-space: pre-wrap; word-break: break-all; } /* Estilo código fragmentos */
+pre.skim_output code { font-size: 11.5px; } /* Estilo salida skim */
 .tocify-extend-page { height: 0 !important; } /* Estilo espacio final documento */
 </style>
 ```
@@ -55,25 +56,35 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 
 - No modifiques el siguiente fragmento de código.
 
-```{r checks, echo=FALSE}
+```{python checks, echo=FALSE}
+# Importar módulo getpass para obtener usuario sistema
+import getpass
+
+# Importar módulo datetime para obtener fecha y hora sistema
+from datetime import datetime
+
 # Usuario del sistema
-Sys.info()["user"]
+print(getpass.getuser())
 
 # Fecha y hora del sistema
-Sys.time()
+print(datetime.now())
 ```
 
 # Ejercicio 1: packages
 
-- En la consola de R o en la pestaña *Packages* de RStudio, instala los paquetes `readr`, `dplyr`, `skimr`, `ggplot2`, `forcats`, `scales`, `ggstats`, `ggforce` y `ggridges`, si aún no los tienes instalados.
+- En la consola de R de RStudio, instala los paquetes `pandas`, `skimpy`, `seaborn`, `matplotlib` y `statsmodels`, si aún no los tienes instalados.
 
-- En el fragmento de código `e1_f1`, carga los paquetes `readr`, `dplyr`, `skimr`, `ggplot2`, `forcats`, `scales`, `ggstats`, `ggforce` y `ggridges`.
+- En el fragmento de código `e1_f1`, importa el paquete `pandas` con el alias `pd`, el módulo `os`, la función `skim()` del paquete `skimpy`, el paquete `seaborn` con el alias `sns`, el módulo `pyplot` del paquete `matplotlib` con el alias `plt` y el paquete `numpy` con el alias `np`.
 
 - **Recursos de apoyo:**
 
-  - Lección 1 - Práctica 7
+  - Lección 1 - Práctica 8
 
-```{r e1_f1}
+  - Lección 2 - Práctica 7
+
+  - Lección 3 - Práctica 3 - Figura 6
+
+```{python e1_f1}
 #### Ejercicio 1 - Fragmento 1 (nivel dificultad: +) ####
 
 
@@ -81,7 +92,7 @@ Sys.time()
 
 # Ejercicio 2: data import
 
-- En el fragmento de código `e2_f1`, importa el conjunto de datos de los jugadores de la NBA en la temporada regular 2025-26 y asígnalo con el operador de asignación `<-` a un objeto llamado `df`.
+- En el fragmento de código `e2_f1`, importa el conjunto de datos de los jugadores de la NBA en la temporada regular 2025-26 y asígnalo con el operador de asignación `=` a un objeto llamado `df`.
 
   - **Opción A:** importa el conjunto de datos directamente desde la URL <https://raw.githubusercontent.com/EasySportsApps/nba_api_25_26_data/refs/heads/main/nba_players_regular_season_25_26_wide_data.csv>
 
@@ -95,13 +106,13 @@ Sys.time()
 
   - Lección 2 - Práctica 5
 
-```{r e2_f1}
+```{python e2_f1}
 #### Ejercicio 2 - Fragmento 1 (nivel dificultad: ++) ####
 
 
 ```
 
-```{r e2_f2}
+```{python e2_f2}
 #### Ejercicio 2 - Fragmento 2 (nivel dificultad: +) ####
 
 
@@ -109,7 +120,7 @@ Sys.time()
 
 # Ejercicio 3: data transformation
 
-- En el fragmento de código `e3_f1`, crea un nuevo objeto llamado `df_transformed`, asígnale el *dataframe* `df` con el operador de asignación `<-` y utiliza el operador de tubería `|>` para encadenar un *pipeline* que aplique secuencialmente las siguientes transformaciones:
+- En el fragmento de código `e3_f1`, crea un nuevo objeto llamado `df_transformed`, asígnale el *dataframe* `df` con el operador de asignación `=` y utiliza la notación con punto (*dot notation*) dentro de un paréntesis `()` para encadenar un *pipeline* que aplique secuencialmente las siguientes transformaciones:
 
   - **Transformación 1:** selecciona las variables o columnas `player_name` (nombre del jugador), `team` (equipo), `position` (posición de juego), `country` (país de origen), `height_m` (altura en metros), `weight_kg` (peso en kilogramos), `experience` (años de experiencia), `minutes_played` (minutos jugados) y `one_point_made` (tiros libres anotados), eliminando el resto de variables.
 
@@ -131,21 +142,21 @@ Sys.time()
 
     - `"OIII"` si `bmi_kgm2` es mayor o igual que 40.
 
-  - **Transformación 5:** crea la variable `usa_player` (jugador estadounidense), con valor `TRUE` si la variable `country` es igual a `"USA"` y `FALSE` en caso contrario.
+  - **Transformación 5:** crea la variable `usa_player` (jugador estadounidense), con valor `True` si la variable `country` es igual a `"USA"` y `False` en caso contrario.
 
-  - **Transformación 6:** convierte las variables categóricas nominales `player_name`, `team`, `position`, `country` y `usa_player` a tipo categórico no ordenado (*factor*).
+  - **Transformación 6:** convierte las variables categóricas nominales `player_name`, `team`, `position`, `country` y `usa_player` a tipo categórico no ordenado (*category*).
 
-  - **Transformación 7:** convierte la variable categórica ordinal `bmi_category` a tipo categórico ordenado (*ordered factor*), con las categorías en este orden: `"U"`, `"N"`, `"O"`, `"OI"`, `"OII"` y `"OIII"`.
+  - **Transformación 7:** convierte la variable categórica ordinal `bmi_category` a tipo categórico ordenado (*ordered category*), con las categorías en este orden: `"U"`, `"N"`, `"O"`, `"OI"`, `"OII"` y `"OIII"`.
 
-  - **Transformación 8:** convierte las variables cuantitativas discretas `experience` y `one_point_made` a tipo entero (*integer*).
+  - **Transformación 8:** convierte las variables cuantitativas discretas `experience` y `one_point_made` a tipo entero (*int*).
 
-  - **Transformación 9:** convierte las variables cuantitativas continuas `height_m`, `weight_kg`, `bmi_kgm2` y `minutes_played` a tipo numérico (*numeric*).
+  - **Transformación 9:** convierte las variables cuantitativas continuas `height_m`, `weight_kg`, `bmi_kgm2` y `minutes_played` a tipo numérico (*float*).
 
   - **Transformación 10:** etiqueta las categorías de la variable `position` del siguiente modo: `"C"` como `"Center"` (pívot), `"F"` como `"Forward"` (alero) y `"G"` como `"Guard"` (base).
 
   - **Transformación 11:** etiqueta las categorías de la variable `bmi_category` del siguiente modo: `"U"` como `"Underweight"` (bajo peso), `"N"` como `"Normal"` (normopeso), `"O"` como `"Overweight"` (sobrepeso), `"OI"` como `"Obese I"` (obesidad grado I), `"OII"` como `"Obese II"` (obesidad grado II) y `"OIII"` como `"Obese III"` (obesidad grado III).
 
-  - **Transformación 12:** etiqueta las categorías de la variable `usa_player` del siguiente modo: `FALSE` como `"No"` y `TRUE` como `"Yes"`.
+  - **Transformación 12:** etiqueta las categorías de la variable `usa_player` del siguiente modo: `False` como `"No"` y `True` como `"Yes"`.
 
 - En el fragmento de código `e3_f2`, muestra las primeras observaciones (filas) del *dataframe* `df_transformed` con la función correspondiente.
 
@@ -153,15 +164,15 @@ Sys.time()
 
   - Lección 2 - Práctica 8
 
-  - Lección 3 - Práctica 2 - Figura 5
+  - Lección 3 - Práctica 3 - Figura 6
 
-```{r e3_f1}
+```{python e3_f1}
 #### Ejercicio 3 - Fragmento 1 (nivel dificultad: ++++) ####
 
 
 ```
 
-```{r e3_f2}
+```{python e3_f2}
 #### Ejercicio 3 - Fragmento 2 (nivel dificultad: +) ####
 
 
@@ -197,7 +208,7 @@ Sys.time()
 
       **Respuesta:**
 
-- En el fragmento de código `e4_f2`, copia y pega la línea de código `df_transformed <- na.omit(df_transformed)` para eliminar todas las observaciones (filas) del *dataframe* `df_transformed` que contengan al menos un valor faltante en cualquiera de las variables (*listwise deletion*).
+- En el fragmento de código `e4_f2`, copia y pega la línea de código `df_transformed = df_transformed.dropna()` para eliminar todas las observaciones (filas) del *dataframe* `df_transformed` que contengan al menos un valor faltante en cualquiera de las variables (*listwise deletion*).
 
 - **Recursos de apoyo:**
 
@@ -205,13 +216,13 @@ Sys.time()
 
   - Lección 2 - Práctica 9 - Tabla 8
 
-```{r e4_f1}
+```{python e4_f1, class.output="skim_output"}
 #### Ejercicio 4 - Fragmento 1 (nivel dificultad: +) ####
 
 
 ```
 
-```{r e4_f2}
+```{python e4_f2}
 #### Ejercicio 4 - Fragmento 2 (nivel dificultad: +) ####
 
 
@@ -219,89 +230,83 @@ Sys.time()
 
 # Ejercicio 5: bar chart
 
-- En el fragmento de código `e5_f1`, crea un **gráfico de barras vertical** que muestre la distribución de la variable categórica ordinal `bmi_category` del *dataframe* `df_transformed`, con las barras ordenadas según el orden natural de las categorías, el color `#107dc1` para todas las barras, el título `Vertical bar chart`, el subtítulo `Distribution of BMI category (ordinal)`, las etiquetas `BMI category` y `Count` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+- En el fragmento de código `e5_f1`, crea un **gráfico de barras vertical** que muestre la distribución de la variable categórica ordinal `bmi_category` del *dataframe* `df_transformed`, con las barras ordenadas según el orden natural de las categorías, el color `#107dc1` para todas las barras, el título `Vertical bar chart`, el subtítulo `Distribution of BMI category (ordinal)`, las etiquetas `BMI category` y `Count` en los ejes *X* e *Y*, y sin los bordes superior y derecho.
 
-- En el fragmento de código `e5_f2`, crea un **gráfico de barras vertical** que muestre la distribución de la variable categórica nominal `position` del *dataframe* `df_transformed`, con las barras ordenadas de mayor a menor frecuencia, el color `#107dc1` para todas las barras, el título `Vertical bar chart`, el subtítulo `Distribution of position (nominal)`, las etiquetas `Position` y `Count` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+- En el fragmento de código `e5_f2`, crea un **gráfico de barras vertical** que muestre la distribución de la variable categórica nominal `position` del *dataframe* `df_transformed`, con las barras ordenadas de mayor a menor frecuencia, el color `#107dc1` para todas las barras, el título `Vertical bar chart`, el subtítulo `Distribution of position (nominal)`, las etiquetas `Position` y `Count` en los ejes *X* e *Y*, y sin los bordes superior y derecho.
 
-- En el fragmento de código `e5_f3`, crea un **gráfico de barras horizontal** que muestre la distribución de la variable categórica nominal `country` del *dataframe* `df_transformed`, con las barras ordenadas de mayor a menor frecuencia de arriba abajo, la barra de `France` destacada respecto al resto de barras, el color `#107dc1` para la barra de `France` y el color `#b3cde0` para el resto de barras, sin leyenda, el título `Horizontal bar chart`, el subtítulo `Distribution of country (nominal)`, las etiquetas `Count` y `Country` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+- En el fragmento de código `e5_f3`, crea un **gráfico de barras horizontal** que muestre la distribución de la variable categórica nominal `country` del *dataframe* `df_transformed`, con las barras ordenadas de mayor a menor frecuencia de arriba abajo, la barra de `France` destacada respecto al resto de barras, el color `#107dc1` para la barra de `France` y el color `#b3cde0` para el resto de barras, sin leyenda, el título `Horizontal bar chart`, el subtítulo `Distribution of country (nominal)`, las etiquetas `Count` y `Country` en los ejes *X* e *Y*, y sin los bordes superior y derecho.
 
-- En el fragmento de código `e5_f4`, crea un **gráfico de barras vertical** que muestre la distribución de la variable cuantitativa discreta `experience` del *dataframe* `df_transformed`, con las barras ordenadas según el orden natural de los valores, el color `#107dc1` para todas las barras, las marcas del eje *X* cada 1 año, desde 1 hasta 23 años, el título `Vertical bar chart`, el subtítulo `Distribution of years of experience (discrete)`, las etiquetas `Years of experience` y `Count` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+- En el fragmento de código `e5_f4`, crea un **gráfico de barras vertical** que muestre la distribución de la variable cuantitativa discreta `experience` del *dataframe* `df_transformed`, con las barras ordenadas según el orden natural de los valores, el color `#107dc1` para todas las barras, las marcas del eje *X* cada 1 año, desde 1 hasta 23 años, el título `Vertical bar chart`, el subtítulo `Distribution of years of experience (discrete)`, las etiquetas `Years of experience` y `Count` en los ejes *X* e *Y*, y sin los bordes superior y derecho.
 
-- En el fragmento de código `e5_f5`, crea un **gráfico de barras horizontal** que muestre la variable cuantitativa continua `minutes_played` por cada categoría de la variable categórica nominal `player_name` del *dataframe* `df_transformed`, filtrando solo las observaciones del equipo New York Knicks (`NYK`), con `minutes_played` en el eje *X*, `player_name` en el eje *Y*, las barras ordenadas de mayor a menor minutos jugados de arriba abajo, el color `#107dc1` para todas las barras, el título `Horizontal bar chart`, el subtítulo `Minutes played (continuous) by player (nominal) - New York Knicks`, las etiquetas `Minutes played` y `Player` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+- En el fragmento de código `e5_f5`, crea un **gráfico de barras horizontal** que muestre la variable cuantitativa continua `minutes_played` por cada categoría de la variable categórica nominal `player_name` del *dataframe* `df_transformed`, filtrando solo las observaciones del equipo New York Knicks (`NYK`), con `minutes_played` en el eje *X*, `player_name` en el eje *Y*, las barras ordenadas de mayor a menor minutos jugados de arriba abajo, el color `#107dc1` para todas las barras, el título `Horizontal bar chart`, el subtítulo `Minutes played (continuous) by player (nominal) - New York Knicks`, las etiquetas `Minutes played` y `Player` en los ejes *X* e *Y*, y sin los bordes superior y derecho.
+
+- **Nota:** en la medida de lo posible, crea los gráficos de cada ejercicio con la librería `seaborn` (`sns`) y personalízalos con la interfaz `pyplot` de la librería `matplotlib` (`plt`), teniendo en cuenta que para que la salida HTML muestre solo el gráfico creado, es necesario asignar a la variable `_` el resultado de algunas funciones como `sns.countplot()` o `plt.suptitle()`.
 
 - **Recursos de apoyo:**
 
   - Lección 3 - Figura 8
 
-  - [The R Graph Gallery - Basic barplot with ggplot2](https://r-graph-gallery.com/218-basic-barplots-with-ggplot2.html)
+  - [seaborn.countplot](https://seaborn.pydata.org/generated/seaborn.countplot.html)
 
-  - [ggplot2 - Bar charts](https://ggplot2.tidyverse.org/reference/geom_bar.html)
+  - [seaborn.despine](https://seaborn.pydata.org/generated/seaborn.despine.html)
 
-  - [ggplot2 - FAQ: Barplots](https://ggplot2.tidyverse.org/articles/faq-bars.html)
+  - [pandas.Series.cat.remove_unused_categories](https://pandas.pydata.org/docs/reference/api/pandas.Series.cat.remove_unused_categories.html)
 
-  - [ggplot2 - Modify axis, legend, and plot labels](https://ggplot2.tidyverse.org/reference/labs.html)
+  - [pandas.Series.value_counts](https://pandas.pydata.org/docs/reference/api/pandas.Series.value_counts.html)
 
-  - [ggplot2 - Complete themes](https://ggplot2.tidyverse.org/reference/ggtheme.html)
+  - [matplotlib.pyplot.suptitle](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.suptitle.html)
 
-  - [forcats - Introduction to forcats](https://forcats.tidyverse.org/articles/forcats.html)
+  - [matplotlib.pyplot.xlabel](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.xlabel.html)
 
-  - [forcats - Reorder factor levels by first appearance, frequency, or numeric order](https://forcats.tidyverse.org/reference/fct_inorder.html)
+  - [matplotlib.pyplot.ylabel](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.ylabel.html)
 
-  - [forcats - Reverse order of factor levels](https://forcats.tidyverse.org/reference/fct_rev.html)
+  - [matplotlib.pyplot.tight_layout](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.tight_layout.html)
 
-  - [forcats - Reorder factor levels by sorting along another variable](https://forcats.tidyverse.org/reference/fct_reorder.html)
+  - [seaborn.barplot](https://seaborn.pydata.org/generated/seaborn.barplot.html)
 
-  - [ggplot2 - FAQ: Reordering](https://ggplot2.tidyverse.org/articles/faq-reordering.html)
-
-  - [Posit Community - How do I highlight one bar in a bar graph using ggplot2](https://forum.posit.co/t/how-do-i-highlight-one-bar-in-a-bar-graph-using-ggplot2/36849)
-
-  - [ggplot2 - Create your own discrete scale](https://ggplot2.tidyverse.org/reference/scale_manual.html)
-
-  - [ggplot2 - Position scales for continuous data (x & y)](https://ggplot2.tidyverse.org/reference/scale_continuous.html)
-
-```{r e5_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
+```{python e5_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
 #### Ejercicio 5 - Fragmento 1 (nivel dificultad: ++) ####
 
 
 ```
 
-```{r e5_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
-#### Ejercicio 5 - Fragmento 2 (nivel dificultad: +++) ####
+```{python e5_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
+#### Ejercicio 5 - Fragmento 2 (nivel dificultad: ++) ####
 
 
 ```
 
-```{r e5_f3, fig.width = 9, fig.height = 10, out.width = "100%"}
+```{python e5_f3, fig.width = 9, fig.height = 10, out.width = "100%"}
 #### Ejercicio 5 - Fragmento 3 (nivel dificultad: ++++) ####
 
 
 ```
 
-```{r e5_f4, fig.width = 6, fig.height = 5, out.width = "75%"}
-#### Ejercicio 5 - Fragmento 4 (nivel dificultad: +++) ####
+```{python e5_f4, fig.width = 6, fig.height = 5, out.width = "75%"}
+#### Ejercicio 5 - Fragmento 4 (nivel dificultad: ++) ####
 
 
 ```
 
-```{r e5_f5, fig.width = 8, fig.height = 8, out.width = "100%"}
-#### Ejercicio 5 - Fragmento 5 (nivel dificultad: ++++) ####
+```{python e5_f5, fig.width = 8, fig.height = 8, out.width = "100%"}
+#### Ejercicio 5 - Fragmento 5 (nivel dificultad: +++) ####
 
 
 ```
 
 # Ejercicio 6: pie chart
 
-- En el fragmento de código `e6_f1`, crea un **gráfico circular** que muestre la distribución de la variable categórica nominal `usa_player` del *dataframe* `df_transformed`, con el color `#ffffff` para el borde de los sectores, el color `#cc1237` para la categoría `No`, el color `#107dc1` para la categoría `Yes`, el título `Pie chart`, el subtítulo `Distribution of USA player (nominal)`, la etiqueta `USA player` en la leyenda y el tema visual `theme_void`.
+- En el fragmento de código `e6_f1`, crea un **gráfico circular** que muestre la distribución de la variable categórica nominal `usa_player` del *dataframe* `df_transformed`, con el color `#ffffff` para el borde de los sectores, el color `#cc1237` para la categoría `No`, el color `#107dc1` para la categoría `Yes`, el título `Pie chart`, el subtítulo `Distribution of USA player (nominal)`, la etiqueta `USA player` en la leyenda y sin ejes.
 
 - **Recursos de apoyo:**
 
   - Lección 3 - Figura 9
 
-  - [The R Graph Gallery - ggplot2 Piechart](https://r-graph-gallery.com/piechart-ggplot2.html)
+  - [matplotlib.pyplot.pie](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.pie.html)
 
-  - [ggplot2 - Polar coordinates](https://ggplot2.tidyverse.org/reference/coord_polar.html)
+  - [matplotlib.pyplot.legend](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html)
 
-```{r e6_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
+```{python e6_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
 #### Ejercicio 6 - Fragmento 1 (nivel dificultad: +++) ####
 
 
@@ -309,9 +314,9 @@ Sys.time()
 
 # Ejercicio 7: histogram
 
-- En el fragmento de código `e7_f1`, crea un **histograma** que muestre la distribución de la variable cuantitativa discreta `one_point_made` del *dataframe* `df_transformed`, con un ancho de intervalo de 20 tiros libres anotados, el primer intervalo comenzando en 0, el color `#107dc1` para el relleno de las barras, el color `#334155` para el borde de las barras, las marcas del eje *X* cada 60 tiros libres anotados, las marcas del eje *Y* cada 25 jugadores, el título `Histogram`, el subtítulo `Distribution of free throws made (discrete)`, las etiquetas `Free throws made` y `Count` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+- En el fragmento de código `e7_f1`, crea un **histograma** que muestre la distribución de la variable cuantitativa discreta `one_point_made` del *dataframe* `df_transformed`, con un ancho de intervalo de 20 tiros libres anotados, el primer intervalo comenzando en 0, el color `#107dc1` para el relleno de las barras, el color `#334155` para el borde de las barras, las marcas del eje *X* cada 60 tiros libres anotados, las marcas del eje *Y* cada 25 jugadores, el título `Histogram`, el subtítulo `Distribution of free throws made (discrete)`, las etiquetas `Free throws made` y `Count` en los ejes *X* e *Y*, y sin los bordes superior y derecho.
 
-- En el fragmento de código `e7_f2`, crea un **histograma** que muestre la distribución de la variable cuantitativa continua `weight_kg` del *dataframe* `df_transformed`, con un ancho de intervalo de 5 kilogramos, el primer intervalo comenzando en 70, el color `#107dc1` para el relleno de las barras, el color `#334155` para el borde de las barras, las marcas del eje *X* cada 10 kilogramos, las marcas del eje *Y* cada 10 jugadores, el título `Histogram`, el subtítulo `Distribution of weight (continuous)`, las etiquetas `Weight (kg)` y `Count` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+- En el fragmento de código `e7_f2`, crea un **histograma** que muestre la distribución de la variable cuantitativa continua `weight_kg` del *dataframe* `df_transformed`, con un ancho de intervalo de 5 kilogramos, el primer intervalo comenzando en 70, el color `#107dc1` para el relleno de las barras, el color `#334155` para el borde de las barras, las marcas del eje *X* cada 10 kilogramos, las marcas del eje *Y* cada 10 jugadores, el título `Histogram`, el subtítulo `Distribution of weight (continuous)`, las etiquetas `Weight (kg)` y `Count` en los ejes *X* e *Y*, y sin los bordes superior y derecho.
 
 - **Recursos de apoyo:**
 
@@ -319,21 +324,23 @@ Sys.time()
 
   - Lección 3 - Figura 11
 
-  - [The R Graph Gallery - Basic histogram with ggplot2](https://r-graph-gallery.com/220-basic-ggplot2-histogram.html)
+  - [seaborn.histplot](https://seaborn.pydata.org/generated/seaborn.histplot.html)
 
-  - [ggplot2 - Histograms and frequency polygons](https://ggplot2.tidyverse.org/reference/geom_histogram.html)
+  - [matplotlib.pyplot.xticks](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.xticks.html)
 
-  - [Stack Overflow - How to make histogram in ggplot2 start at zero on X axis](https://stackoverflow.com/questions/67998673/how-to-make-histogram-in-ggplot2-start-at-zero-on-x-axis)
+  - [matplotlib.pyplot.yticks](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.yticks.html)
 
-  - [scales - Equally spaced breaks](https://scales.r-lib.org/reference/breaks_width.html)
+  - [matplotlib.pyplot.xlim](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.xlim.html)
 
-```{r e7_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
+  - [matplotlib.pyplot.ylim](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.ylim.html)
+
+```{python e7_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
 #### Ejercicio 7 - Fragmento 1 (nivel dificultad: +++) ####
 
 
 ```
 
-```{r e7_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
+```{python e7_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
 #### Ejercicio 7 - Fragmento 2 (nivel dificultad: +++) ####
 
 
@@ -341,33 +348,33 @@ Sys.time()
 
 # Ejercicio 8: density plot
 
-- En el fragmento de código `e8_f1`, crea un **gráfico de densidad** que muestre la distribución de la variable cuantitativa discreta `one_point_made` del *dataframe* `df_transformed`, con un ancho de banda de 20 tiros libres anotados, el color `#107dc1` para el relleno y el borde del área, las marcas del eje *X* cada 60 tiros libres anotados, el título `Density plot`, el subtítulo `Distribution of free throws made (discrete)`, las etiquetas `Free throws made` y `Density` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+- En el fragmento de código `e8_f1`, crea un **gráfico de densidad** que muestre la distribución de la variable cuantitativa discreta `one_point_made` del *dataframe* `df_transformed`, con un ancho de banda de 20 tiros libres anotados, el color `#107dc1` para el relleno y el borde del área, las marcas del eje *X* cada 60 tiros libres anotados, el título `Density plot`, el subtítulo `Distribution of free throws made (discrete)`, las etiquetas `Free throws made` y `Density` en los ejes *X* e *Y*, y sin los bordes superior y derecho.
 
-- En el fragmento de código `e8_f2`, crea un **gráfico de densidad** que muestre la distribución de la variable cuantitativa continua `weight_kg` del *dataframe* `df_transformed`, con un ancho de banda de 5 kilogramos, el color `#107dc1` para el relleno y el borde del área, las marcas del eje *X* cada 10 kilogramos, el título `Density plot`, el subtítulo `Distribution of weight (continuous)`, las etiquetas `Weight (kg)` y `Density` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+- En el fragmento de código `e8_f2`, crea un **gráfico de densidad** que muestre la distribución de la variable cuantitativa continua `weight_kg` del *dataframe* `df_transformed`, con un ancho de banda de 5 kilogramos, el color `#107dc1` para el relleno y el borde del área, las marcas del eje *X* cada 10 kilogramos, el título `Density plot`, el subtítulo `Distribution of weight (continuous)`, las etiquetas `Weight (kg)` y `Density` en los ejes *X* e *Y*, y sin los bordes superior y derecho.
 
 - **Recursos de apoyo:**
 
   - Lección 3 - Figura 11
 
-  - [The R Graph Gallery - Basic density chart with ggplot2](https://r-graph-gallery.com/21-distribution-plot-using-ggplot2.html)
+  - [seaborn.kdeplot](https://seaborn.pydata.org/generated/seaborn.kdeplot.html)
 
-  - [ggplot2 - Smoothed density estimates](https://ggplot2.tidyverse.org/reference/geom_density.html)
+  - [pandas.Series.std](https://pandas.pydata.org/docs/reference/api/pandas.Series.std.html)
 
-```{r e8_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
-#### Ejercicio 8 - Fragmento 1 (nivel dificultad: +++) ####
+```{python e8_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
+#### Ejercicio 8 - Fragmento 1 (nivel dificultad: ++++) ####
 
 
 ```
 
-```{r e8_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
-#### Ejercicio 8 - Fragmento 2 (nivel dificultad: +++) ####
+```{python e8_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
+#### Ejercicio 8 - Fragmento 2 (nivel dificultad: ++++) ####
 
 
 ```
 
 # Ejercicio 9: grouped bar chart
 
-- En el fragmento de código `e9_f1`, crea un **gráfico de barras agrupadas** que muestre la relación entre las variables categóricas nominales `position` y `usa_player` del *dataframe* `df_transformed`, con las categorías de `position` ordenadas de mayor a menor frecuencia en el eje *X*, el porcentaje de `usa_player` dentro de cada `position` en el eje *Y*, las barras de cada `position` una al lado de otra y ligeramente separadas, el color `#cc1237` para la categoría `No`, el color `#107dc1` para la categoría `Yes`, el título `Grouped bar chart`, el subtítulo `Relationship between position (nominal) and USA player (nominal)`, las etiquetas `Position` y `Percentage` en los ejes *X* e *Y*, la etiqueta `USA player` en la leyenda y el tema visual `theme_classic`.
+- En el fragmento de código `e9_f1`, crea un **gráfico de barras agrupadas** que muestre la relación entre las variables categóricas nominales `position` y `usa_player` del *dataframe* `df_transformed`, con las categorías de `position` ordenadas de mayor a menor frecuencia en el eje *X*, el porcentaje de `usa_player` dentro de cada `position` en el eje *Y*, las barras de cada `position` una al lado de otra y ligeramente separadas, el color `#cc1237` para la categoría `No`, el color `#107dc1` para la categoría `Yes`, el título `Grouped bar chart`, el subtítulo `Relationship between position (nominal) and USA player (nominal)`, las etiquetas `Position` y `Percentage` en los ejes *X* e *Y*, la etiqueta `USA player` en la leyenda y sin los bordes superior y derecho.
 
   - A partir del gráfico obtenido tras el fragmento de código `e9_f1`, responde a la siguiente pregunta:
 
@@ -375,7 +382,7 @@ Sys.time()
 
       **Respuesta:**
 
-- En el fragmento de código `e9_f2`, crea un **gráfico de barras agrupadas** que muestre la relación entre la variable categórica nominal `position` y la variable categórica ordinal `bmi_category` del *dataframe* `df_transformed`, con las categorías de `position` ordenadas de mayor a menor frecuencia en el eje *X*, el porcentaje de `bmi_category` dentro de cada `position` en el eje *Y*, las barras de cada `position` una al lado de otra, ligeramente separadas y todas con el mismo ancho aunque en alguna `position` falte alguna categoría de `bmi_category`, el color `#b3cde0` para la categoría `Normal`, el color `#107dc1` para la categoría `Overweight`, el color `#08519c` para la categoría `Obese I`, el título `Grouped bar chart`, el subtítulo `Relationship between position (nominal) and BMI category (ordinal)`, las etiquetas `Position` y `Percentage` en los ejes *X* e *Y*, la etiqueta `BMI category` en la leyenda y el tema visual `theme_classic`.
+- En el fragmento de código `e9_f2`, crea un **gráfico de barras agrupadas** que muestre la relación entre la variable categórica nominal `position` y la variable categórica ordinal `bmi_category` del *dataframe* `df_transformed`, con las categorías de `position` ordenadas de mayor a menor frecuencia en el eje *X*, el porcentaje de `bmi_category` dentro de cada `position` en el eje *Y*, las barras de cada `position` una al lado de otra, ligeramente separadas y todas con el mismo ancho aunque en alguna `position` falte alguna categoría de `bmi_category`, el color `#b3cde0` para la categoría `Normal`, el color `#107dc1` para la categoría `Overweight`, el color `#08519c` para la categoría `Obese I`, el título `Grouped bar chart`, el subtítulo `Relationship between position (nominal) and BMI category (ordinal)`, las etiquetas `Position` y `Percentage` en los ejes *X* e *Y*, la etiqueta `BMI category` en la leyenda y sin los bordes superior y derecho.
 
   - A partir del gráfico obtenido tras el fragmento de código `e9_f2`, responde a la siguiente pregunta:
 
@@ -387,25 +394,25 @@ Sys.time()
 
   - Lección 3 - Figura 12
 
-  - [The R Graph Gallery - Grouped, stacked and percent stacked barplot in ggplot2](https://r-graph-gallery.com/48-grouped-barplot-with-ggplot2.html)
+  - [seaborn.barplot](https://seaborn.pydata.org/generated/seaborn.barplot.html)
 
-  - [ggplot2 - FAQ: Barplots](https://ggplot2.tidyverse.org/articles/faq-bars.html)
+  - [pandas.DataFrame.groupby](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.groupby.html)
 
-  - [ggstats - Compute custom proportions with stat_prop()](https://cran.r-project.org/web/packages/ggstats/vignettes/stat_prop.html)
+  - [pandas.api.typing.SeriesGroupBy.value_counts](https://pandas.pydata.org/docs/reference/api/pandas.api.typing.SeriesGroupBy.value_counts.html)
 
-  - [ggplot2 - Dodge overlapping objects side-to-side](https://ggplot2.tidyverse.org/reference/position_dodge.html)
+  - [pandas.DataFrame.reset_index](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.reset_index.html)
 
-  - [scales - Label percentages (2.5%, 50%, etc)](https://scales.r-lib.org/reference/label_percent.html)
+  - [matplotlib.pyplot.gca](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.gca.html)
 
-  - [forcats - Drop unused levels](https://forcats.tidyverse.org/reference/fct_drop.html)
+  - [matplotlib.axis.Axis.set_major_formatter](https://matplotlib.org/stable/api/_as_gen/matplotlib.axis.Axis.set_major_formatter.html)
 
-```{r e9_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
+```{python e9_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
 #### Ejercicio 9 - Fragmento 1 (nivel dificultad: ++++) ####
 
 
 ```
 
-```{r e9_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
+```{python e9_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
 #### Ejercicio 9 - Fragmento 2 (nivel dificultad: ++++) ####
 
 
@@ -413,7 +420,7 @@ Sys.time()
 
 # Ejercicio 10: stacked bar chart
 
-- En el fragmento de código `e10_f1`, crea un **gráfico de barras apiladas** que muestre la relación entre las variables categóricas nominales `position` y `usa_player` del *dataframe* `df_transformed`, con las categorías de `position` ordenadas de mayor a menor frecuencia en el eje *X*, el porcentaje de `usa_player` dentro de cada `position` en el eje *Y*, la categoría `No` apilada sobre la categoría `Yes` en cada barra, el color `#cc1237` para la categoría `No`, el color `#107dc1` para la categoría `Yes`, el título `Stacked bar chart`, el subtítulo `Relationship between position (nominal) and USA player (nominal)`, las etiquetas `Position` y `Percentage` en los ejes *X* e *Y*, la etiqueta `USA player` en la leyenda y el tema visual `theme_classic`.
+- En el fragmento de código `e10_f1`, crea un **gráfico de barras apiladas** que muestre la relación entre las variables categóricas nominales `position` y `usa_player` del *dataframe* `df_transformed`, con las categorías de `position` ordenadas de mayor a menor frecuencia en el eje *X*, el porcentaje de `usa_player` dentro de cada `position` en el eje *Y*, la categoría `No` apilada sobre la categoría `Yes` en cada barra, el color `#cc1237` para la categoría `No`, el color `#107dc1` para la categoría `Yes`, el título `Stacked bar chart`, el subtítulo `Relationship between position (nominal) and USA player (nominal)`, las etiquetas `Position` y `Percentage` en los ejes *X* e *Y*, la etiqueta `USA player` en la leyenda y sin los bordes superior y derecho.
 
 - En el fragmento de código `e10_f2`, crea el mismo **gráfico de barras apiladas** del fragmento `e10_f1`, pero con la categoría `Yes` apilada sobre la categoría `No` en cada barra.
 
@@ -421,27 +428,27 @@ Sys.time()
 
   - Lección 3 - Figura 12
 
-  - [The R Graph Gallery - Grouped, stacked and percent stacked barplot in ggplot2](https://r-graph-gallery.com/48-grouped-barplot-with-ggplot2.html)
+  - [seaborn.histplot](https://seaborn.pydata.org/generated/seaborn.histplot.html)
 
-  - [ggplot2 - FAQ: Barplots](https://ggplot2.tidyverse.org/articles/faq-bars.html)
+  - [pandas.Series.cat.reorder_categories](https://pandas.pydata.org/docs/reference/api/pandas.Series.cat.reorder_categories.html)
 
-  - [ggplot2 - Stack overlapping objects on top of one another](https://ggplot2.tidyverse.org/reference/position_stack.html)
+  - [matplotlib.legend](https://matplotlib.org/stable/api/legend_api.html#matplotlib.legend.Legend)
 
-```{r e10_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
-#### Ejercicio 10 - Fragmento 1 (nivel dificultad: +++) ####
+```{python e10_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
+#### Ejercicio 10 - Fragmento 1 (nivel dificultad: ++++) ####
 
 
 ```
 
-```{r e10_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
-#### Ejercicio 10 - Fragmento 2 (nivel dificultad: +++) ####
+```{python e10_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
+#### Ejercicio 10 - Fragmento 2 (nivel dificultad: ++++) ####
 
 
 ```
 
 # Ejercicio 11: heatmap
 
-- En el fragmento de código `e11_f1`, crea un **mapa de calor** que muestre la relación entre la variable categórica nominal `position` y la variable categórica ordinal `bmi_category` del *dataframe* `df_transformed`, con las categorías de `position` ordenadas de mayor a menor frecuencia en el eje *X*, las categorías de `bmi_category` en su orden natural de abajo arriba en el eje *Y*, el porcentaje de `bmi_category` dentro de cada `position` como color de relleno de las celdas, el color `#ffffff` para el borde de las celdas, una escala de color que va de `#b3cde0` (valores bajos) a `#08519c` (valores altos), las marcas de la leyenda en porcentaje, el eje *X* en la parte superior, el título `Heatmap`, el subtítulo `Relationship between position (nominal) and BMI category (ordinal)`, las etiquetas `Position` y `BMI category` en los ejes *X* e *Y*, la etiqueta `% within position` en la leyenda, el tema visual `theme_minimal` y sin cuadrícula.
+- En el fragmento de código `e11_f1`, crea un **mapa de calor** que muestre la relación entre la variable categórica nominal `position` y la variable categórica ordinal `bmi_category` del *dataframe* `df_transformed`, con las categorías de `position` ordenadas de mayor a menor frecuencia en el eje *X*, las categorías de `bmi_category` en su orden natural de abajo arriba en el eje *Y*, el porcentaje de `bmi_category` dentro de cada `position` como color de relleno de las celdas, el color `#ffffff` para el borde de las celdas, una escala de color que va de `#b3cde0` (valores bajos) a `#08519c` (valores altos), las marcas de la leyenda en porcentaje, el eje *X* en la parte superior, el título `Heatmap`, el subtítulo `Relationship between position (nominal) and BMI category (ordinal)`, las etiquetas `Position` y `BMI category` en los ejes *X* e *Y*, la etiqueta `% within position` en la leyenda y sin bordes ni marcas en los ejes.
 
 - **Nota:** el mapa de calor se utiliza sobre todo cuando alguna de las variables tiene muchas categorías, pero aquí se emplea con pocas para poder compararlo con el gráfico de barras agrupadas del fragmento de código `e9_f2`.
 
@@ -449,19 +456,19 @@ Sys.time()
 
   - Lección 3 - Figura 13
 
-  - [The R Graph Gallery - ggplot2 heatmap](https://r-graph-gallery.com/79-levelplot-with-ggplot2.html)
+  - [seaborn.heatmap](https://seaborn.pydata.org/generated/seaborn.heatmap.html)
 
-  - [ggplot2 - Rectangles](https://ggplot2.tidyverse.org/reference/geom_tile.html)
+  - [pandas.crosstab](https://pandas.pydata.org/docs/reference/api/pandas.crosstab.html)
 
-  - [ggstats - Compute cross-tabulation statistics with stat_cross()](https://cran.r-project.org/web/packages/ggstats/vignettes/stat_cross.html)
+  - [seaborn.blend_palette](https://seaborn.pydata.org/generated/seaborn.blend_palette.html)
 
-  - [ggplot2 - Gradient colour scales](https://ggplot2.tidyverse.org/reference/scale_gradient.html)
+  - [matplotlib.axis.XAxis.tick_top](https://matplotlib.org/stable/api/_as_gen/matplotlib.axis.XAxis.tick_top.html)
 
-  - [ggplot2 - Position scales for discrete data](https://ggplot2.tidyverse.org/reference/scale_discrete.html)
+  - [matplotlib.axis.XAxis.set_label_position](https://matplotlib.org/stable/api/_as_gen/matplotlib.axis.XAxis.set_label_position.html)
 
-  - [ggplot2 - Modify components of a theme](https://ggplot2.tidyverse.org/reference/theme.html)
+  - [matplotlib.axes.Axes.tick_params](https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.tick_params.html)
 
-```{r e11_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
+```{python e11_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
 #### Ejercicio 11 - Fragmento 1 (nivel dificultad: ++++) ####
 
 
@@ -469,53 +476,47 @@ Sys.time()
 
 # Ejercicio 12: parallel boxplots
 
-- En el fragmento de código `e12_f1`, representa la relación entre la variable categórica nominal `position` y la variable cuantitativa continua `bmi_kgm2` del *dataframe* `df_transformed` mediante **diagramas de caja paralelos (*parallel boxplots*)**, con las categorías de `position` ordenadas de mayor a menor frecuencia en el eje *X*, `bmi_kgm2` en el eje *Y*, un ancho de caja de 0.5, el color `#ffffff` para el relleno de las cajas, el color `#334155` para sus bordes, la mediana, los bigotes y los valores atípicos, el título `Parallel boxplots`, el subtítulo `Relationship between position (nominal) and BMI (continuous)`, las etiquetas `Position` y `BMI (kg/m²)` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+- En el fragmento de código `e12_f1`, representa la relación entre la variable categórica nominal `position` y la variable cuantitativa continua `bmi_kgm2` del *dataframe* `df_transformed` mediante **diagramas de caja paralelos (*parallel boxplots*)**, con las categorías de `position` ordenadas de mayor a menor frecuencia en el eje *X*, `bmi_kgm2` en el eje *Y*, un ancho de caja de 0.5, el color `#ffffff` para el relleno de las cajas, el color `#334155` para sus bordes, la mediana, los bigotes y los valores atípicos, el título `Parallel boxplots`, el subtítulo `Relationship between position (nominal) and BMI (continuous)`, las etiquetas `Position` y `BMI (kg/m²)` en los ejes *X* e *Y* y sin los bordes superior y derecho.
 
-- En el fragmento de código `e12_f2`, crea los mismos **diagramas de caja paralelos** del fragmento `e12_f1`, pero ocultando los valores atípicos y superponiendo las observaciones individuales mediante un **gráfico de puntos con desplazamiento aleatorio (*jitter plot*)**, con un desplazamiento horizontal de 0.25, un desplazamiento vertical de 0, la forma 21 (círculo con relleno y borde), un tamaño de 2, el color `#b3cde0` para el relleno de los puntos, el color `#334155` para sus bordes, una transparencia de 0.5 y el título `Parallel boxplots with jitter plots`.
+- En el fragmento de código `e12_f2`, crea los mismos **diagramas de caja paralelos** del fragmento `e12_f1`, pero ocultando los valores atípicos y superponiendo las observaciones individuales mediante un **gráfico de puntos con desplazamiento aleatorio (*jitter plot*)**, con un desplazamiento horizontal de 0.25, puntos circulares con relleno y borde, un tamaño de 4, el color `#b3cde0` para el relleno de los puntos, el color `#334155` para sus bordes, un grosor de 0.5 para sus bordes, una transparencia de 0.5 y el título `Parallel boxplots with jitter plots`.
 
-- En el fragmento de código `e12_f3`, crea los mismos **diagramas de caja paralelos** del fragmento `e12_f1`, pero ocultando los valores atípicos y superponiendo las observaciones individuales mediante un **diagrama de sina (*sina plot*)**, con un ancho máximo de dispersión de 0.7, la forma 21 (círculo con relleno y borde), un tamaño de 2, el color `#b3cde0` para el relleno de los puntos, el color `#334155` para sus bordes, una transparencia de 0.5 y el título `Parallel boxplots with sina plots`.
+- En el fragmento de código `e12_f3`, crea los mismos **diagramas de caja paralelos** del fragmento `e12_f1`, pero ocultando los valores atípicos y superponiendo las observaciones individuales mediante un **diagrama de enjambre (*swarm plot*)**, con puntos circulares con relleno y borde, un tamaño de 4, el color `#b3cde0` para el relleno de los puntos, el color `#334155` para sus bordes, un grosor de 0.5 para sus bordes, una transparencia de 0.5 y el título `Parallel boxplots with swarm plots`.
 
-- En el fragmento de código `e12_f4`, crea los mismos **diagramas de caja paralelos** del fragmento `e12_f1`, pero con un ancho de caja de 0.3, ocultando los valores atípicos y añadiendo detrás de cada caja un **diagrama de violín (*violin plot*)** de ancho 0.7, con el color `#107dc1` tanto para el relleno como para el borde, y el título `Parallel boxplots with violin plots`.
+- En el fragmento de código `e12_f4`, crea los mismos **diagramas de caja paralelos** del fragmento `e12_f1`, pero con un ancho de caja de 0.3, ocultando los valores atípicos y los extremos de los bigotes y añadiendo detrás de cada caja un **diagrama de violín (*violin plot*)** de ancho 0.7, limitado al rango de valores observados, con el color `#107dc1` tanto para el relleno como para el borde, y el título `Parallel boxplots with violin plots`.
+
+- **Nota:** el diagrama de sina (*sina plot*) no está disponible en las librerías `seaborn` ni `matplotlib`, por lo que en el fragmento `e12_f3` se sustituye por un diagrama de enjambre (*swarm plot*), una alternativa que también muestra cada observación y evita que los puntos se solapen.
 
 - **Recursos de apoyo:**
 
   - Lección 3 - Figura 15
 
-  - [The R Graph Gallery - Basic ggplot2 boxplot](https://r-graph-gallery.com/262-basic-boxplot-with-ggplot2.html)
+  - [seaborn.boxplot](https://seaborn.pydata.org/generated/seaborn.boxplot.html)
 
-  - [ggplot2 - A box and whiskers plot (in the style of Tukey)](https://ggplot2.tidyverse.org/reference/geom_boxplot.html)
+  - [seaborn.stripplot](https://seaborn.pydata.org/generated/seaborn.stripplot.html)
 
-  - [The R Graph Gallery - Boxplot with individual data points](https://r-graph-gallery.com/89-box-and-scatter-plot-with-ggplot2.html)
+  - [seaborn.swarmplot](https://seaborn.pydata.org/generated/seaborn.swarmplot.html)
 
-  - [ggplot2 - Jitter points to avoid overplotting](https://ggplot2.tidyverse.org/reference/position_jitter.html)
+  - [seaborn.violinplot](https://seaborn.pydata.org/generated/seaborn.violinplot.html)
 
-  - [ggplot2 - Aesthetic specifications - Point - Shape](https://ggplot2.tidyverse.org/articles/ggplot2-specs.html)
-
-  - [ggforce - Sina plot](https://ggforce.data-imaginist.com/reference/geom_sina.html)
-
-  - [The R Graph Gallery - Violin plot with included boxplot and sample size in ggplot2](https://r-graph-gallery.com/violin_and_boxplot_ggplot2.html)
-
-  - [ggplot2 - Violin plot](https://ggplot2.tidyverse.org/reference/geom_violin.html)
-
-```{r e12_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
+```{python e12_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
 #### Ejercicio 12 - Fragmento 1 (nivel dificultad: ++) ####
 
 
 ```
 
-```{r e12_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
+```{python e12_f2, fig.width = 6, fig.height = 5, out.width = "75%"}
 #### Ejercicio 12 - Fragmento 2 (nivel dificultad: +++) ####
 
 
 ```
 
-```{r e12_f3, fig.width = 6, fig.height = 5, out.width = "75%"}
+```{python e12_f3, fig.width = 6, fig.height = 5, out.width = "75%"}
 #### Ejercicio 12 - Fragmento 3 (nivel dificultad: +++) ####
 
 
 ```
 
-```{r e12_f4, fig.width = 6, fig.height = 5, out.width = "75%"}
+```{python e12_f4, fig.width = 6, fig.height = 5, out.width = "75%"}
 #### Ejercicio 12 - Fragmento 4 (nivel dificultad: +++) ####
 
 
@@ -523,21 +524,31 @@ Sys.time()
 
 # Ejercicio 13: ridgeline plot
 
-- En el fragmento de código `e13_f1`, crea un **gráfico de crestas** que muestre la relación entre la variable categórica nominal `team` y la variable cuantitativa continua `height_m` del *dataframe* `df_transformed`, con `height_m` en el eje *X*, las categorías de `team` ordenadas de menor a mayor mediana de `height_m` de abajo arriba en el eje *Y*, un solapamiento entre crestas de 1.5, el recorte de las colas de las crestas por debajo del 1 % de la altura de la cresta más alta, el color `#107dc1` para el relleno de las crestas, el color `#ffffff` para su borde, una línea vertical en la mediana de `height_m` de cada `team`, el título `Ridgeline plot`, el subtítulo `Relationship between team (nominal) and height (continuous)`, las etiquetas `Height (m)` y `Team` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+- En el fragmento de código `e13_f1`, crea un **gráfico de crestas** que muestre la relación entre la variable categórica nominal `team` y la variable cuantitativa continua `height_m` del *dataframe* `df_transformed`, con `height_m` en el eje *X*, las categorías de `team` ordenadas de menor a mayor mediana de `height_m` de abajo arriba en el eje *Y*, crestas solapadas, el color `#107dc1` para el relleno de las crestas, el color `#ffffff` para su borde, el título `Ridgeline plot`, el subtítulo `Relationship between team (nominal) and height (continuous)`, las etiquetas `Height (m)` y `Team` en los ejes *X* e *Y* y sin los bordes superior y derecho.
+
+- **Nota:** `seaborn` y `matplotlib` no incluyen una función específica para crear un gráfico de crestas, por lo que en el fragmento `e13_f1` se construye una función denominada `ridgeline_plot()` que crea este gráfico a partir de una cuadrícula (`FacetGrid`) con una fila por `team`, una densidad (`kdeplot`) en cada fila y las filas solapadas.
 
 - **Recursos de apoyo:**
 
   - Lección 3 - Figura 15
 
-  - [The R Graph Gallery - Basic ridgeline plot](https://r-graph-gallery.com/294-basic-ridgeline-plot.html)
+  - [seaborn - Overlapping densities (ridge plot)](https://seaborn.pydata.org/examples/kde_ridgeplot.html)
 
-  - [ggridges - Introduction to ggridges](https://wilkelab.org/ggridges/articles/introduction.html)
+  - [seaborn.FacetGrid](https://seaborn.pydata.org/generated/seaborn.FacetGrid.html)
 
-  - [ggridges - Create ridgeline plot](https://wilkelab.org/ggridges/reference/geom_density_ridges.html)
+  - [pandas.DataFrame.groupby](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.groupby.html)
 
-  - [ggplot2 - FAQ: Reordering](https://ggplot2.tidyverse.org/articles/faq-reordering.html)
+  - [seaborn.FacetGrid.map](https://seaborn.pydata.org/generated/seaborn.FacetGrid.map.html)
 
-```{r e13_f1, fig.width = 8, fig.height = 8, out.width = "100%"}
+  - [seaborn.kdeplot](https://seaborn.pydata.org/generated/seaborn.kdeplot.html)
+
+  - [matplotlib.axes.Axes.text](https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.text.html)
+
+  - [matplotlib.figure.Figure.subplots_adjust](https://matplotlib.org/stable/api/figure_api.html#matplotlib.figure.Figure.subplots_adjust)
+
+  - [seaborn.FacetGrid.despine](https://seaborn.pydata.org/generated/seaborn.FacetGrid.despine.html)
+
+```{python e13_f1, fig.width = 8, fig.height = 8, out.width = "100%"}
 #### Ejercicio 13 - Fragmento 1 (nivel dificultad: ++++) ####
 
 
@@ -545,9 +556,11 @@ Sys.time()
 
 # Ejercicio 14: scatter plot
 
-- En el fragmento de código `e14_f1`, crea un **diagrama de dispersión** que muestre la relación entre las variables cuantitativas continuas `height_m` y `minutes_played` del *dataframe* `df_transformed`, con `height_m` en el eje *X*, `minutes_played` en el eje *Y*, la forma 21 (círculo con relleno y borde) para los puntos, el color `#b3cde0` para su relleno, el color `#334155` para sus bordes, una transparencia de 0.5, una línea de tendencia suavizada LOESS de color `#cc1237` sin intervalo de confianza, una leyenda en la parte inferior sin título con el texto `LOESS trend line`, las marcas del eje *X* cada 0.1 metros, las marcas del eje *Y* cada 500 minutos, el título `Scatter plot with semi-transparent points`, el subtítulo `Relationship between height (continuous) and minutes played (continuous)`, las etiquetas `Height (m)` y `Minutes played` en los ejes *X* e *Y* y el tema visual `theme_classic`.
+- En el fragmento de código `e14_f1`, crea un **diagrama de dispersión** que muestre la relación entre las variables cuantitativas continuas `height_m` y `minutes_played` del *dataframe* `df_transformed`, con `height_m` en el eje *X*, `minutes_played` en el eje *Y*, puntos circulares con relleno y borde, el color `#b3cde0` para su relleno, el color `#334155` para sus bordes, una transparencia de 0.5, una línea de tendencia suavizada LOESS de color `#cc1237` sin intervalo de confianza, una leyenda en la parte inferior sin título con el texto `LOESS trend line`, las marcas del eje *X* cada 0.1 metros, las marcas del eje *Y* cada 500 minutos, el título `Scatter plot with semi-transparent points`, el subtítulo `Relationship between height (continuous) and minutes played (continuous)`, las etiquetas `Height (m)` y `Minutes played` en los ejes *X* e *Y*, y sin los bordes superior y derecho.
 
 - En el fragmento de código `e14_f2`, crea el mismo **diagrama de dispersión** del fragmento `e14_f1`, pero dividido en tres paneles (uno por cada categoría de la variable categórica nominal `position`) dispuestos en una sola fila y ordenados de mayor a menor frecuencia, con las mismas escalas en los ejes *X* e *Y* de todos los paneles, el título `Scatter plot with facets` y el subtítulo `Relationship between height (continuous) and minutes played (continuous) by position (nominal)`.
+
+- **Nota:** la línea de tendencia LOESS de `seaborn` (`lowess = True`) se calcula con el paquete `statsmodels`, que ajusta rectas locales con iteraciones robustas, mientras que `geom_smooth()` de `ggplot2` ajusta polinomios locales de grado 2, por lo que las curvas son parecidas pero no idénticas.
 
 - **Recursos de apoyo:**
 
@@ -555,23 +568,25 @@ Sys.time()
 
   - Lección 3 - Figura 17
 
-  - [The R Graph Gallery - Basic scatterplot with R and ggplot2](https://r-graph-gallery.com/272-basic-scatterplot-with-ggplot2.html)
+  - [seaborn.regplot](https://seaborn.pydata.org/generated/seaborn.regplot.html)
 
-  - [ggplot2 - Points](https://ggplot2.tidyverse.org/reference/geom_point.html)
+  - [matplotlib.ticker.MultipleLocator](https://matplotlib.org/stable/api/ticker_api.html#matplotlib.ticker.MultipleLocator)
 
-  - [ggplot2 - Smoothed conditional means](https://ggplot2.tidyverse.org/reference/geom_smooth.html)
+  - [seaborn.lmplot](https://seaborn.pydata.org/generated/seaborn.lmplot.html)
 
-  - [ggplot2 - Wrap a 1d ribbon of panels into 2d](https://ggplot2.tidyverse.org/reference/facet_wrap.html)
+  - [seaborn.FacetGrid.set_titles](https://seaborn.pydata.org/generated/seaborn.FacetGrid.set_titles.html)
 
-  - [ggplot2 - Lay out panels in a grid](https://ggplot2.tidyverse.org/reference/facet_grid.html)
+  - [seaborn.FacetGrid.set_axis_labels](https://seaborn.pydata.org/generated/seaborn.FacetGrid.set_axis_labels.html)
 
-```{r e14_f1, fig.width = 6, fig.height = 5, out.width = "75%"}
+  - [matplotlib.figure.Figure.legend](https://matplotlib.org/stable/api/figure_api.html#matplotlib.figure.Figure.legend)
+
+```{python e14_f1, fig.width = 7, fig.height = 5, out.width = "80%"}
 #### Ejercicio 14 - Fragmento 1 (nivel dificultad: +++) ####
 
 
 ```
 
-```{r e14_f2, fig.width = 9, fig.height = 5, out.width = "100%"}
+```{python e14_f2, fig.width = 9, fig.height = 5, out.width = "100%"}
 #### Ejercicio 14 - Fragmento 2 (nivel dificultad: ++++) ####
 
 
